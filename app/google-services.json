@@ -1,0 +1,122 @@
+{
+  "project_info": {
+    "project_number": "482268788040",
+    "firebase_url": "https://probandologinizas-default-rtdb.europe-west1.firebasedatabase.app",
+    "project_id": "probandologinizas",
+    "storage_bucket": "probandologinizas.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:482268788040:android:085ea2f6c40117a52f6f7d",
+        "android_client_info": {
+          "package_name": "com.example.amistapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "482268788040-h16p2ghoin4mv6tjnl4rtnl8bvn0fvbo.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.amistapp",
+            "certificate_hash": "f50a708ae9708ea969fa4dad10f02909d8152107"
+          }
+        },
+        {
+          "client_id": "482268788040-3lpvtffa9dgj06q7ha301iqa802747ta.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDhBLXdJ0Fy5wVJ1USczMhZ_Jr8KyG4NdQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "482268788040-3lpvtffa9dgj06q7ha301iqa802747ta.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:482268788040:android:2721c9b74ad9513a2f6f7d",
+        "android_client_info": {
+          "package_name": "com.example.appbar"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "482268788040-2oh2elgb5gmh8onduqacsu8kdckp76m7.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.appbar",
+            "certificate_hash": "f50a708ae9708ea969fa4dad10f02909d8152107"
+          }
+        },
+        {
+          "client_id": "482268788040-3lpvtffa9dgj06q7ha301iqa802747ta.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDhBLXdJ0Fy5wVJ1USczMhZ_Jr8KyG4NdQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "482268788040-3lpvtffa9dgj06q7ha301iqa802747ta.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:482268788040:android:a1494febc81ab65d2f6f7d",
+        "android_client_info": {
+          "package_name": "com.example.probandologinfinali"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "482268788040-dsc7t2s2qqt7vk2a2aj1fia2sjslm14r.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.probandologinfinali",
+            "certificate_hash": "f50a708ae9708ea969fa4dad10f02909d8152107"
+          }
+        },
+        {
+          "client_id": "482268788040-3lpvtffa9dgj06q7ha301iqa802747ta.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDhBLXdJ0Fy5wVJ1USczMhZ_Jr8KyG4NdQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "482268788040-3lpvtffa9dgj06q7ha301iqa802747ta.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
