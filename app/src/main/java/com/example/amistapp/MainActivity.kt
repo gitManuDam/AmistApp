@@ -169,16 +169,16 @@ fun LoginScreen(navController: NavHostController, loginVM: LoginViewModel) {
         }
 
         Spacer(modifier = Modifier.height(16.dp))
-//        TextButton(onClick = { isRegistering = !isRegistering }) {
-//            Text(
-//                text = if (isRegistering) "¿Ya tienes cuenta? Inicia Sesión" else "¿No tienes cuenta? Regístrate"
-//            )
-//        }
-        TextButton(onClick = {
-            navController.navigate(Rutas.registro)
-        }) {
-            Text("¿No tienes cuenta? Regístrate")
+        TextButton(onClick = { isRegistering = !isRegistering }) {
+            Text(
+                text = if (isRegistering) "¿Ya tienes cuenta? Inicia Sesión" else "¿No tienes cuenta? Regístrate"
+            )
         }
+//        TextButton(onClick = {
+//            navController.navigate(Rutas.registro)
+//        }) {
+//            Text("¿No tienes cuenta? Regístrate")
+//        }
 
         if (isLoading) {
             Spacer(modifier = Modifier.height(16.dp))
@@ -190,7 +190,7 @@ fun LoginScreen(navController: NavHostController, loginVM: LoginViewModel) {
             Text(text = it, color = MaterialTheme.colorScheme.error)
         }
 
-        LaunchedEffect(loginSuccess) {
+        LaunchedEffect(loginSuccess) { // comprobar si tiene el perfil completado !!
             if (loginSuccess) {
                 Toast.makeText(context, "Login correcto", Toast.LENGTH_SHORT).show()
                 // se guarda el email del usuario que se ha identificado en emailUsuario
