@@ -18,7 +18,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
@@ -33,7 +32,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.TextFieldValue
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
@@ -44,7 +42,8 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import androidx.compose.runtime.collectAsState
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import com.example.amistapp.Registro.RegistroVentana
+import com.example.amistapp.DatosPerfil.VentanaDatosPerfil
+
 
 class MainActivity : ComponentActivity() {
     val loginVM = LoginViewModel()
@@ -65,8 +64,8 @@ class MainActivity : ComponentActivity() {
                     composable(Rutas.administrador){
 
                     }
-                    composable(Rutas.registro){
-                        RegistroVentana(navController)
+                    composable(Rutas.perfil){
+                        VentanaDatosPerfil(navController, loginVM)
                     }
                 }
             }
@@ -197,7 +196,7 @@ fun LoginScreen(navController: NavHostController, loginVM: LoginViewModel) {
                 val emailUsuario = loginVM.getCurrentUser()?.email
                 // si el usuario no está en la bd, lo añade
                 if (!loginVM.existeUsuario()){
-                   // loginVM.addUsuario(emailUsuario!!)
+                    loginVM.addUsuario(emailUsuario!!)
                 }
                 // se guarda en role el role de usuario que se ha identificado
                 // Ahora puedo tener dos roles !!!!!!!

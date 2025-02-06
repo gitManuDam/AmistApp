@@ -196,28 +196,47 @@ class LoginViewModel: ViewModel() {
     }
 
     // esta función añade un usuario a la bd si no existe ya
-//    fun addUsuario (email: String){
-//        val usuariosRef = db.collection(Colecciones.Usuarios)
-//
-//        usuariosRef
-//            .whereEqualTo("email", email)
-//           // .whereEqualTo("role", usuario.role)
-//            .get()
-//            .addOnSuccessListener { consulta ->
-//                if(!consulta.isEmpty){
-//                    Log.e("Izaskun", "El usuario ya existe")
-//                }else{
-//                    val nuevoUsuario = hashMapOf(
-//                        "email" to email,
-//                        "role" to "camarero"
-//                    )
-//                    usuariosRef.document(email)
-//                        .set(nuevoUsuario)
-//                        .addOnSuccessListener { Log.e("Izaskun", "Usuario añadido con exito") }
-//                        .addOnFailureListener { Log.e("Izaskun", "Error al añadir el usuario") }
-//                }
-//            }
-//            .addOnFailureListener {  Log.e("Izaskun", "Error al consultar al usuario") }
-//    }
+    fun addUsuario (email: String){
+        val usuariosRef = db.collection(Colecciones.Usuarios)
+
+        // se comprueba si existe el usuario en la bd
+        // si ya existe no se añade
+        usuariosRef
+            .whereEqualTo("email", email)
+           // .whereEqualTo("role", usuario.role)
+            .get()
+            .addOnSuccessListener { consulta ->
+                if(!consulta.isEmpty){
+                    Log.e("Izaskun", "El usuario ya existe")
+                }else{
+                    // perfil inicial
+                    val perfilInicial = mapOf(
+                        "completado" to false,
+                        "nick" to "",
+                        "edad" to 0,
+                        "amigos" to emptyList<String>(),
+                        "relacionSeria" to false,
+                        "interesDeporte" to 0,
+                        "interesArte" to 0,
+                        "interesPolitica" to 0,
+                        "tieneHijos" to false,
+                        "quiereHijos" to false,
+                        "interesadoEn" to "",
+                        "genero" to ""
+                    )
+                    val nuevoUsuario = hashMapOf(
+                        "activado" to "false",
+                        "email" to email,
+                        "role" to listOf("estandar"),
+                        "perfil"  to perfilInicial
+                    )
+                    usuariosRef.document(email)
+                        .set(nuevoUsuario)
+                        .addOnSuccessListener { Log.e("Izaskun", "Usuario añadido con exito") }
+                        .addOnFailureListener { Log.e("Izaskun", "Error al añadir el usuario") }
+                }
+            }
+            .addOnFailureListener {  Log.e("Izaskun", "Error al consultar al usuario") }
+    }
 
 }
