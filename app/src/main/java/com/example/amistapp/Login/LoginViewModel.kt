@@ -213,6 +213,7 @@ class LoginViewModel: ViewModel() {
                     val perfilInicial = mapOf(
                         "completado" to false,
                         "nick" to "",
+                        "fotoPerfil" to "",
                         "edad" to 0,
                         "amigos" to emptyList<String>(),
                         "relacionSeria" to false,

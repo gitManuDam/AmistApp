@@ -9,4 +9,5 @@
     <color name="white">#FFFFFFFF</color>
     <color name="botones">#616665</color>
     <color name="textoBotones">#FFFFFFFF</color>
+    <color name="texto">#273B62</color>
 </resources>

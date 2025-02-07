@@ -42,19 +42,25 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import androidx.compose.runtime.collectAsState
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import com.example.amistapp.DatosPerfil.DatosPerfilViewModel
 import com.example.amistapp.DatosPerfil.VentanaDatosPerfil
 
 
 class MainActivity : ComponentActivity() {
     val loginVM = LoginViewModel()
+    val datosPerfilVM = DatosPerfilViewModel()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
+            val contexto = LocalContext.current
+
             AmistAppTheme {
                 val navController = rememberNavController()
-                NavHost(navController = navController, startDestination = Rutas.login){
+                //Durante la creacion de la ventana Datos Perfil
+                NavHost(navController = navController, startDestination = Rutas.perfil){
+               // NavHost(navController = navController, startDestination = Rutas.login){
                     composable(Rutas.login){
                         LoginScreen(navController, loginVM)
                     }
@@ -65,7 +71,7 @@ class MainActivity : ComponentActivity() {
 
                     }
                     composable(Rutas.perfil){
-                        VentanaDatosPerfil(navController, loginVM)
+                        VentanaDatosPerfil(navController, loginVM, datosPerfilVM, contexto)
                     }
                 }
             }
@@ -197,9 +203,12 @@ fun LoginScreen(navController: NavHostController, loginVM: LoginViewModel) {
                 // si el usuario no está en la bd, lo añade
                 if (!loginVM.existeUsuario()){
                     loginVM.addUsuario(emailUsuario!!)
+                    // la primera vez le envia a rellenar el perfil
+                    navController.navigate(Rutas.perfil){
+                    }
                 }
                 // se guarda en role el role de usuario que se ha identificado
-                // Ahora puedo tener dos roles !!!!!!!
+                // Ahora puedo tener dos roles !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                 val role = loginVM.getRolePorEmail(emailUsuario!!)
 
                 if (role == "estandar"){
