@@ -181,7 +181,7 @@ class LoginViewModel: ViewModel() {
         }
     }
 
-    suspend fun getRolePorEmail(email: String):String?{
+    suspend fun getRolesPorEmail(email: String):List<String>?{
         val usuariosRef = db.collection(Colecciones.Usuarios)
         val querySnapshot = usuariosRef
             .whereEqualTo("email", email)
@@ -191,7 +191,7 @@ class LoginViewModel: ViewModel() {
             null
         }else{
             val usuario = querySnapshot.documents[0]
-            usuario.getString("role")
+            usuario.get("role") as? List<String>
         }
     }
 

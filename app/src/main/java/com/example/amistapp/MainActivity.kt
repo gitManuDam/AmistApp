@@ -40,6 +40,7 @@ import com.example.amistapp.ui.theme.AmistAppTheme
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import androidx.compose.runtime.collectAsState
+import androidx.compose.ui.unit.sp
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.example.amistapp.DatosPerfil.DatosPerfilViewModel
@@ -59,16 +60,16 @@ class MainActivity : ComponentActivity() {
             AmistAppTheme {
                 val navController = rememberNavController()
                 //Durante la creacion de la ventana Datos Perfil
-                NavHost(navController = navController, startDestination = Rutas.perfil){
-               // NavHost(navController = navController, startDestination = Rutas.login){
+//                NavHost(navController = navController, startDestination = Rutas.perfil){
+                NavHost(navController = navController, startDestination = Rutas.login){
                     composable(Rutas.login){
                         LoginScreen(navController, loginVM)
                     }
                     composable(Rutas.estandar){
-
+                        Text(text = "Pantalla estándar", fontSize = 24.sp, modifier = Modifier.fillMaxSize())
                     }
                     composable(Rutas.administrador){
-
+                        Text(text = "Pantalla administrador", fontSize = 24.sp, modifier = Modifier.fillMaxSize())
                     }
                     composable(Rutas.perfil){
                         VentanaDatosPerfil(navController, loginVM, datosPerfilVM, contexto)
@@ -201,26 +202,38 @@ fun LoginScreen(navController: NavHostController, loginVM: LoginViewModel) {
                 // se guarda el email del usuario que se ha identificado en emailUsuario
                 val emailUsuario = loginVM.getCurrentUser()?.email
                 // si el usuario no está en la bd, lo añade
+                // y como no existe en la bd, es su primera vez por lo que rellena el perfil
                 if (!loginVM.existeUsuario()){
                     loginVM.addUsuario(emailUsuario!!)
                     // la primera vez le envia a rellenar el perfil
                     navController.navigate(Rutas.perfil){
                     }
-                }
-                // se guarda en role el role de usuario que se ha identificado
-                // Ahora puedo tener dos roles !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                val role = loginVM.getRolePorEmail(emailUsuario!!)
+                }else {
 
-                if (role == "estandar"){
-                    navController.navigate(Rutas.estandar) {
-                        popUpTo(Rutas.login) { inclusive = true } //Borra la pila de navegación
-                    }
-                }else if (role == "administrador"){
-                    navController.navigate(Rutas.administrador) {
-                        popUpTo(Rutas.login) { inclusive = true } //Borra la pila de navegación
+                    // se guarda en role el role de usuario que se ha identificado
+                    // Ahora puedo tener dos roles !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                    val role = loginVM.getRolesPorEmail(emailUsuario!!)
+
+
+                    // comprobar la longitud de la lista, si solo tiene un valor por definicion será estandar
+                    // y si tiene 2 puede ser estandar o administrador
+                    // por lo que si la longitud es mas de 1 se le debera preguntar (en una pantall)
+                    // que role quiere usar
+
+                    if (role != null) {
+                        if (role.size == 1) {
+                            navController.navigate(Rutas.estandar) {
+                                popUpTo(Rutas.login) {
+                                    inclusive = true
+                                } //Borra la pila de navegación
+                            }
+                        } else { //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!falta
+                            // mostrar pantalla para que elija role
+                        }
+
+
                     }
                 }
-
             }
         }
         /*

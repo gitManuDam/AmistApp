@@ -1,6 +1,7 @@
 package com.example.amistapp.DatosPerfil
 
 import android.net.Uri
+import android.util.Log
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
@@ -8,9 +9,12 @@ import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.example.amistapp.Colecciones
 import com.example.amistapp.Login.LoginViewModel
 import com.google.firebase.Firebase
+import com.google.firebase.firestore.SetOptions
 import com.google.firebase.firestore.firestore
+import kotlinx.coroutines.tasks.await
 import java.io.File
 import java.net.URL
 
@@ -46,8 +50,8 @@ class DatosPerfilViewModel : ViewModel() {
     private val _interesPolitica = mutableStateOf(0)
     val interesPolitica: State<Int> get() = _interesPolitica
 
-    private val _tenerHijos = mutableStateOf(false)
-    val tenerHijos: State<Boolean> get() = _tenerHijos
+    private val _tieneHijos = mutableStateOf(false)
+    val tieneHijos: State<Boolean> get() = _tieneHijos
 
     private val _quiereHijos = mutableStateOf(false)
     val quiereHijos: State<Boolean> get() = _quiereHijos
@@ -130,8 +134,8 @@ class DatosPerfilViewModel : ViewModel() {
         }
     }
 
-    fun setTenerHijos(nTenerHijos:Boolean){
-        _relacionSeria.value = nTenerHijos
+    fun setTieneHijos(nTenerHijos:Boolean){
+        _tieneHijos.value = nTenerHijos
     }
 
     fun setQuiereHijos(nQuiereHijos:Boolean){
@@ -156,6 +160,10 @@ class DatosPerfilViewModel : ViewModel() {
         }
     }
 
+    fun setCompletado(nCompletado: Boolean){
+        _completado.value = nCompletado
+    }
+
     // Para las fotos
     fun updateImageUri(uri: Uri) {
         _imageUri.value = uri
@@ -167,5 +175,107 @@ class DatosPerfilViewModel : ViewModel() {
 
     fun setUrlPfp(url: String) {
         this._urlPfp.value = url
+    }
+
+   fun actualizarPerfil(emailLogeado:String){
+       Log.e("Izaskun"," Estoy en el actualizarPerfil.El email logeado es: ${emailLogeado}" )
+
+        val usuariosRef = db.collection(Colecciones.Usuarios)
+
+        val perfilActualizado = mapOf(
+            "completado" to completado.value,
+            "nick" to nick.value,
+            "fotoPerfil" to fotoPerfil.value,
+            "edad" to edad.value,
+            "amigos" to amigos.toList(),
+            "relacionSeria" to relacionSeria.value,
+            "interesDeporte" to interesDeporte.value,
+            "interesArte" to interesArte.value,
+            "interesPolitica" to interesPolitica.value,
+            "tieneHijos" to tieneHijos.value,
+            "quiereHijos" to quiereHijos.value,
+            "interesadoEn" to interesadoEn.value,
+            "genero" to genero.value
+        )
+
+       usuariosRef.document(emailLogeado)
+           .set(mapOf("perfil" to perfilActualizado), SetOptions.merge())
+           .addOnSuccessListener {
+               Log.e("Izaskun", "Perfil actualizado con éxito")
+               limpiarValores()
+
+           }
+           .addOnFailureListener { e ->
+               Log.e("Izaskun", "Error al actualizar el perfil: $e")
+           }
+
+//        usuariosRef
+//            .document(emailLogeado)
+//            .update(mapOf("perfil" to perfilActualizado))
+//            .addOnSuccessListener {
+//                Log.e("Izaskun", "Perfil actualizado con éxito")
+//                limpiarValores()
+//            }
+//            .addOnFailureListener { e ->
+//                Log.e("Izaskun", "Error al actualizar el perfil: $e")
+//            }
+
+
+
+
+//        usuariosRef
+//            .whereEqualTo("email", emailLogeado)
+//            .get()
+//            .addOnSuccessListener { consulta ->
+//                if (!consulta.isEmpty) {
+//                    val usuarioDoc = consulta.documents[0]  // Obtener el primer documento de la consulta
+//
+//                    // Se actualizan los campos del perfil con los datos proporcionados
+//                    val perfilRef = usuarioDoc.reference.collection("perfil")
+//
+//                    perfilRef.document("perfil")  // Suponiendo que el perfil está dentro de una subcolección o es un campo directo
+//                        .update(perfilActualizado)
+//                        .addOnSuccessListener {
+//                            Log.e("Izaskun", "Perfil actualizado con éxito")
+//                            limpiarValores()
+//                        }
+//                        .addOnFailureListener { e ->
+//                            Log.e("Izaskun", "Error al actualizar el perfil: $e")
+//                        }
+//                } else {
+//                    Log.e("Izaskun", "El usuario no existe")
+//                }
+//            }
+//            .addOnFailureListener { e ->
+//                Log.e("Izaskun", "Error al consultar al usuario: $e")
+//            }
+//
+
+
+//        usuariosRef.update("perfil", perfilActualizado)
+//            .addOnSuccessListener{
+//                Log.e("Izaskun", "Perfil actualizado con éxito")
+//                limpiarValores()
+//            }
+//            .addOnFailureListener {
+//                Log.e("Izaskun", "Error al actualizar el perfil")
+//            }
+
+    }
+
+    fun limpiarValores(){
+        _completado.value = false
+        _nick.value = ""
+        _fotoPerfil.value = ""
+        _edad.value = 0
+        _amigos.clear()
+        _relacionSeria.value = false
+        _interesDeporte.value = 0
+        _interesArte.value = 0
+        _interesPolitica.value = 0
+        _tieneHijos.value = false
+        _quiereHijos.value = false
+        _interesadoEn.value = ""
+        _genero.value = ""
     }
 }

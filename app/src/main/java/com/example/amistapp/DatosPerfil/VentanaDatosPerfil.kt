@@ -1,7 +1,9 @@
 package com.example.amistapp.DatosPerfil
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.net.Uri
+import android.util.Log
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -12,7 +14,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -26,7 +27,6 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
-import androidx.compose.material3.ElevatedButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedTextField
@@ -67,6 +67,8 @@ fun VentanaDatosPerfil(
     datosPerfilVM: DatosPerfilViewModel,
     contexto: Context
 ){
+    val emailLogeado = loginVM.getCurrentUser()?.email
+
     Column(modifier = Modifier.padding(vertical = 20.dp).fillMaxWidth()) {
         Spacer(modifier = Modifier.height(50.dp))
         Row (modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp),verticalAlignment = Alignment.CenterVertically)
@@ -86,7 +88,9 @@ fun VentanaDatosPerfil(
         tomarFoto(datosPerfilVM, contexto)
         Spacer(modifier = Modifier.weight(1f))
         Row( modifier = Modifier.fillMaxWidth(),horizontalArrangement = Arrangement.Center,verticalAlignment = Alignment.CenterVertically){
-            botonAceptar(navController)
+            if (emailLogeado != null) {
+                botonAceptar(navController, emailLogeado, datosPerfilVM)
+            }
             Spacer(modifier = Modifier.width(8.dp))
             botonCancelar(navController)
         }
@@ -98,8 +102,8 @@ fun VentanaDatosPerfil(
 
 //@SuppressLint("SuspiciousIndentation")
 @Composable
-fun nick(datosPerfilVM: DatosPerfilViewModel){
-    val nick by datosPerfilVM.nick
+fun nick(datosPerfilVM: DatosPerfilViewModel ){
+    val nick by remember {datosPerfilVM.nick}
 
     Text(
         text = "Nick:",
@@ -121,6 +125,8 @@ fun nick(datosPerfilVM: DatosPerfilViewModel){
 
 
 // Devuelve verdadero cuando es menor de edad
+
+//@SuppressLint("SuspiciousIndentation")
 @Composable
 fun edad(datosPerfilVM: DatosPerfilViewModel): Boolean {
 
@@ -311,7 +317,7 @@ fun hijos(datosPerfilVM: DatosPerfilViewModel){
             modifier = Modifier.padding(vertical = 12.dp))
     }
     datosPerfilVM.setQuiereHijos(estadoQuiere)
-    datosPerfilVM.setTenerHijos(estadoTiene)
+    datosPerfilVM.setTieneHijos(estadoTiene)
 }
 
 // Muestra la barra para el deporte y lo envia al VM
@@ -478,8 +484,24 @@ fun tomarFoto(datosPerfilVM: DatosPerfilViewModel, contexto: Context)
 
 @Composable
 // Cuando pincha en aceptar, se guardan los datos del perfil el la bd
-fun botonAceptar(navController: NavHostController) {
-    Button(onClick = {navController.navigate(Rutas.login)},
+fun botonAceptar(
+    navController: NavHostController,
+    emailLogeado: String,
+    datosPerfilVM: DatosPerfilViewModel
+) {
+    Button(onClick = {
+
+        Log.e("Izaskun"," Estoy en el botón Aceptar.El email logeado es: ${emailLogeado}")
+        datosPerfilVM.setCompletado(true)
+        datosPerfilVM.actualizarPerfil(emailLogeado)
+        navController.navigate(Rutas.login)},
+//        datosPerfilVM.actualizarPerfil(emailLogeado, onSuccess = {
+//            navController.navigate(Rutas.login) {  // Navega a la pantalla principal
+//                popUpTo(Rutas.login) { inclusive = true }  // Borra la pila de navegación
+//            }
+//        })
+//    },
+
         colors = ButtonDefaults.buttonColors(
             containerColor = colorResource(R.color.botones), // Color de fondo del botón
             contentColor = colorResource(R.color.textoBotones) // Color del texto
@@ -488,6 +510,7 @@ fun botonAceptar(navController: NavHostController) {
     {
         Text(text = "Aceptar")
     }
+
 }
 
 @Composable
