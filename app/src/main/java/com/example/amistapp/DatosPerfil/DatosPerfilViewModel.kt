@@ -23,6 +23,9 @@ class DatosPerfilViewModel : ViewModel() {
     // Para la base de datos que contendrá  a los usuarios
     val db = Firebase.firestore
 
+    private val _activado = mutableStateOf(false)
+    val activado: State<Boolean> get() = _activado
+
     private val _completado = mutableStateOf(false)
     val completado: State<Boolean> get() = _completado
 
@@ -162,6 +165,14 @@ class DatosPerfilViewModel : ViewModel() {
 
     fun setCompletado(nCompletado: Boolean){
         _completado.value = nCompletado
+    }
+
+    fun setActivado(nActivado: Boolean){
+        _completado.value = nActivado
+    }
+
+    fun getActivado():Boolean{
+        return _activado.value
     }
 
     // Para las fotos

@@ -7,7 +7,8 @@
     <color name="teal_700">#FF018786</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
-    <color name="botones">#616665</color>
-    <color name="textoBotones">#FFFFFFFF</color>
-    <color name="texto">#273B62</color>
+    <color name="botones">#64A297</color>
+    <color name="textoBotones">#0E0C0C</color>
+    <color name="texto">#153513</color>
+    <color name="fondoMenuPuntos">#739671</color>
 </resources>
