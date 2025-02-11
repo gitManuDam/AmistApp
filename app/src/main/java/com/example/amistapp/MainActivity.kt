@@ -47,6 +47,7 @@ import com.example.amistapp.Administrador.VentanaAdministrador
 import com.example.amistapp.DatosPerfil.DatosPerfilViewModel
 import com.example.amistapp.DatosPerfil.VentanaDatosPerfil
 import com.example.amistapp.Login.LoginScreen
+import com.example.amistapp.Login.VentanaElegirRoleAUsar
 
 
 class MainActivity : ComponentActivity() {
@@ -62,8 +63,8 @@ class MainActivity : ComponentActivity() {
             AmistAppTheme {
                 val navController = rememberNavController()
                 //Durante la creacion de la ventana Administrador
-                NavHost(navController = navController, startDestination = Rutas.administrador){
-//                NavHost(navController = navController, startDestination = Rutas.login){
+//                NavHost(navController = navController, startDestination = Rutas.administrador){
+                NavHost(navController = navController, startDestination = Rutas.login){
                     composable(Rutas.login){
                         LoginScreen(navController, loginVM, datosPerfilVM)
                     }
@@ -76,6 +77,9 @@ class MainActivity : ComponentActivity() {
                     }
                     composable(Rutas.perfil){
                         VentanaDatosPerfil(navController, loginVM, datosPerfilVM, contexto)
+                    }
+                    composable(Rutas.roleElegido) {
+                        VentanaElegirRoleAUsar()
                     }
                 }
             }

@@ -195,6 +195,15 @@ class LoginViewModel: ViewModel() {
         }
     }
 
+    suspend fun getActivadoPorEmail(email: String):Boolean{
+        val usuariosRef = db.collection(Colecciones.Usuarios)
+        val querySnapshot = usuariosRef
+            .whereEqualTo("email", email)
+            .get()
+            .await()
+        return querySnapshot.documents.firstOrNull()?.getBoolean("activado") ?: false
+    }
+
     // esta función añade un usuario a la bd si no existe ya
     fun addUsuario (email: String){
         val usuariosRef = db.collection(Colecciones.Usuarios)

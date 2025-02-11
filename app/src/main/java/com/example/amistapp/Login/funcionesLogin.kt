@@ -4,14 +4,20 @@ import android.app.Activity
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+//import androidx.compose.foundation.layout.BoxScopeInstance.align
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -26,10 +32,16 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import androidx.compose.ui.window.Dialog
+import androidx.compose.ui.window.DialogProperties
 import androidx.navigation.NavHostController
 import com.example.amistapp.DatosPerfil.DatosPerfilViewModel
 import com.example.amistapp.R
@@ -89,6 +101,8 @@ fun LoginScreen(navController: NavHostController, loginVM: LoginViewModel, datos
     ) {
         Text(
             text = if (isRegistering) "Registrar Cuenta" else "Iniciar Sesión",
+            color = colorResource(R.color.texto),
+            fontSize = 15.sp,
             style = MaterialTheme.typography.titleLarge,
             modifier = Modifier.padding(bottom = 16.dp)
         )
@@ -118,15 +132,25 @@ fun LoginScreen(navController: NavHostController, loginVM: LoginViewModel, datos
                 }
             },
             modifier = Modifier.fillMaxWidth(),
-            enabled = !isLoading
+            enabled = !isLoading,
+            colors = ButtonDefaults.buttonColors(
+                containerColor = colorResource(R.color.botones), // Color de fondo del botón
+            contentColor = colorResource(R.color.textoBotones) // Color del texto
+        )
         ) {
-            Text(if (isRegistering) "Registrar" else "Iniciar Sesión")
+            Text(if (isRegistering) "Registrar" else "Iniciar Sesión",
+                color = colorResource(R.color.texto),
+                fontSize = 15.sp,)
         }
         Spacer(modifier = Modifier.height(8.dp))
         Button(
             onClick = { launchGoogleSignIn() },
             modifier = Modifier.fillMaxWidth(),
-            enabled = !isLoading
+            enabled = !isLoading,
+            colors = ButtonDefaults.buttonColors(
+                containerColor = colorResource(R.color.botones), // Color de fondo del botón
+                contentColor = colorResource(R.color.textoBotones) // Color del texto
+            )
         ) {
             Text("Iniciar Sesión con Google")
         }
@@ -134,7 +158,9 @@ fun LoginScreen(navController: NavHostController, loginVM: LoginViewModel, datos
         Spacer(modifier = Modifier.height(16.dp))
         TextButton(onClick = { isRegistering = !isRegistering }) {
             Text(
-                text = if (isRegistering) "¿Ya tienes cuenta? Inicia Sesión" else "¿No tienes cuenta? Regístrate"
+                text = if (isRegistering) "¿Ya tienes cuenta? Inicia Sesión" else "¿No tienes cuenta? Regístrate",
+                color = colorResource(R.color.texto),
+                fontSize = 15.sp,
             )
         }
 //        TextButton(onClick = {
@@ -153,8 +179,13 @@ fun LoginScreen(navController: NavHostController, loginVM: LoginViewModel, datos
             Text(text = it, color = MaterialTheme.colorScheme.error)
         }
 
+        var mostrarDialogo by remember { mutableStateOf(false) }
+//        var navegado by remember { mutableStateOf(false) }
+
         LaunchedEffect(loginSuccess) { // comprobar si tiene el perfil completado !!
-            if (loginSuccess) {
+
+            if (loginSuccess)  {
+//                navegado = true
                 Toast.makeText(context, "Login correcto", Toast.LENGTH_SHORT).show()
                 // se guarda el email del usuario que se ha identificado en emailUsuario
                 val emailUsuario = loginVM.getCurrentUser()?.email
@@ -163,18 +194,17 @@ fun LoginScreen(navController: NavHostController, loginVM: LoginViewModel, datos
                 if (!loginVM.existeUsuario()){
                     loginVM.addUsuario(emailUsuario!!)
                     // la primera vez le envia a rellenar el perfil
-                    navController.navigate(Rutas.perfil){
-                    }
+                    navController.navigate(Rutas.perfil)
+//                    navegado = true
                 }else {
-                    if (!datosPerfilViewModel.getActivado()){
+                   // Si no esta activado
+                    if (!loginVM.getActivadoPorEmail(emailUsuario!!)){
+                        Toast.makeText(context, "No has sido activado", Toast.LENGTH_SHORT).show()
                         navController.navigate(Rutas.login)
                     }else{
-
-                        // se guarda en role el role de usuario que se ha identificado
+                        // se guarda la lista de los roles del usuario que se ha identificado
                         // Ahora puedo tener dos roles !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                         val role = loginVM.getRolesPorEmail(emailUsuario!!)
-
-
                         // comprobar la longitud de la lista, si solo tiene un valor por definicion será estandar
                         // y si tiene 2 puede ser estandar o administrador
                         // por lo que si la longitud es mas de 1 se le debera preguntar (en una pantall)
@@ -187,13 +217,19 @@ fun LoginScreen(navController: NavHostController, loginVM: LoginViewModel, datos
                                         inclusive = true
                                     } //Borra la pila de navegación
                                 }
-                            } else { //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!falta
-                                // mostrar pantalla para que elija role
+//                                navegado = true
+                            } else {
+                                mostrarDialogo = true
+
                             }
-
-
                         }
-                    }}
+                    }
+                }
+            }
+        }
+        if (mostrarDialogo){
+            DialogoSeleccionarRole(navController){
+                mostrarDialogo = false
             }
         }
         /*
@@ -207,4 +243,72 @@ fun LoginScreen(navController: NavHostController, loginVM: LoginViewModel, datos
         Esto garantiza que las acciones, como mostrar un Toast o navegar, ocurran solo cuando realmente cambien las condiciones, evitando comportamientos inesperados debido a las recomposiciones.
          */
     }
+}
+// Esta funcion muestra un dialogo con dos botones para que elija con que role quiere iniciar la session
+// Se mostrará cuando el usuario tenga los dos roles (estandar y administrador
+@Composable
+fun  DialogoSeleccionarRole(navController: NavHostController, onDismiss:() -> Unit){
+    var mostrar by remember { mutableStateOf(true)  }
+    if (mostrar) {
+        Dialog(onDismissRequest = { mostrar=false },
+            properties = DialogProperties(dismissOnBackPress = false, dismissOnClickOutside = true)
+        ){
+
+            Column(modifier = Modifier
+                .width(350.dp)
+                .padding(20.dp)
+                .background(Color.White, shape = RoundedCornerShape(8.dp))
+            ) {
+                Text(
+                    text = "Selecciona tu rol",
+                    color = colorResource(R.color.texto),
+                    fontSize = 15.sp,
+                    modifier = Modifier.padding(bottom = 16.dp)
+                )
+                Button(
+                    onClick = {
+                        mostrar = false
+                        navController.navigate(Rutas.estandar) // Navega a la pantalla de usuario estándar
+                    },
+                    modifier = Modifier.fillMaxWidth(),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = colorResource(R.color.botones), // Color de fondo del botón
+                        contentColor = colorResource(R.color.textoBotones) // Color del texto
+                    )
+                ) {
+                    Text("Usuario Estándar")
+                }
+                Spacer(modifier = Modifier.height(8.dp))
+
+                Button(
+                    onClick = {
+                        mostrar = false
+                        navController.navigate(Rutas.administrador) // Navega a la pantalla de administrador
+                    },
+                    modifier = Modifier.fillMaxWidth(),
+                            colors = ButtonDefaults.buttonColors(
+                            containerColor = colorResource(R.color.botones), // Color de fondo del botón
+                    contentColor = colorResource(R.color.textoBotones) // Color del texto
+                )
+                ) {
+                    Text("Administrador")
+                }
+                Spacer(modifier = Modifier.height(16.dp))
+
+                Button(
+                    onClick = {
+                        mostrar = false
+                        onDismiss()
+                    },
+                    modifier = Modifier.fillMaxWidth(),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = colorResource(R.color.botones), // Color de fondo del botón
+                        contentColor = colorResource(R.color.textoBotones) // Color del texto
+                    )
+                ) {
+                    Text("Cancelar")
+                }
+            }
+//            }
+        }}
 }

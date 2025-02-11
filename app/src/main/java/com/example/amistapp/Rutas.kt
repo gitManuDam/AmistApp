@@ -5,4 +5,5 @@ object Rutas {
     var administrador = "administrador"
     var estandar = "estandar"
     var perfil = "perfil"
+    var roleElegido = "roleElegido"
 }

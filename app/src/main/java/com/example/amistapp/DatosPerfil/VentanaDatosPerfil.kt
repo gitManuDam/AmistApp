@@ -191,6 +191,7 @@ fun edad(datosPerfilVM: DatosPerfilViewModel): Boolean {
 
 //@SuppressLint("SuspiciousIndentation")
 //@SuppressLint("SuspiciousIndentation")
+@SuppressLint("SuspiciousIndentation")
 @Composable
 fun interesadoEn(datosPerfilVM: DatosPerfilViewModel){
     var selectedText by remember { mutableStateOf("") }
