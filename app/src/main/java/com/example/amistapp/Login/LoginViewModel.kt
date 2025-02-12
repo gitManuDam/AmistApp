@@ -235,7 +235,7 @@ class LoginViewModel: ViewModel() {
                         "genero" to ""
                     )
                     val nuevoUsuario = hashMapOf(
-                        "activado" to "false",
+                        "activado" to false,
                         "email" to email,
                         "role" to listOf("estandar"),
                         "perfil"  to perfilInicial
