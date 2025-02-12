@@ -6,7 +6,7 @@ plugins {
 
 android {
     namespace = "com.example.amistapp"
-    compileSdk = 34
+    compileSdk = 35
 
     defaultConfig {
         applicationId = "com.example.amistapp"
@@ -39,6 +39,7 @@ android {
     }
     buildFeatures {
         compose = true
+        buildConfig = true
     }
     composeOptions {
         kotlinCompilerExtensionVersion = "1.5.1"
@@ -61,6 +62,11 @@ dependencies {
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
     implementation(libs.firebase.firestore)
+    implementation(libs.firebase.auth.ktx)
+    implementation(libs.androidx.navigation.compose)
+    implementation(libs.androidx.ui.test.android)
+    implementation(libs.androidx.runtime.livedata)
+    implementation(libs.androidx.storage)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -72,4 +78,22 @@ dependencies {
     // Copiada de Firebase, al agregar la app
     // implementation(platform("com.google.firebase:firebase-bom:33.8.0"))
     implementation(libs.firebase.bom)
+
+    // implementation("com.google.android.gms:play-services-auth:21.3.0")
+    implementation(libs.play.services.auth)
+
+    // implementation ("androidx.compose.material:material:1.x.x")
+    implementation (libs.androidx.material)
+
+    // Para Google Maps
+    // implementation("com.google.android.gms:play-services-maps:19.0.0")
+    implementation(libs.play.services.maps)
+
+    // implementation("com.google.maps.android:maps-compose:2.11.2")
+    implementation(libs.maps.compose)
+
+    // implementation("com.google.android.gms:play-services-location:21.3.0")
+    implementation(libs.play.services.location)
+
+    implementation("io.coil-kt:coil-compose:2.5.0")
 }
