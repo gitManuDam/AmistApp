@@ -47,6 +47,7 @@ import com.example.amistapp.Administrador.VentanaAdministrador
 import com.example.amistapp.DatosPerfil.DatosPerfilViewModel
 import com.example.amistapp.DatosPerfil.VentanaDatosPerfil
 import com.example.amistapp.Login.LoginScreen
+import com.example.amistapp.Login.NoEstasActivado
 import com.example.amistapp.Login.VentanaElegirRoleAUsar
 
 
@@ -80,6 +81,9 @@ class MainActivity : ComponentActivity() {
                     }
                     composable(Rutas.roleElegido) {
                         VentanaElegirRoleAUsar()
+                    }
+                    composable(Rutas.noActivado) {
+                        NoEstasActivado()
                     }
                 }
             }

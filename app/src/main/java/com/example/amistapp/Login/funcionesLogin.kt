@@ -163,11 +163,6 @@ fun LoginScreen(navController: NavHostController, loginVM: LoginViewModel, datos
                 fontSize = 15.sp,
             )
         }
-//        TextButton(onClick = {
-//            navController.navigate(Rutas.registro)
-//        }) {
-//            Text("¿No tienes cuenta? Regístrate")
-//        }
 
         if (isLoading) {
             Spacer(modifier = Modifier.height(16.dp))
@@ -180,12 +175,11 @@ fun LoginScreen(navController: NavHostController, loginVM: LoginViewModel, datos
         }
 
         var mostrarDialogo by remember { mutableStateOf(false) }
-//        var navegado by remember { mutableStateOf(false) }
+
 
         LaunchedEffect(loginSuccess) { // comprobar si tiene el perfil completado !!
 
             if (loginSuccess)  {
-//                navegado = true
                 Toast.makeText(context, "Login correcto", Toast.LENGTH_SHORT).show()
                 // se guarda el email del usuario que se ha identificado en emailUsuario
                 val emailUsuario = loginVM.getCurrentUser()?.email
@@ -195,12 +189,11 @@ fun LoginScreen(navController: NavHostController, loginVM: LoginViewModel, datos
                     loginVM.addUsuario(emailUsuario!!)
                     // la primera vez le envia a rellenar el perfil
                     navController.navigate(Rutas.perfil)
-//                    navegado = true
                 }else {
                    // Si no esta activado
                     if (!loginVM.getActivadoPorEmail(emailUsuario!!)){
                         Toast.makeText(context, "No has sido activado", Toast.LENGTH_SHORT).show()
-                        navController.navigate(Rutas.login)
+                        navController.navigate(Rutas.noActivado)
                     }else{
                         // se guarda la lista de los roles del usuario que se ha identificado
                         // Ahora puedo tener dos roles !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!

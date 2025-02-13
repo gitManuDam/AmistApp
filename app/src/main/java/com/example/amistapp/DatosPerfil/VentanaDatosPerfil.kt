@@ -94,9 +94,6 @@ fun VentanaDatosPerfil(
             Spacer(modifier = Modifier.width(8.dp))
             botonCancelar(navController)
         }
-
-//        Spacer(modifier = Modifier.height(10.dp))
-
     }
 }
 
@@ -127,6 +124,7 @@ fun nick(datosPerfilVM: DatosPerfilViewModel ){
 // Devuelve verdadero cuando es menor de edad
 
 //@SuppressLint("SuspiciousIndentation")
+@SuppressLint("SuspiciousIndentation")
 @Composable
 fun edad(datosPerfilVM: DatosPerfilViewModel): Boolean {
 
@@ -497,13 +495,6 @@ fun botonAceptar(
         datosPerfilVM.setCompletado(true)
         datosPerfilVM.actualizarPerfil(emailLogeado)
         navController.navigate(Rutas.login)},
-//        datosPerfilVM.actualizarPerfil(emailLogeado, onSuccess = {
-//            navController.navigate(Rutas.login) {  // Navega a la pantalla principal
-//                popUpTo(Rutas.login) { inclusive = true }  // Borra la pila de navegación
-//            }
-//        })
-//    },
-
         colors = ButtonDefaults.buttonColors(
             containerColor = colorResource(R.color.botones), // Color de fondo del botón
             contentColor = colorResource(R.color.textoBotones) // Color del texto

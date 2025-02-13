@@ -98,11 +98,11 @@ class DatosPerfilViewModel : ViewModel() {
     }
 
     fun setEdad(nuevaEdad: Int){
-        if (nuevaEdad.toString().isEmpty()){
+        if (nuevaEdad < 0){
             _Error.value= "El campo no puede estar vacio"
         }else{
             _edad.value = nuevaEdad
-            _Error.value = "El campo no puede estar vacio"
+            _Error.value = null
         }
     }
 
@@ -115,7 +115,7 @@ class DatosPerfilViewModel : ViewModel() {
             _Error.value= "El campo no puede estar vacio"
         }else{
             _interesDeporte.value = nInteresDeporte
-            _Error.value = "El campo no puede estar vacio"
+            _Error.value = null
         }
     }
 
@@ -124,7 +124,7 @@ class DatosPerfilViewModel : ViewModel() {
             _Error.value= "El campo no puede estar vacio"
         }else{
             _interesArte.value = nInteresArte
-            _Error.value = "El campo no puede estar vacio"
+            _Error.value = null
         }
     }
 
@@ -133,7 +133,7 @@ class DatosPerfilViewModel : ViewModel() {
             _Error.value= "El campo no puede estar vacio"
         }else{
             _interesPolitica.value = nInteresPolit
-            _Error.value = "El campo no puede estar vacio"
+            _Error.value = null
         }
     }
 
@@ -142,7 +142,7 @@ class DatosPerfilViewModel : ViewModel() {
     }
 
     fun setQuiereHijos(nQuiereHijos:Boolean){
-        _relacionSeria.value = nQuiereHijos
+        _quiereHijos.value = nQuiereHijos
     }
 
     fun setGenero(nGenero: String){
@@ -168,7 +168,7 @@ class DatosPerfilViewModel : ViewModel() {
     }
 
     fun setActivado(nActivado: Boolean){
-        _completado.value = nActivado
+        _activado.value = nActivado
     }
 
     fun getActivado():Boolean{
@@ -219,63 +219,11 @@ class DatosPerfilViewModel : ViewModel() {
            .addOnFailureListener { e ->
                Log.e("Izaskun", "Error al actualizar el perfil: $e")
            }
-
-//        usuariosRef
-//            .document(emailLogeado)
-//            .update(mapOf("perfil" to perfilActualizado))
-//            .addOnSuccessListener {
-//                Log.e("Izaskun", "Perfil actualizado con éxito")
-//                limpiarValores()
-//            }
-//            .addOnFailureListener { e ->
-//                Log.e("Izaskun", "Error al actualizar el perfil: $e")
-//            }
-
-
-
-
-//        usuariosRef
-//            .whereEqualTo("email", emailLogeado)
-//            .get()
-//            .addOnSuccessListener { consulta ->
-//                if (!consulta.isEmpty) {
-//                    val usuarioDoc = consulta.documents[0]  // Obtener el primer documento de la consulta
-//
-//                    // Se actualizan los campos del perfil con los datos proporcionados
-//                    val perfilRef = usuarioDoc.reference.collection("perfil")
-//
-//                    perfilRef.document("perfil")  // Suponiendo que el perfil está dentro de una subcolección o es un campo directo
-//                        .update(perfilActualizado)
-//                        .addOnSuccessListener {
-//                            Log.e("Izaskun", "Perfil actualizado con éxito")
-//                            limpiarValores()
-//                        }
-//                        .addOnFailureListener { e ->
-//                            Log.e("Izaskun", "Error al actualizar el perfil: $e")
-//                        }
-//                } else {
-//                    Log.e("Izaskun", "El usuario no existe")
-//                }
-//            }
-//            .addOnFailureListener { e ->
-//                Log.e("Izaskun", "Error al consultar al usuario: $e")
-//            }
-//
-
-
-//        usuariosRef.update("perfil", perfilActualizado)
-//            .addOnSuccessListener{
-//                Log.e("Izaskun", "Perfil actualizado con éxito")
-//                limpiarValores()
-//            }
-//            .addOnFailureListener {
-//                Log.e("Izaskun", "Error al actualizar el perfil")
-//            }
-
     }
 
     fun limpiarValores(){
         _completado.value = false
+        _activado.value = false
         _nick.value = ""
         _fotoPerfil.value = ""
         _edad.value = 0
@@ -288,5 +236,11 @@ class DatosPerfilViewModel : ViewModel() {
         _quiereHijos.value = false
         _interesadoEn.value = ""
         _genero.value = ""
+    }
+
+    fun agregarAmigo(nuevoAmigo: String) {
+        if (nuevoAmigo.isNotEmpty() && !_amigos.contains(nuevoAmigo)) {
+            _amigos.add(nuevoAmigo)
+        }
     }
 }
