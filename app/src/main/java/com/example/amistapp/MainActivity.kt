@@ -45,6 +45,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.example.amistapp.Administrador.AdministradorViewModel
 import com.example.amistapp.Administrador.AltaUsuarios
+import com.example.amistapp.Administrador.BajaUsuarios
 import com.example.amistapp.Administrador.VentanaAdministrador
 import com.example.amistapp.DatosPerfil.DatosPerfilViewModel
 import com.example.amistapp.DatosPerfil.VentanaDatosPerfil
@@ -66,9 +67,9 @@ class MainActivity : ComponentActivity() {
 
             AmistAppTheme {
                 val navController = rememberNavController()
-                //Durante la creacion de la ventana AltaUsuario en Administrador
-//                NavHost(navController = navController, startDestination = Rutas.altaUsuario){
-                NavHost(navController = navController, startDestination = Rutas.login){
+                //Durante la creacion de la ventana baja en Administrador
+                NavHost(navController = navController, startDestination = Rutas.bajaUsuarios){
+//                NavHost(navController = navController, startDestination = Rutas.login){
                     composable(Rutas.login){
                         LoginScreen(navController, loginVM, datosPerfilVM)
                     }
@@ -90,6 +91,9 @@ class MainActivity : ComponentActivity() {
                     }
                     composable(Rutas.altaUsuario) {
                         AltaUsuarios(navController,administradorVM,loginVM)
+                    }
+                    composable(Rutas.bajaUsuarios){
+                        BajaUsuarios(administradorVM)
                     }
                 }
             }
