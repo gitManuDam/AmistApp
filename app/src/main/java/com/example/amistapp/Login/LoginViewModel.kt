@@ -2,6 +2,7 @@ package com.example.amistapp.Login
 
 import android.content.Context
 import android.util.Log
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
@@ -41,6 +42,12 @@ class LoginViewModel: ViewModel() {
 
     private val _Error = MutableLiveData<String?>()
     val Error : LiveData<String?> = _Error
+
+    private val _activado= mutableStateOf(false)
+    val activado:  State<Boolean> = _activado
+
+    private val _completado= mutableStateOf(false)
+    val completado:  State<Boolean> = _completado
 
     //Variables para los estados...
     val isLoading = MutableStateFlow(false)
@@ -201,7 +208,30 @@ class LoginViewModel: ViewModel() {
             .whereEqualTo("email", email)
             .get()
             .await()
-        return querySnapshot.documents.firstOrNull()?.getBoolean("activado") ?: false
+
+        val activado = querySnapshot.documents.firstOrNull()?.getBoolean("activado") ?: false
+        _activado.value = activado
+        return activado
+
+    }
+
+    suspend fun getCompletadoPorEmail(email: String):Boolean{
+        val usuariosRef = db.collection(Colecciones.Usuarios)
+        val querySnapshot = usuariosRef
+            .whereEqualTo("email", email)
+            .get()
+            .await()
+        var completado:Boolean = false
+        // el primero que coincide
+        val usuarioBuscado = querySnapshot.documents.firstOrNull()
+        if (usuarioBuscado != null){
+            // obtiene el subdocumento
+            val perfil = usuarioBuscado.get("perfil") as? Map<String, Any>
+            completado = perfil?.get("completado") as? Boolean ?: false
+            _completado.value = completado
+        }
+
+        return completado
     }
 
     // esta función añade un usuario a la bd si no existe ya

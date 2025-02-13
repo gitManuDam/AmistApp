@@ -19,6 +19,7 @@ import com.example.amistapp.R
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.ui.text.style.TextAlign
+import com.example.amistapp.Rutas
 
 @Composable
 fun BodyVentanaAdminUsuarios(navController: NavController){
@@ -32,7 +33,7 @@ fun BodyVentanaAdminUsuarios(navController: NavController){
     Row(modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.spacedBy(32.dp), // Aumenta el espaciado entre los botones
         verticalAlignment = Alignment.CenterVertically) {
-        Button(onClick = { /* Alta Usuarios */ },colors = ButtonDefaults.buttonColors(
+        Button(onClick = { navController.navigate(Rutas.altaUsuario) },colors = ButtonDefaults.buttonColors(
             containerColor = colorResource(R.color.botones), // Color de fondo del botón
             contentColor = colorResource(R.color.textoBotones) // Color del texto
         ),

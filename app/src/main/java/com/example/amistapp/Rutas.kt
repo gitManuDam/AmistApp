@@ -7,4 +7,5 @@ object Rutas {
     var perfil = "perfil"
     var roleElegido = "roleElegido"
     var noActivado = "noActivado"
+    var altaUsuario = "altaUsuario"
 }

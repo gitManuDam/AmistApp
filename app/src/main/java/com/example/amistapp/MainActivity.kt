@@ -43,6 +43,8 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.unit.sp
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import com.example.amistapp.Administrador.AdministradorViewModel
+import com.example.amistapp.Administrador.AltaUsuarios
 import com.example.amistapp.Administrador.VentanaAdministrador
 import com.example.amistapp.DatosPerfil.DatosPerfilViewModel
 import com.example.amistapp.DatosPerfil.VentanaDatosPerfil
@@ -54,6 +56,7 @@ import com.example.amistapp.Login.VentanaElegirRoleAUsar
 class MainActivity : ComponentActivity() {
     val loginVM = LoginViewModel()
     val datosPerfilVM = DatosPerfilViewModel()
+    val administradorVM = AdministradorViewModel()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -63,8 +66,8 @@ class MainActivity : ComponentActivity() {
 
             AmistAppTheme {
                 val navController = rememberNavController()
-                //Durante la creacion de la ventana Administrador
-//                NavHost(navController = navController, startDestination = Rutas.administrador){
+                //Durante la creacion de la ventana AltaUsuario en Administrador
+//                NavHost(navController = navController, startDestination = Rutas.altaUsuario){
                 NavHost(navController = navController, startDestination = Rutas.login){
                     composable(Rutas.login){
                         LoginScreen(navController, loginVM, datosPerfilVM)
@@ -84,6 +87,9 @@ class MainActivity : ComponentActivity() {
                     }
                     composable(Rutas.noActivado) {
                         NoEstasActivado()
+                    }
+                    composable(Rutas.altaUsuario) {
+                        AltaUsuarios(navController,administradorVM,loginVM)
                     }
                 }
             }

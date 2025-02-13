@@ -1,6 +1,7 @@
 package com.example.amistapp.Login
 
 import android.app.Activity
+import android.util.Log
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -189,34 +190,47 @@ fun LoginScreen(navController: NavHostController, loginVM: LoginViewModel, datos
                     loginVM.addUsuario(emailUsuario!!)
                     // la primera vez le envia a rellenar el perfil
                     navController.navigate(Rutas.perfil)
+
                 }else {
                    // Si no esta activado
-                    if (!loginVM.getActivadoPorEmail(emailUsuario!!)){
+//                    loginVM.getActivadoPorEmail(emailUsuario!!)
+                    val activado = loginVM.getActivadoPorEmail(emailUsuario!!)
+                    if (!activado){
                         Toast.makeText(context, "No has sido activado", Toast.LENGTH_SHORT).show()
                         navController.navigate(Rutas.noActivado)
                     }else{
-                        // se guarda la lista de los roles del usuario que se ha identificado
-                        // Ahora puedo tener dos roles !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                        val role = loginVM.getRolesPorEmail(emailUsuario!!)
-                        // comprobar la longitud de la lista, si solo tiene un valor por definicion será estandar
-                        // y si tiene 2 puede ser estandar o administrador
-                        // por lo que si la longitud es mas de 1 se le debera preguntar (en una pantall)
-                        // que role quiere usar
-
-                        if (role != null) {
-                            if (role.size == 1) {
-                                navController.navigate(Rutas.estandar) {
-                                    popUpTo(Rutas.login) {
-                                        inclusive = true
-                                    } //Borra la pila de navegación
-                                }
+                        Log.e("el usuario $emailUsuario", " Activado : $activado")
+                        // Aquí llega cuando está activado pero no ha completado el perfil,
+                        // situación que se dará cuando el administrador dé de alta un usuario
+                        // cambie ha activado, y ese usuario entre por primera vez
+                        val completado = loginVM.getCompletadoPorEmail(emailUsuario)
+                        Log.e("el usuario $emailUsuario", " completado : $completado")
+                        if (!completado){
+                            navController.navigate(Rutas.perfil)
+                        }else {
+                            if(completado && activado){
+                            // se guarda la lista de los roles del usuario que se ha identificado
+                            // Ahora puedo tener dos roles !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                            // comprobar la longitud de la lista, si solo tiene un valor por definicion será estandar
+                            // y si tiene 2 puede ser estandar o administrador
+                            // por lo que si la longitud es mas de 1 se le debera preguntar (en una pantall)
+                            // que role quiere usar
+                            val role = loginVM.getRolesPorEmail(emailUsuario!!)
+                            if (role != null) {
+                                if (role.size == 1) {
+                                    navController.navigate(Rutas.estandar) {
+                                        popUpTo(Rutas.login) {
+                                            inclusive = true
+                                        } //Borra la pila de navegación
+                                    }
 //                                navegado = true
-                            } else {
-                                mostrarDialogo = true
+                                } else {
+                                    mostrarDialogo = true
 
+                                }
                             }
                         }
-                    }
+                    }}
                 }
             }
         }
