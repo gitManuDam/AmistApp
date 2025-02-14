@@ -10,4 +10,5 @@ object Rutas {
     var altaUsuario = "altaUsuario"
     var bajaUsuarios = "bajaUsuarios"
     var activarDesActivar = "activarDesactivar"
+    var cambiarRole = "cambiarRole"
 }

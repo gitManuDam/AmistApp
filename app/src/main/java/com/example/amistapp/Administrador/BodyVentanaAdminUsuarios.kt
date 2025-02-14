@@ -68,10 +68,8 @@ fun BodyVentanaAdminUsuarios(navController: NavController){
             Text(text = "Activar/Desactivar Usuarios",
                 textAlign = TextAlign.Center)
         }
-//    }
-//
-//    Row(verticalAlignment = Alignment.CenterVertically) {
-        Button(onClick = { /* Añadir Administrador */ },colors = ButtonDefaults.buttonColors(
+
+        Button(onClick = { navController.navigate(Rutas.cambiarRole) },colors = ButtonDefaults.buttonColors(
             containerColor = colorResource(R.color.botones), // Color de fondo del botón
             contentColor = colorResource(R.color.textoBotones) // Color del texto
         ),

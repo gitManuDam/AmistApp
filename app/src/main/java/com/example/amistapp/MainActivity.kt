@@ -18,6 +18,7 @@ import com.example.amistapp.Administrador.ActivarDesactivarUsuarios
 import com.example.amistapp.Administrador.AdministradorViewModel
 import com.example.amistapp.Administrador.AltaUsuarios
 import com.example.amistapp.Administrador.BajaUsuarios
+import com.example.amistapp.Administrador.CambiarRoleAdministrador
 import com.example.amistapp.Administrador.VentanaAdministrador
 import com.example.amistapp.DatosPerfil.DatosPerfilViewModel
 import com.example.amistapp.DatosPerfil.VentanaDatosPerfil
@@ -69,6 +70,10 @@ class MainActivity : ComponentActivity() {
                     }
                     composable(Rutas.activarDesActivar) {
                         ActivarDesactivarUsuarios(administradorVM, loginVM)
+                    }
+
+                    composable(Rutas.cambiarRole){
+                        CambiarRoleAdministrador(administradorVM, loginVM)
                     }
                 }
             }

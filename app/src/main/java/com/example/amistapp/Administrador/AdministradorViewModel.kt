@@ -136,4 +136,48 @@ class AdministradorViewModel : ViewModel(){
             }
 
     }
+
+    fun cambiarRole(email: String, esAdministrador: Boolean){
+
+        val usuariosRef = db.collection(Colecciones.Usuarios)
+
+        usuariosRef.whereEqualTo("email", email).get()
+            .addOnSuccessListener { documents ->
+                if (!documents.isEmpty) {
+                    for (document in documents) {
+                        val userId = document.id // Obtiene el ID del documento
+
+                        // Obtiene la lista de roles actual del usuario
+                        val listaRolesActual = document.get("role") as List<String>
+
+                        // Si es administrador, eliminar el rol de administrador
+                        val listaRolesModificada = listaRolesActual.toMutableList()
+
+                        if (esAdministrador) {
+                            // Si es administrador, elimina "administrador"
+                            listaRolesModificada.remove("administrador")
+                        } else {
+                            // Si no es administrador, añade "administrador"
+                            listaRolesModificada.add("administrador")
+                        }
+
+                        // Actualizar el documento con los nuevos roles
+                        usuariosRef.document(userId).update("role", listaRolesModificada)
+                            .addOnSuccessListener {
+                                Log.d("Firestore", "Rol 'administrador' actualizado correctamente.")
+                                obtenerUsuarios()
+                            }
+                            .addOnFailureListener { e ->
+                                Log.e("Firestore", "Error al actualizar rol 'administrador': ", e)
+                            }
+                    }
+                } else {
+                    Log.e("Firestore", "Usuario no encontrado con email: $email")
+                }
+            }
+            .addOnFailureListener { e ->
+                Log.e("Firestore", "Error al buscar usuario: ", e)
+            }
+
+    }
 }
