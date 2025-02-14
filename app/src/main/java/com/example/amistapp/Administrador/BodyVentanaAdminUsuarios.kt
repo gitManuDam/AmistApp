@@ -43,10 +43,7 @@ fun BodyVentanaAdminUsuarios(navController: NavController){
                 textAlign = TextAlign.Center)
 
         }
-//    }
-//    Row(verticalAlignment = Alignment.CenterVertically) {
-        Button(onClick = { /*
-        Baja Usuarios */ },colors = ButtonDefaults.buttonColors(
+        Button(onClick = { navController.navigate(Rutas.bajaUsuarios) },colors = ButtonDefaults.buttonColors(
             containerColor = colorResource(R.color.botones), // Color de fondo del botón
             contentColor = colorResource(R.color.textoBotones) // Color del texto
         ),
