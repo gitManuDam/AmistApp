@@ -9,4 +9,5 @@ object Rutas {
     var noActivado = "noActivado"
     var altaUsuario = "altaUsuario"
     var bajaUsuarios = "bajaUsuarios"
+    var activarDesActivar = "activarDesactivar"
 }

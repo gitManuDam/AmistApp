@@ -59,13 +59,13 @@ fun BodyVentanaAdminUsuarios(navController: NavController){
     Row(modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.spacedBy(32.dp), // Aumenta el espaciado entre los botones
         verticalAlignment = Alignment.CenterVertically) {
-        Button(onClick = { /* AActivar Usuarios */ },colors = ButtonDefaults.buttonColors(
+        Button(onClick = { navController.navigate(Rutas.activarDesActivar) },colors = ButtonDefaults.buttonColors(
             containerColor = colorResource(R.color.botones), // Color de fondo del botón
             contentColor = colorResource(R.color.textoBotones) // Color del texto
         ),
             modifier = Modifier.weight(1f)
         ) {
-            Text(text = "Activar Usuarios",
+            Text(text = "Activar/Desactivar Usuarios",
                 textAlign = TextAlign.Center)
         }
 //    }

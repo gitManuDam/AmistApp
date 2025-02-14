@@ -107,4 +107,33 @@ class AdministradorViewModel : ViewModel(){
                 isLoading.value = false
             }
     }
+
+    fun activarDesactivarUser(email: String, estado: Boolean){
+
+        val nuevoEstado = !estado
+        val usuariosRef = db.collection(Colecciones.Usuarios)
+
+        usuariosRef.whereEqualTo("email", email).get()
+            .addOnSuccessListener { documents ->
+                if (!documents.isEmpty) {
+                    for (document in documents) {
+                        val userId = document.id // Obtiene el ID del documento del usuario
+                        usuariosRef.document(userId).update("activado", nuevoEstado)
+                            .addOnSuccessListener {
+                                Log.d("Firestore", "Usuario $email actualizado a estado: $nuevoEstado")
+                                obtenerUsuarios()
+                            }
+                            .addOnFailureListener { e ->
+                                Log.e("Firestore", "Error al actualizar usuario: ", e)
+                            }
+                    }
+                } else {
+                    Log.e("Firestore", "Usuario no encontrado con email: $email")
+                }
+            }
+            .addOnFailureListener { e ->
+                Log.e("Firestore", "Error al buscar usuario: ", e)
+            }
+
+    }
 }

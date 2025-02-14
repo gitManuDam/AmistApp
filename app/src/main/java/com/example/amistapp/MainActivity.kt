@@ -14,6 +14,7 @@ import com.example.amistapp.ui.theme.AmistAppTheme
 import androidx.compose.ui.unit.sp
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import com.example.amistapp.Administrador.ActivarDesactivarUsuarios
 import com.example.amistapp.Administrador.AdministradorViewModel
 import com.example.amistapp.Administrador.AltaUsuarios
 import com.example.amistapp.Administrador.BajaUsuarios
@@ -65,6 +66,9 @@ class MainActivity : ComponentActivity() {
                     }
                     composable(Rutas.bajaUsuarios){
                         BajaUsuarios(administradorVM, loginVM)
+                    }
+                    composable(Rutas.activarDesActivar) {
+                        ActivarDesactivarUsuarios(administradorVM, loginVM)
                     }
                 }
             }
