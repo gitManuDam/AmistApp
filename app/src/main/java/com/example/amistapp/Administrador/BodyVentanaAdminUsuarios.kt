@@ -75,7 +75,7 @@ fun BodyVentanaAdminUsuarios(navController: NavController){
         ),
             modifier = Modifier.weight(1f)
         ) {
-            Text(text = "Añadir administrador",
+            Text(text = "Añadir/Quitar role administrador",
                 textAlign = TextAlign.Center)
         }
     }}
