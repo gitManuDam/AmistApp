@@ -14,23 +14,27 @@ import com.example.amistapp.ui.theme.AmistAppTheme
 import androidx.compose.ui.unit.sp
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import com.example.amistapp.Administrador.ActivarDesactivarUsuarios
+import com.example.amistapp.Administrador.Usuarios.ActivarDesactivarUsuarios
 import com.example.amistapp.Administrador.AdministradorViewModel
-import com.example.amistapp.Administrador.AltaUsuarios
-import com.example.amistapp.Administrador.BajaUsuarios
+import com.example.amistapp.Administrador.Usuarios.AltaUsuarios
+import com.example.amistapp.Administrador.Usuarios.BajaUsuarios
 import com.example.amistapp.Administrador.CambiarRoleAdministrador
+import com.example.amistapp.Administrador.Eventos.CrearEvento
+import com.example.amistapp.Administrador.Eventos.EventoViewModel
+import com.example.amistapp.Administrador.Eventos.GoogleMaps.MapsVentana
 import com.example.amistapp.Administrador.VentanaAdministrador
 import com.example.amistapp.DatosPerfil.DatosPerfilViewModel
 import com.example.amistapp.DatosPerfil.VentanaDatosPerfil
 import com.example.amistapp.Login.LoginScreen
 import com.example.amistapp.Login.NoEstasActivado
-import com.example.amistapp.Login.VentanaElegirRoleAUsar
+
 
 
 class MainActivity : ComponentActivity() {
     val loginVM = LoginViewModel()
     val datosPerfilVM = DatosPerfilViewModel()
     val administradorVM = AdministradorViewModel()
+    val eventoVM = EventoViewModel()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -40,9 +44,9 @@ class MainActivity : ComponentActivity() {
 
             AmistAppTheme {
                 val navController = rememberNavController()
-                //Durante la creacion de la ventana baja en Administrador
-//                NavHost(navController = navController, startDestination = Rutas.bajaUsuarios){
-                NavHost(navController = navController, startDestination = Rutas.login){
+                //Durante la creacion de la ventana crear evento
+                NavHost(navController = navController, startDestination = Rutas.crearEvento){
+//                NavHost(navController = navController, startDestination = Rutas.login){
                     composable(Rutas.login){
                         LoginScreen(navController, loginVM, datosPerfilVM)
                     }
@@ -56,9 +60,6 @@ class MainActivity : ComponentActivity() {
                     composable(Rutas.perfil){
                         VentanaDatosPerfil(navController, loginVM, datosPerfilVM, contexto)
                     }
-                    composable(Rutas.roleElegido) {
-                        VentanaElegirRoleAUsar()
-                    }
                     composable(Rutas.noActivado) {
                         NoEstasActivado()
                     }
@@ -71,9 +72,14 @@ class MainActivity : ComponentActivity() {
                     composable(Rutas.activarDesActivar) {
                         ActivarDesactivarUsuarios(administradorVM, loginVM)
                     }
-
                     composable(Rutas.cambiarRole){
                         CambiarRoleAdministrador(administradorVM, loginVM)
+                    }
+                    composable(Rutas.mapa){
+                        MapsVentana(navController, eventoVM)
+                    }
+                    composable(Rutas.crearEvento){
+                        CrearEvento(navController,eventoVM)
                     }
                 }
             }

@@ -1,4 +1,4 @@
-package com.example.amistapp.Administrador
+package com.example.amistapp.Administrador.Eventos
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
@@ -19,7 +19,7 @@ import com.example.amistapp.R
 
 @Composable
 fun BodyVentanAdminEventos(navController: NavController){
-    Spacer(modifier = Modifier.height(100.dp))
+    Spacer(modifier = Modifier.height(80.dp))
     Row(modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.Center,
 //        horizontalArrangement = Arrangement.spacedBy(32.dp), // Aumenta el espaciado entre los botones
@@ -34,7 +34,7 @@ fun BodyVentanAdminEventos(navController: NavController){
 
         }
     }
-    Spacer(modifier = Modifier.height(30.dp))
+    Spacer(modifier = Modifier.height(20.dp))
     Row(modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.Center,
 //        horizontalArrangement = Arrangement.spacedBy(32.dp), // Aumenta el espaciado entre los botones
@@ -49,7 +49,7 @@ fun BodyVentanAdminEventos(navController: NavController){
 
         }
     }
-    Spacer(modifier = Modifier.height(30.dp))
+    Spacer(modifier = Modifier.height(20.dp))
     Row(modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.Center,
 //        horizontalArrangement = Arrangement.spacedBy(32.dp), // Aumenta el espaciado entre los botones
@@ -60,6 +60,21 @@ fun BodyVentanAdminEventos(navController: NavController){
         )
         ) {
             Text(text = "Próximos eventos",
+                textAlign = TextAlign.Center)
+
+        }
+    }
+    Spacer(modifier = Modifier.height(20.dp))
+    Row(modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.Center,
+//        horizontalArrangement = Arrangement.spacedBy(32.dp), // Aumenta el espaciado entre los botones
+        verticalAlignment = Alignment.CenterVertically) {
+        Button(onClick = { /* Proximos eventos */ },colors = ButtonDefaults.buttonColors(
+            containerColor = colorResource(R.color.botones), // Color de fondo del botón
+            contentColor = colorResource(R.color.textoBotones) // Color del texto
+        )
+        ) {
+            Text(text = "Historial de eventos",
                 textAlign = TextAlign.Center)
 
         }

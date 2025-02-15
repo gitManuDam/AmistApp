@@ -13,6 +13,7 @@ firebaseFirestore = "25.1.1"
 firebaseAuthKtx = "23.1.0"
 mapsCompose = "2.11.2"
 material = "1.7.7"
+materialIconsExtended = "1.7.8"
 playServicesAuth = "21.3.0"
 playServicesLocation = "21.3.0"
 playServicesMaps = "19.0.0"
@@ -20,10 +21,16 @@ navigationCompose = "2.8.6"
 uiTestAndroid = "1.7.7"
 runtimeLivedata = "1.7.7"
 storage = "1.4.2"
+firebaseCrashlyticsBuildtools = "3.0.3"
+firebaseDatabaseKtx = "21.0.0"
+firebasePerfKtx = "21.0.4"
+places = "4.1.0"
+firebaseInstallations = "17.2.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 androidx-material = { module = "androidx.compose.material:material", version.ref = "material" }
+androidx-material-icons-extended = { module = "androidx.compose.material:material-icons-extended", version.ref = "materialIconsExtended" }
 firebase-bom = { module = "com.google.firebase:firebase-bom", version.ref = "firebaseBom" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
@@ -48,6 +55,11 @@ androidx-navigation-compose = { group = "androidx.navigation", name = "navigatio
 androidx-ui-test-android = { group = "androidx.compose.ui", name = "ui-test-android", version.ref = "uiTestAndroid" }
 androidx-runtime-livedata = { group = "androidx.compose.runtime", name = "runtime-livedata", version.ref = "runtimeLivedata" }
 androidx-storage = { group = "androidx.test.services", name = "storage", version.ref = "storage" }
+firebase-crashlytics-buildtools = { group = "com.google.firebase", name = "firebase-crashlytics-buildtools", version.ref = "firebaseCrashlyticsBuildtools" }
+firebase-database-ktx = { group = "com.google.firebase", name = "firebase-database-ktx", version.ref = "firebaseDatabaseKtx" }
+firebase-perf-ktx = { group = "com.google.firebase", name = "firebase-perf-ktx", version.ref = "firebasePerfKtx" }
+places = { group = "com.google.android.libraries.places", name = "places", version.ref = "places" }
+firebase-installations = { group = "com.google.firebase", name = "firebase-installations", version.ref = "firebaseInstallations" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

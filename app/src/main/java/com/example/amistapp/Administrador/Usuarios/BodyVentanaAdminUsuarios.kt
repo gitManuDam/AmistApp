@@ -1,4 +1,4 @@
-package com.example.amistapp.Administrador
+package com.example.amistapp.Administrador.Usuarios
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column

@@ -5,10 +5,11 @@ object Rutas {
     var administrador = "administrador"
     var estandar = "estandar"
     var perfil = "perfil"
-    var roleElegido = "roleElegido"
     var noActivado = "noActivado"
     var altaUsuario = "altaUsuario"
     var bajaUsuarios = "bajaUsuarios"
     var activarDesActivar = "activarDesactivar"
     var cambiarRole = "cambiarRole"
+    var mapa = "mapa"
+    var crearEvento = "crearEvento"
 }

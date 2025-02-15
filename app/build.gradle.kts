@@ -67,6 +67,14 @@ dependencies {
     implementation(libs.androidx.ui.test.android)
     implementation(libs.androidx.runtime.livedata)
     implementation(libs.androidx.storage)
+    implementation(libs.firebase.crashlytics.buildtools)
+    implementation(libs.firebase.database.ktx)
+    implementation(libs.firebase.perf.ktx)
+    implementation(libs.places)
+    implementation(libs.firebase.installations)
+    implementation(libs.firebase.installations)
+    implementation(libs.firebase.installations)
+    implementation(libs.firebase.installations)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -96,4 +104,7 @@ dependencies {
     implementation(libs.play.services.location)
 
     implementation("io.coil-kt:coil-compose:2.5.0")
+
+//    implementation("androidx.compose.material:material-icons-extended:1.3.0")
+    implementation(libs.androidx.material.icons.extended)
 }
