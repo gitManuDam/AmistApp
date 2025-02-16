@@ -15,7 +15,10 @@ import androidx.lifecycle.ViewModel
 import com.example.amistapp.AsistenteEvento
 import com.example.amistapp.Evento
 import com.google.firebase.Timestamp
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ValueEventListener
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import java.io.IOException
@@ -32,12 +35,15 @@ class EventoViewModel: ViewModel() {
     private val _eventos = MutableStateFlow<List<Evento>>(emptyList())
     val eventos: StateFlow<List<Evento>> get() = _eventos
 
+    private val _proximosEventos = MutableStateFlow<List<Evento>>(emptyList())
+    val proximosEventos: StateFlow<List<Evento>> get() = _proximosEventos
+
     // Contendrá la lista de los inscritos al evento
-    private val _inscritos = MutableStateFlow(mutableListOf<String>())
+    private val _inscritos = MutableStateFlow<List<String>>(emptyList())
     val inscritos: StateFlow<List<String>> get() = _inscritos
 
     // Contendrá la lista de asistentes al evento
-    private val _asistentes = MutableStateFlow(mutableListOf<AsistenteEvento>())
+    private val _asistentes =  MutableStateFlow<List<AsistenteEvento>>(emptyList())
     val asistentes: StateFlow<List<AsistenteEvento>> get() = _asistentes
 
     private val _descripcion = mutableStateOf("")
@@ -109,15 +115,41 @@ class EventoViewModel: ViewModel() {
         }
     }
 
+    init {
+        observeEventos()
+    }
+
+    private fun observeEventos() {
+        database.addValueEventListener(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                val fechaActual = LocalDate.now()
+                val nuevosEvent= snapshot.children.mapNotNull { it.getValue(Evento::class.java) }
+                    .sortedByDescending { it.timestamp }
+                // se guardan todos los eventos
+                _eventos.value = nuevosEvent.toList()
+
+                // se guardan solo los que la fecha es igual o mayor a la actual
+                _proximosEventos.value = nuevosEvent.filter { evento ->
+                    val fechaEvento =
+                        LocalDate.parse(evento.fecha) // Asegúrate de que la fecha está en formato YYYY-MM-DD
+                    fechaEvento >= fechaActual
+                }
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                Log.e(TAG, "Error al escuchar los cambios en la base de datos", error.toException())
+            }
+        })
+
+    }
+    fun addInscrito(nuevoInscrito: String){
+        _inscritos.value = _inscritos.value + nuevoInscrito
+    }
+
     // Añade un nuevo asistente a la lista de asistentes si no está añadido ya
     // recibe un objeto de tipo AsistenteEvento(email  y hora (para saber luego el orden de llegada))
     fun addAsistente(nuevoAsistente: AsistenteEvento) {
-        if (_asistentes.value.any { it.email == nuevoAsistente.email }) {
-            _Error.value = "El asistente ya está registrado"
-        } else {
-            _asistentes.value = (_asistentes.value + nuevoAsistente).toMutableList()
-            _Error.value = null
-        }
+        _asistentes.value = _asistentes.value + nuevoAsistente
     }
 
     // se le pasa solo el email  y lo añade con la hora actual
@@ -131,19 +163,17 @@ class EventoViewModel: ViewModel() {
             return
         }
         val nuevoAsistente = AsistenteEvento(email, LocalTime.now().toString())
-        _asistentes.value = (_asistentes.value + nuevoAsistente).toMutableList()
-        _Error.value = null
     }
 
     // Devuelve una direccion para mostrar con la latitud y la longitud
     @SuppressLint("StateFlowValueCalledInComposition")
     @Composable
-    fun getDireccion(): String {
+    fun getDireccion(latitud: Double, longitud:Double): String {
         val context = LocalContext.current
         val geocoder = Geocoder(context, Locale.getDefault())
 
         return try {
-            val direcciones = geocoder.getFromLocation(latitud.value, longitud.value, 1)
+            val direcciones = geocoder.getFromLocation(latitud, longitud,1)
             if (direcciones != null && direcciones.isNotEmpty()) {
                 direcciones[0].getAddressLine(0) // Dirección completa
             } else {
@@ -163,8 +193,10 @@ class EventoViewModel: ViewModel() {
             fecha = _fecha.value.toString(),
             hora = _hora.value.toString(),
             plazoInscripcion = _plazoInscripcion.value.toString(),
-            inscritos = if (_inscritos.value.isEmpty()) listOf("") else _inscritos.value,
-            asistentes = if (_asistentes.value.isEmpty()) listOf(AsistenteEvento("", "")) else _asistentes.value
+            inscritos = _inscritos.value,
+            asistentes =  _asistentes.value
+//            inscritos = if (_inscritos.value.isEmpty()) listOf("") else _inscritos.value,
+//            asistentes = if (_asistentes.value.isEmpty()) listOf(AsistenteEvento("", "")) else _asistentes.value
         )
 
         val newEventoId = database.push().key

@@ -16,6 +16,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.amistapp.R
+import com.example.amistapp.Rutas
 
 @Composable
 fun BodyVentanAdminEventos(navController: NavController){
@@ -24,7 +25,7 @@ fun BodyVentanAdminEventos(navController: NavController){
         horizontalArrangement = Arrangement.Center,
 //        horizontalArrangement = Arrangement.spacedBy(32.dp), // Aumenta el espaciado entre los botones
         verticalAlignment = Alignment.CenterVertically) {
-        Button(onClick = { /* Crear evento */ },colors = ButtonDefaults.buttonColors(
+        Button(onClick = { navController.navigate(Rutas.crearEvento) },colors = ButtonDefaults.buttonColors(
             containerColor = colorResource(R.color.botones), // Color de fondo del botón
             contentColor = colorResource(R.color.textoBotones) // Color del texto
         )
@@ -54,7 +55,7 @@ fun BodyVentanAdminEventos(navController: NavController){
         horizontalArrangement = Arrangement.Center,
 //        horizontalArrangement = Arrangement.spacedBy(32.dp), // Aumenta el espaciado entre los botones
         verticalAlignment = Alignment.CenterVertically) {
-        Button(onClick = { /* Proximos eventos */ },colors = ButtonDefaults.buttonColors(
+        Button(onClick = { navController.navigate(Rutas.proximosEventos)},colors = ButtonDefaults.buttonColors(
             containerColor = colorResource(R.color.botones), // Color de fondo del botón
             contentColor = colorResource(R.color.textoBotones) // Color del texto
         )
@@ -69,7 +70,7 @@ fun BodyVentanAdminEventos(navController: NavController){
         horizontalArrangement = Arrangement.Center,
 //        horizontalArrangement = Arrangement.spacedBy(32.dp), // Aumenta el espaciado entre los botones
         verticalAlignment = Alignment.CenterVertically) {
-        Button(onClick = { /* Proximos eventos */ },colors = ButtonDefaults.buttonColors(
+        Button(onClick = { navController.navigate(Rutas.historialEventos) },colors = ButtonDefaults.buttonColors(
             containerColor = colorResource(R.color.botones), // Color de fondo del botón
             contentColor = colorResource(R.color.textoBotones) // Color del texto
         )

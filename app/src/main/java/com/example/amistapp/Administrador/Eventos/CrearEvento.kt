@@ -1,5 +1,6 @@
 package com.example.amistapp.Administrador.Eventos
 
+import android.annotation.SuppressLint
 import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
@@ -127,10 +128,11 @@ fun botonAddUbicacion(navController: NavHostController) {
 
 }
 
+@SuppressLint("StateFlowValueCalledInComposition")
 @Composable
 fun mostrarUbicacion(eventoVM: EventoViewModel){
 
-    val direccion = eventoVM.getDireccion()
+    val direccion = eventoVM.getDireccion(eventoVM.latitud.value, eventoVM.longitud.value)
     val dir = remember { mutableStateOf(TextFieldValue(direccion)) }
 
     Text(

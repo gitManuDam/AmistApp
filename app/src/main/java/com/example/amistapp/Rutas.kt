@@ -12,4 +12,6 @@ object Rutas {
     var cambiarRole = "cambiarRole"
     var mapa = "mapa"
     var crearEvento = "crearEvento"
+    var proximosEventos = "proximosEventos"
+    var historialEventos = "historialEventos"
 }

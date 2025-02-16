@@ -22,6 +22,8 @@ import com.example.amistapp.Administrador.CambiarRoleAdministrador
 import com.example.amistapp.Administrador.Eventos.CrearEvento
 import com.example.amistapp.Administrador.Eventos.EventoViewModel
 import com.example.amistapp.Administrador.Eventos.GoogleMaps.MapsVentana
+import com.example.amistapp.Administrador.Eventos.HistorialEventos
+import com.example.amistapp.Administrador.Eventos.ProoximosEventos
 import com.example.amistapp.Administrador.VentanaAdministrador
 import com.example.amistapp.DatosPerfil.DatosPerfilViewModel
 import com.example.amistapp.DatosPerfil.VentanaDatosPerfil
@@ -44,8 +46,8 @@ class MainActivity : ComponentActivity() {
 
             AmistAppTheme {
                 val navController = rememberNavController()
-                //Durante la creacion de la ventana crear evento
-                NavHost(navController = navController, startDestination = Rutas.crearEvento){
+                //Durante la creacion de la ventana proximos evento
+                NavHost(navController = navController, startDestination = Rutas.proximosEventos){
 //                NavHost(navController = navController, startDestination = Rutas.login){
                     composable(Rutas.login){
                         LoginScreen(navController, loginVM, datosPerfilVM)
@@ -80,6 +82,12 @@ class MainActivity : ComponentActivity() {
                     }
                     composable(Rutas.crearEvento){
                         CrearEvento(navController,eventoVM)
+                    }
+                    composable(Rutas.proximosEventos){
+                        ProoximosEventos(navController,eventoVM)
+                    }
+                    composable(Rutas.historialEventos){
+                        HistorialEventos(navController,eventoVM)
                     }
                 }
             }

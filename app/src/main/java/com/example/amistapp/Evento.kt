@@ -13,5 +13,20 @@ data class Evento(
     val asistentes: List<AsistenteEvento>,
     val fecha: String = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")),
     val hora: String = LocalDateTime.now().format(DateTimeFormatter.ofPattern("HH:mm:ss")),
-    val plazoInscripcion: String = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))
-)
+    val plazoInscripcion: String = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")),
+    val timestamp: Long = System.currentTimeMillis() // para ordenarlos en la rv
+){
+    // Constructor sin argumentos  por Firebase, daba error sin él
+    constructor() : this(
+        id = null,
+        descripcion = "",
+        latitud = 0.0,
+        longitud = 0.0,
+        fecha = "",
+        hora = "",
+        plazoInscripcion = "",
+        inscritos = emptyList(),
+        asistentes = emptyList(),
+        timestamp = 0L
+    )
+}
