@@ -47,7 +47,7 @@ class MainActivity : ComponentActivity() {
             AmistAppTheme {
                 val navController = rememberNavController()
                 //Durante la creacion de la ventana proximos evento
-                NavHost(navController = navController, startDestination = Rutas.proximosEventos){
+                NavHost(navController = navController, startDestination = Rutas.historialEventos){
 //                NavHost(navController = navController, startDestination = Rutas.login){
                     composable(Rutas.login){
                         LoginScreen(navController, loginVM, datosPerfilVM)

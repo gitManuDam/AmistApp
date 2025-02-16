@@ -223,4 +223,19 @@ class EventoViewModel: ViewModel() {
         _inscritos.value = mutableListOf()
         _asistentes.value = mutableListOf()
     }
+
+    fun eliminarEvento(evento: Evento){
+
+        val eventoRef = database.child(evento.id!!)
+
+        eventoRef.removeValue()
+            .addOnCompleteListener{ ee ->
+                if (ee.isSuccessful){
+                    Log.e(TAG, "Evento eliminado con éxito")
+                }
+                else{
+                    Log.e(TAG, "Error al eliminar el evento", ee.exception)
+                }
+            }
+    }
 }

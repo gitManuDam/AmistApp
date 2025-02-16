@@ -1,23 +1,31 @@
 package com.example.amistapp.Administrador.Eventos
 
 import android.annotation.SuppressLint
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.text.font.FontWeight
@@ -59,6 +67,7 @@ fun HistorialEventos(navController: NavHostController, eventoVM: EventoViewModel
 @SuppressLint("StateFlowValueCalledInComposition")
 @Composable
 fun eventoItemHistorial(evento: Evento, eventoVM: EventoViewModel) {
+    var mostrarDialogo by remember { mutableStateOf(false) }
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -76,6 +85,20 @@ fun eventoItemHistorial(evento: Evento, eventoVM: EventoViewModel) {
             Text(text = "Ubicación: ${direccion}", fontSize = 15.sp)
             Text(text = "Plazo inscripción: ${evento.plazoInscripcion}", fontSize = 15.sp)
             Text(text = "Inscritos: ${evento.inscritos.size}", fontSize = 15.sp)
+            Icon(
+                imageVector = Icons.Filled.Delete,
+                contentDescription = "Eliminar Evento",
+                modifier = Modifier
+                    .size(24.dp) // Tamaño del icono
+                    .clickable (){
+                        mostrarDialogo = true // muestra el dialogo de confirmacion
+                    }, // Acción al hacer clic
+            )
+        }
+    }
+    if(mostrarDialogo){
+        confirmacionEliminarEvento(eventoVM, evento) {
+            mostrarDialogo = false
         }
 
     }
