@@ -29,7 +29,8 @@ import com.example.amistapp.DatosPerfil.DatosPerfilViewModel
 import com.example.amistapp.DatosPerfil.VentanaDatosPerfil
 import com.example.amistapp.Login.LoginScreen
 import com.example.amistapp.Login.NoEstasActivado
-
+import com.example.amistapp.estandar.EstandarViewModel
+import com.example.amistapp.estandar.VentanaEstandar
 
 
 class MainActivity : ComponentActivity() {
@@ -37,6 +38,7 @@ class MainActivity : ComponentActivity() {
     val datosPerfilVM = DatosPerfilViewModel()
     val administradorVM = AdministradorViewModel()
     val eventoVM = EventoViewModel()
+    val estandarVM = EstandarViewModel()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -53,7 +55,7 @@ class MainActivity : ComponentActivity() {
                         LoginScreen(navController, loginVM, datosPerfilVM)
                     }
                     composable(Rutas.estandar){
-                        Text(text = "Pantalla estándar", fontSize = 24.sp, modifier = Modifier.fillMaxSize())
+                        VentanaEstandar(navController,datosPerfilVM, loginVM, estandarVM)
                     }
                     composable(Rutas.administrador){
                         VentanaAdministrador(navController, datosPerfilVM)
