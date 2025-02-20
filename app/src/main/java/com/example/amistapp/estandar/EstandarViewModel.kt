@@ -78,4 +78,6 @@ class EstandarViewModel:ViewModel() {
                 Log.e("Izaskun", "Error al obtener la foto de perfil: $e")
             }
     }
+
+
 }

@@ -4,21 +4,17 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material3.Text
-import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.compose.rememberNavController
 import com.example.amistapp.Login.LoginViewModel
 import com.example.amistapp.ui.theme.AmistAppTheme
-import androidx.compose.ui.unit.sp
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.example.amistapp.Administrador.Usuarios.ActivarDesactivarUsuarios
 import com.example.amistapp.Administrador.AdministradorViewModel
 import com.example.amistapp.Administrador.Usuarios.AltaUsuarios
 import com.example.amistapp.Administrador.Usuarios.BajaUsuarios
-import com.example.amistapp.Administrador.CambiarRoleAdministrador
+import com.example.amistapp.Administrador.Usuarios.CambiarRoleAdministrador
 import com.example.amistapp.Administrador.Eventos.CrearEvento
 import com.example.amistapp.Administrador.Eventos.EventoViewModel
 import com.example.amistapp.Administrador.Eventos.GoogleMaps.MapsVentana
@@ -71,13 +67,13 @@ class MainActivity : ComponentActivity() {
                         AltaUsuarios(navController,administradorVM,loginVM)
                     }
                     composable(Rutas.bajaUsuarios){
-                        BajaUsuarios(administradorVM, loginVM)
+                        BajaUsuarios(administradorVM, loginVM, navController)
                     }
                     composable(Rutas.activarDesActivar) {
-                        ActivarDesactivarUsuarios(administradorVM, loginVM)
+                        ActivarDesactivarUsuarios(administradorVM, loginVM, navController)
                     }
                     composable(Rutas.cambiarRole){
-                        CambiarRoleAdministrador(administradorVM, loginVM)
+                        CambiarRoleAdministrador(administradorVM, loginVM, navController)
                     }
                     composable(Rutas.mapa){
                         MapsVentana(navController, eventoVM)

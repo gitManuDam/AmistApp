@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -36,28 +37,43 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
+import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
 import com.example.amistapp.Administrador.AdministradorViewModel
 import com.example.amistapp.Login.LoginViewModel
 import com.example.amistapp.R
+import com.example.amistapp.Rutas
 import com.example.amistapp.Usuario
 
 @Composable
-fun ActivarDesactivarUsuarios(administradorVM: AdministradorViewModel, loginVM: LoginViewModel){
-    administradorVM.obtenerUsuarios()
-    val listadoUsers = administradorVM.listadoUsuarios
+fun ActivarDesactivarUsuarios(
+    administradorVM: AdministradorViewModel,
+    loginVM: LoginViewModel,
+    navController: NavHostController
+){
 
-    val emailLogeado = loginVM.getCurrentUser()?.email
-
-    LazyVerticalGrid(
-        columns = GridCells.Fixed(1),
-        verticalArrangement = Arrangement.spacedBy(8.dp),
-        horizontalArrangement = Arrangement.spacedBy(8.dp),
-        contentPadding = PaddingValues(8.dp)
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(8.dp)
     ) {
-        items(listadoUsers){ usuario ->
-            UserItem(usuario, administradorVM, emailLogeado)
+        administradorVM.obtenerUsuarios()
+        val listadoUsers = administradorVM.listadoUsuarios
+
+        val emailLogeado = loginVM.getCurrentUser()?.email
+
+        LazyVerticalGrid(
+            columns = GridCells.Fixed(1),
+            verticalArrangement = Arrangement.spacedBy(8.dp),
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
+            contentPadding = PaddingValues(8.dp)
+        ) {
+            items(listadoUsers) { usuario ->
+                UserItem(usuario, administradorVM, emailLogeado)
+            }
         }
+
+        botonVolverActivarDesactivar(navController)
     }
 }
 
@@ -184,3 +200,20 @@ fun modificarEstado(administradorVM: AdministradorViewModel, usuario: Usuario, o
             }
         }
     }
+
+@Composable
+fun botonVolverActivarDesactivar(navController: NavHostController)
+{
+    Button(onClick = {
+//        eventoVM.limpiarDatos()
+        navController.navigate(Rutas.administrador)},
+        colors = ButtonDefaults.buttonColors(
+            containerColor = colorResource(R.color.botones), // Color de fondo del botón
+            contentColor = colorResource(R.color.textoBotones) // Color del texto
+        )
+    )
+    {
+        Text(text = "Volver")
+    }
+
+}
