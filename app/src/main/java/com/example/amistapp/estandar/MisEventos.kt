@@ -1,6 +1,5 @@
-package com.example.amistapp.Administrador.Eventos
+package com.example.amistapp.estandar
 
-import android.annotation.SuppressLint
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -13,7 +12,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.AddLocationAlt
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
@@ -32,41 +31,47 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
+import com.example.amistapp.Administrador.Eventos.EventoViewModel
 import com.example.amistapp.Modelos.Evento
+import com.example.amistapp.Login.LoginViewModel
 import com.example.amistapp.R
 import com.example.amistapp.Rutas
 
 @Composable
-fun HistorialEventos(navController: NavHostController, eventoVM: EventoViewModel){
-    // Recoge los  eventos desde ViewModel
-    val eventos by eventoVM.eventos.collectAsState()
+fun MisEventos(
+    navController: NavHostController,
+    estandarVM: EstandarViewModel,
+    loginVM: LoginViewModel,
+    eventoVM: EventoViewModel
+    ){
+        val emailLogeado = loginVM.getCurrentUser()?.email
 
-    // para el desplamiento de los eventos
-    val listState = rememberLazyListState()
-    Column(
-        modifier = Modifier
-            .padding(vertical = 20.dp)
-            .systemBarsPadding()
-    ) {
-//        Spacer(modifier = Modifier.height(50.dp))
-        //botonSoyBarman()
+        estandarVM.obtenerMisEventos(emailLogeado!!)
 
+        // Recoge los proximos eventos desde ViewModel
+        val misEventos by estandarVM.misEventos.collectAsState()
 
-        // LazyColumn para mostrar las comandas, con el estado de desplazamiento
-        LazyColumn(state = listState, verticalArrangement = Arrangement.spacedBy(4.dp)) {
+        // para el desplamiento de los eventos
+        val listState = rememberLazyListState()
+        Column(
+            modifier = Modifier
+                .padding(vertical = 20.dp)
+                .systemBarsPadding()
+        ) {
+            LazyColumn(state = listState, verticalArrangement = Arrangement.spacedBy(4.dp)) {
 
-            items(eventos) { evento ->
-                eventoItemHistorial(evento, eventoVM)
+                items(misEventos) { evento ->
+                    eventoItemMisEventos(evento, eventoVM)
+                }
             }
+
+            botonVolverMisEventos(navController)
+
         }
-
-        botonVolverHistorial(navController)
-
     }
-}
-@SuppressLint("StateFlowValueCalledInComposition")
+
 @Composable
-fun eventoItemHistorial(evento: Evento, eventoVM: EventoViewModel) {
+fun eventoItemMisEventos(evento: Evento, eventoVM: EventoViewModel) {
     var mostrarDialogo by remember { mutableStateOf(false) }
     Card(
         modifier = Modifier
@@ -86,8 +91,8 @@ fun eventoItemHistorial(evento: Evento, eventoVM: EventoViewModel) {
             Text(text = "Plazo inscripción: ${evento.plazoInscripcion}", fontSize = 15.sp)
             Text(text = "Inscritos: ${evento.inscritos.size}", fontSize = 15.sp)
             Icon(
-                imageVector = Icons.Filled.Delete,
-                contentDescription = "Eliminar Evento",
+                imageVector = Icons.Filled.AddLocationAlt,
+                contentDescription = "He llegado",
                 modifier = Modifier
                     .size(24.dp) // Tamaño del icono
                     .clickable (){
@@ -96,20 +101,15 @@ fun eventoItemHistorial(evento: Evento, eventoVM: EventoViewModel) {
             )
         }
     }
-    if(mostrarDialogo){
-        confirmacionEliminarEvento(eventoVM, evento) {
-            mostrarDialogo = false
-        }
-
-    }
 }
 
 @Composable
-fun botonVolverHistorial(navController: NavHostController)
-{
-    Button(onClick = {
+fun botonVolverMisEventos(navController: NavHostController) {
+    Button(
+        onClick = {
 //        eventoVM.limpiarDatos()
-        navController.navigate(Rutas.administrador)},
+            navController.navigate(Rutas.estandar)
+        },
         colors = ButtonDefaults.buttonColors(
             containerColor = colorResource(R.color.botones), // Color de fondo del botón
             contentColor = colorResource(R.color.textoBotones) // Color del texto

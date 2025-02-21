@@ -14,4 +14,8 @@ object Rutas {
     var crearEvento = "crearEvento"
     var proximosEventos = "proximosEventos"
     var historialEventos = "historialEventos"
+    var eventosDisponibles = "eventosDisponibles"
+    var misEventos = "misEventos"
+    var bodyVentanaEstandarEventos ="bodyVentanaEstandarEventos"
+    var bodyVentanaAdminEventos = "bodyVentanaAdminEventos"
 }

@@ -1,4 +1,4 @@
-package com.example.amistapp
+package com.example.amistapp.Modelos
 
 data class Perfil(
     val completado: Boolean = false,

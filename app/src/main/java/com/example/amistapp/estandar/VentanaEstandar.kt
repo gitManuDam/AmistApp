@@ -1,5 +1,8 @@
 package com.example.amistapp.estandar
 
+import android.os.Handler
+import android.os.Looper
+import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -30,6 +33,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -45,13 +49,11 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import coil.compose.rememberAsyncImagePainter
-import com.example.amistapp.Administrador.BottomNavigationBar
-import com.example.amistapp.Administrador.Eventos.BodyVentanAdminEventos
-import com.example.amistapp.Administrador.MenuPuntos
-import com.example.amistapp.Administrador.Usuarios.BodyVentanaAdminUsuarios
+
 import com.example.amistapp.DatosPerfil.DatosPerfilViewModel
 import com.example.amistapp.Login.LoginViewModel
 import com.example.amistapp.R
+import com.example.amistapp.Rutas
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -60,7 +62,13 @@ fun VentanaEstandar(navController: NavHostController, datosPerfilVM: DatosPerfil
     var currentRoute by remember { mutableStateOf("Amigos") }
 
     val emailUsuarioLogeado = loginVM.getCurrentUser()?.email
-    estandarVM.obtenerFotoPerfil(emailUsuarioLogeado!!)
+//    estandarVM.obtenerFotoPerfil(emailUsuarioLogeado!!)
+    if (!emailUsuarioLogeado.isNullOrEmpty()) {
+        estandarVM.obtenerFotoPerfil(emailUsuarioLogeado)
+    } else {
+        Log.e("VentanaEstandar", "El email del usuario está vacío o null después de cerrar sesión")
+        // Puedes poner un valor por defecto o manejar el caso aquí.
+    }
 
     Scaffold(
         topBar = {
@@ -79,7 +87,7 @@ fun VentanaEstandar(navController: NavHostController, datosPerfilVM: DatosPerfil
                         Spacer(modifier = Modifier.width(8.dp))
 
                         Text(
-                            text = emailUsuarioLogeado,
+                            text = emailUsuarioLogeado ?: "No disponible",
                             color = colorResource(R.color.texto),
                             fontSize = 15.sp,
                             modifier = Modifier.padding(bottom = 16.dp)
@@ -90,7 +98,7 @@ fun VentanaEstandar(navController: NavHostController, datosPerfilVM: DatosPerfil
                     titleContentColor = colorResource(id = R.color.textoBotones)
                 ),
                 actions = {
-                    MenuPuntosEstandar()
+                    MenuPuntosEstandar(navController, loginVM)
                 }
             )
         },
@@ -119,7 +127,7 @@ fun VentanaEstandar(navController: NavHostController, datosPerfilVM: DatosPerfil
 }
 
 @Composable
-fun MenuPuntosEstandar(){
+fun MenuPuntosEstandar(navController: NavHostController, loginVM: LoginViewModel) {
     val context = LocalContext.current
     var expanded by remember { mutableStateOf(false) }
 
@@ -141,8 +149,12 @@ fun MenuPuntosEstandar(){
             DropdownMenuItem(
                 text = { Text("Cerrar sesión") },
                 onClick = {
-                    Toast.makeText(context, "Cerrar sesión", Toast.LENGTH_SHORT).show()
+                    loginVM.signOut(context)
                     expanded = false
+                    Toast.makeText(context, "Cerrando sesión...", Toast.LENGTH_SHORT).show()
+                    navController.navigate(Rutas.login) {
+                        popUpTo(Rutas.login) { inclusive = true }
+                    }
                 })
         }
     }

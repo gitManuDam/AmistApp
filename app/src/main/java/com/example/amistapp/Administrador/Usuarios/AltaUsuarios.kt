@@ -150,7 +150,7 @@ import com.example.amistapp.Rutas
         if (loginSuccess) {
             Toast.makeText(context, "Usuario dado de alta", Toast.LENGTH_SHORT).show()
             if (!loginVM.existeUsuario()) {
-                loginVM.addUsuario(email.text!!)
+                loginVM.addUsuarioAdmin(email.text!!)
             }
             navController.navigate(Rutas.administrador)
         }

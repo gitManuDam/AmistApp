@@ -2,7 +2,6 @@ package com.example.amistapp.Login
 
 import android.content.Context
 import android.util.Log
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
@@ -11,7 +10,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.amistapp.Colecciones
 import com.example.amistapp.R
-import com.example.amistapp.Usuario
+import com.example.amistapp.Modelos.Usuario
 
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
@@ -135,6 +134,7 @@ class LoginViewModel: ViewModel() {
                 if (revokeTask.isSuccessful) {
                     Log.d(TAG, "Acceso revocado correctamente")
                     auth.signOut()
+                    resetLoginState()
                     Log.d(TAG, "Sesión cerrada correctamente")
                 } else {
                     Log.e(TAG, "Error al revocar el acceso")
@@ -149,6 +149,16 @@ class LoginViewModel: ViewModel() {
         //Actualizar el estado de las variables de UI
         loginGoogleSuccess.value = false
         loginSuccess.value = false
+    }
+
+    private fun resetLoginState() {
+        loginGoogleSuccess.value = false
+        loginSuccess.value = false
+        errorMessage.value = null
+        _email.value = ""
+        _role.value = ""
+        _activado.value = false
+        _completado.value = false
     }
 
     fun getCurrentUser(): FirebaseUser? {
@@ -266,6 +276,52 @@ class LoginViewModel: ViewModel() {
                     )
                     val nuevoUsuario = hashMapOf(
                         "activado" to false,
+                        "email" to email,
+                        "role" to listOf("estandar"),
+                        "perfil"  to perfilInicial
+                    )
+                    usuariosRef.document(email)
+                        .set(nuevoUsuario)
+                        .addOnSuccessListener { Log.e("Izaskun", "Usuario añadido con exito") }
+                        .addOnFailureListener { Log.e("Izaskun", "Error al añadir el usuario") }
+                }
+            }
+            .addOnFailureListener {  Log.e("Izaskun", "Error al consultar al usuario") }
+    }
+
+    // esta función añade un usuario a la bd si no existe ya y como le da de alta el administrador
+    // ya está activado
+    fun addUsuarioAdmin (email: String){
+        val usuariosRef = db.collection(Colecciones.Usuarios)
+
+        // se comprueba si existe el usuario en la bd
+        // si ya existe no se añade
+        usuariosRef
+            .whereEqualTo("email", email)
+            // .whereEqualTo("role", usuario.role)
+            .get()
+            .addOnSuccessListener { consulta ->
+                if(!consulta.isEmpty){
+                    Log.e("Izaskun", "El usuario ya existe")
+                }else{
+                    // perfil inicial
+                    val perfilInicial = mapOf(
+                        "completado" to false,
+                        "nick" to "",
+                        "fotoPerfil" to "",
+                        "edad" to 0,
+                        "amigos" to emptyList<String>(),
+                        "relacionSeria" to false,
+                        "interesDeporte" to 0,
+                        "interesArte" to 0,
+                        "interesPolitica" to 0,
+                        "tieneHijos" to false,
+                        "quiereHijos" to false,
+                        "interesadoEn" to "",
+                        "genero" to ""
+                    )
+                    val nuevoUsuario = hashMapOf(
+                        "activado" to true,
                         "email" to email,
                         "role" to listOf("estandar"),
                         "perfil"  to perfilInicial

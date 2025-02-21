@@ -12,6 +12,8 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.example.amistapp.Administrador.Usuarios.ActivarDesactivarUsuarios
 import com.example.amistapp.Administrador.AdministradorViewModel
+
+import com.example.amistapp.Administrador.Eventos.BodyVentanaAdminEventos
 import com.example.amistapp.Administrador.Usuarios.AltaUsuarios
 import com.example.amistapp.Administrador.Usuarios.BajaUsuarios
 import com.example.amistapp.Administrador.Usuarios.CambiarRoleAdministrador
@@ -25,7 +27,10 @@ import com.example.amistapp.DatosPerfil.DatosPerfilViewModel
 import com.example.amistapp.DatosPerfil.VentanaDatosPerfil
 import com.example.amistapp.Login.LoginScreen
 import com.example.amistapp.Login.NoEstasActivado
+import com.example.amistapp.estandar.BodyVentanaEventosEstandar
 import com.example.amistapp.estandar.EstandarViewModel
+import com.example.amistapp.estandar.EventosDisponiblesEstandar
+import com.example.amistapp.estandar.MisEventos
 import com.example.amistapp.estandar.VentanaEstandar
 
 
@@ -54,14 +59,14 @@ class MainActivity : ComponentActivity() {
                         VentanaEstandar(navController,datosPerfilVM, loginVM, estandarVM)
                     }
                     composable(Rutas.administrador){
-                        VentanaAdministrador(navController, datosPerfilVM)
+                        VentanaAdministrador(navController, datosPerfilVM,eventoVM, loginVM)
 //                        Text(text = "Pantalla administrador", fontSize = 24.sp, modifier = Modifier.fillMaxSize())
                     }
                     composable(Rutas.perfil){
                         VentanaDatosPerfil(navController, loginVM, datosPerfilVM, contexto)
                     }
                     composable(Rutas.noActivado) {
-                        NoEstasActivado()
+                        NoEstasActivado(navController,loginVM,contexto)
                     }
                     composable(Rutas.altaUsuario) {
                         AltaUsuarios(navController,administradorVM,loginVM)
@@ -86,6 +91,19 @@ class MainActivity : ComponentActivity() {
                     }
                     composable(Rutas.historialEventos){
                         HistorialEventos(navController,eventoVM)
+                    }
+                    composable(Rutas.eventosDisponibles){
+                        EventosDisponiblesEstandar(navController,eventoVM, loginVM)
+                    }
+                    composable(Rutas.misEventos) {
+                        MisEventos(navController,estandarVM,loginVM,eventoVM)
+                    }
+                    composable(Rutas.bodyVentanaEstandarEventos) {
+                        BodyVentanaEventosEstandar(navController)
+                    }
+                    composable(Rutas.bodyVentanaAdminEventos){
+                        BodyVentanaAdminEventos(navController)
+
                     }
                 }
             }

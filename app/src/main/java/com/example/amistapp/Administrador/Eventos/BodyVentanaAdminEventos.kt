@@ -19,7 +19,7 @@ import com.example.amistapp.R
 import com.example.amistapp.Rutas
 
 @Composable
-fun BodyVentanAdminEventos(navController: NavController){
+fun BodyVentanaAdminEventos(navController: NavController){
     Spacer(modifier = Modifier.height(80.dp))
     Row(modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.Center,
@@ -55,7 +55,12 @@ fun BodyVentanAdminEventos(navController: NavController){
         horizontalArrangement = Arrangement.Center,
 //        horizontalArrangement = Arrangement.spacedBy(32.dp), // Aumenta el espaciado entre los botones
         verticalAlignment = Alignment.CenterVertically) {
-        Button(onClick = { navController.navigate(Rutas.proximosEventos)},colors = ButtonDefaults.buttonColors(
+        Button(onClick = {
+
+            navController.navigate(Rutas.proximosEventos)
+
+                        },
+            colors = ButtonDefaults.buttonColors(
             containerColor = colorResource(R.color.botones), // Color de fondo del botón
             contentColor = colorResource(R.color.textoBotones) // Color del texto
         )
@@ -64,6 +69,19 @@ fun BodyVentanAdminEventos(navController: NavController){
                 textAlign = TextAlign.Center)
 
         }
+
+//        Button(onClick = {
+//
+//            onNavigateTo("ProximosEventos") },
+//            colors = ButtonDefaults.buttonColors(
+//                containerColor = colorResource(id = R.color.botones),  // Color de fondo
+//                contentColor = colorResource(id = R.color.textoBotones) // Color del texto
+//            ),
+//            modifier = Modifier.fillMaxWidth()
+//            )
+//        {
+//            Text("Proximos Eventos")
+//        }
     }
     Spacer(modifier = Modifier.height(20.dp))
     Row(modifier = Modifier.fillMaxWidth(),

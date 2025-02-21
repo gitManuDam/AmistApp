@@ -1,6 +1,5 @@
-package com.example.amistapp
+package com.example.amistapp.Modelos
 
-import com.google.firebase.Timestamp
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 

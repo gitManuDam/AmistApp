@@ -7,15 +7,21 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.lifecycle.ViewModel
 import com.example.amistapp.Colecciones
-import com.example.amistapp.Usuario
+import com.example.amistapp.Modelos.Evento
+import com.example.amistapp.Modelos.Usuario
 import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.firestore.firestore
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 
 class EstandarViewModel:ViewModel() {
     private val auth: FirebaseAuth = FirebaseAuth.getInstance()
     val TAG = "Izaskun"
+
+    private val coleccion = "eventos"
+    private val database = FirebaseDatabase.getInstance().getReference(coleccion)
 
     // Para la base de datos que contendrá  a los usuarios
     val db = Firebase.firestore
@@ -28,6 +34,9 @@ class EstandarViewModel:ViewModel() {
 
     private val _listadoCompatibles = mutableStateListOf<Usuario>()
     val listadoCompatibles: SnapshotStateList<Usuario> get() = _listadoCompatibles
+
+    private val _misEventos = MutableStateFlow<List<Evento>>(emptyList())
+    val misEventos: StateFlow<List<Evento>> get() = _misEventos
 
     private val _fotoPerfil = mutableStateOf("")
     val fotoPerfil: State<String> get() = _fotoPerfil
@@ -79,5 +88,25 @@ class EstandarViewModel:ViewModel() {
             }
     }
 
+    fun obtenerMisEventos(emailUsuario: String){
+        database.get().addOnSuccessListener { me ->
+            if (me.exists()) {
+                val eventosFiltrados = me.children.mapNotNull { dataSnapshot ->
+                    val evento = dataSnapshot.getValue(Evento::class.java)
+                    // Filtra eventos donde el usuario está inscrito
+                    evento?.takeIf { it.inscritos.contains(emailUsuario) }
+                }
 
+                _misEventos.value = eventosFiltrados // Asigna la lista filtrada a StateFlow
+                Log.d("EstandarViewModel", "Eventos obtenidos con éxito: ${_misEventos.value.size}")
+            } else {
+                Log.d("EstandarViewModel", "No hay eventos en la base de datos")
+                _misEventos.value = emptyList() // Asegura que el StateFlow se vacíe si no hay eventos
+            }
+        }.addOnFailureListener { exception ->
+            Log.e("EstandarViewModel", "Error al obtener eventos inscritos", exception)
+        }
+    }
 }
+
+

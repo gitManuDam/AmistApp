@@ -34,7 +34,7 @@ fun BodyVentanaEventosEstandar(navController: NavHostController){
         Spacer(modifier = Modifier.height(20.dp))
 
             Button(onClick = {
-                // navegar a mostrar los eventos en los que está inscrito
+                navController.navigate(Rutas.misEventos)
             },colors = ButtonDefaults.buttonColors(
                 containerColor = colorResource(R.color.botones), // Color de fondo del botón
                 contentColor = colorResource(R.color.textoBotones) // Color del texto
@@ -47,7 +47,7 @@ fun BodyVentanaEventosEstandar(navController: NavHostController){
             }
         Spacer(modifier = Modifier.height(40.dp))
             Button(onClick = {
-                //navegar a los eventos disponibles rv
+               navController.navigate(Rutas.eventosDisponibles)
 
             },colors = ButtonDefaults.buttonColors(
                 containerColor = colorResource(R.color.botones), // Color de fondo del botón

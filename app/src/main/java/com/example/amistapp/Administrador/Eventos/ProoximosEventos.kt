@@ -6,9 +6,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.systemBarsPadding
@@ -24,18 +22,16 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.example.amistapp.Evento
+import com.example.amistapp.Modelos.Evento
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.text.font.FontWeight
@@ -43,8 +39,6 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import androidx.navigation.NavHostController
-import com.example.amistapp.Administrador.AdministradorViewModel
-import com.example.amistapp.Administrador.Usuarios.confirmacionEliminar
 import com.example.amistapp.R
 import com.example.amistapp.Rutas
 
@@ -61,11 +55,7 @@ fun ProoximosEventos(navController: NavHostController, eventoVM: EventoViewModel
             .padding(vertical = 20.dp)
             .systemBarsPadding()
     ) {
-//        Spacer(modifier = Modifier.height(50.dp))
-        //botonSoyBarman()
 
-
-        // LazyColumn para mostrar las comandas, con el estado de desplazamiento
         LazyColumn(state = listState, verticalArrangement = Arrangement.spacedBy(4.dp)) {
 
             items(eventos) { evento ->
@@ -73,7 +63,7 @@ fun ProoximosEventos(navController: NavHostController, eventoVM: EventoViewModel
             }
         }
 
-        botonVolver(navController)
+        botonVolverProximos(navController)
 
     }
 }
@@ -180,11 +170,16 @@ fun confirmacionEliminarEvento(eventoVM: EventoViewModel, evento: Evento, onDism
     }
 }
     @Composable
-    fun botonVolver(navController: NavHostController) {
+    fun botonVolverProximos(navController: NavHostController) {
         Button(
             onClick = {
-//        eventoVM.limpiarDatos()
                 navController.navigate(Rutas.administrador)
+//                navController.popBackStack()
+//        eventoVM.limpiarDatos()
+//                navController.navigate("bodyVentanaAdminEventos"){
+//                    popUpTo("bodyVentanaAdminEventos"){inclusive = false}
+//                }
+//                navController.popBackStack("Eventos", inclusive = false)
             },
             colors = ButtonDefaults.buttonColors(
                 containerColor = colorResource(R.color.botones), // Color de fondo del botón

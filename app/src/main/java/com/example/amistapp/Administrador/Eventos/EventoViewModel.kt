@@ -1,10 +1,11 @@
 package com.example.amistapp.Administrador.Eventos
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.location.Geocoder
 import android.util.Log
+import android.widget.Toast
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.platform.LocalContext
@@ -12,9 +13,8 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.example.amistapp.AsistenteEvento
-import com.example.amistapp.Evento
-import com.google.firebase.Timestamp
+import com.example.amistapp.Modelos.AsistenteEvento
+import com.example.amistapp.Modelos.Evento
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
@@ -43,7 +43,7 @@ class EventoViewModel: ViewModel() {
     val inscritos: StateFlow<List<String>> get() = _inscritos
 
     // Contendrá la lista de asistentes al evento
-    private val _asistentes =  MutableStateFlow<List<AsistenteEvento>>(emptyList())
+    private val _asistentes = MutableStateFlow<List<AsistenteEvento>>(emptyList())
     val asistentes: StateFlow<List<AsistenteEvento>> get() = _asistentes
 
     private val _descripcion = mutableStateOf("")
@@ -123,7 +123,7 @@ class EventoViewModel: ViewModel() {
         database.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 val fechaActual = LocalDate.now()
-                val nuevosEvent= snapshot.children.mapNotNull { it.getValue(Evento::class.java) }
+                val nuevosEvent = snapshot.children.mapNotNull { it.getValue(Evento::class.java) }
                     .sortedByDescending { it.timestamp }
                 // se guardan todos los eventos
                 _eventos.value = nuevosEvent.toList()
@@ -142,7 +142,8 @@ class EventoViewModel: ViewModel() {
         })
 
     }
-    fun addInscrito(nuevoInscrito: String){
+
+    fun addInscrito(nuevoInscrito: String) {
         _inscritos.value = _inscritos.value + nuevoInscrito
     }
 
@@ -168,12 +169,12 @@ class EventoViewModel: ViewModel() {
     // Devuelve una direccion para mostrar con la latitud y la longitud
     @SuppressLint("StateFlowValueCalledInComposition")
     @Composable
-    fun getDireccion(latitud: Double, longitud:Double): String {
+    fun getDireccion(latitud: Double, longitud: Double): String {
         val context = LocalContext.current
         val geocoder = Geocoder(context, Locale.getDefault())
 
         return try {
-            val direcciones = geocoder.getFromLocation(latitud, longitud,1)
+            val direcciones = geocoder.getFromLocation(latitud, longitud, 1)
             if (direcciones != null && direcciones.isNotEmpty()) {
                 direcciones[0].getAddressLine(0) // Dirección completa
             } else {
@@ -194,7 +195,7 @@ class EventoViewModel: ViewModel() {
             hora = _hora.value.toString(),
             plazoInscripcion = _plazoInscripcion.value.toString(),
             inscritos = _inscritos.value,
-            asistentes =  _asistentes.value
+            asistentes = _asistentes.value
 //            inscritos = if (_inscritos.value.isEmpty()) listOf("") else _inscritos.value,
 //            asistentes = if (_asistentes.value.isEmpty()) listOf(AsistenteEvento("", "")) else _asistentes.value
         )
@@ -214,7 +215,7 @@ class EventoViewModel: ViewModel() {
         }
     }
 
-    fun limpiarDatos(){
+    fun limpiarDatos() {
         _latitud.value = 0.0
         _longitud.value = 0.0
         _fecha.value = LocalDate.now()
@@ -224,18 +225,52 @@ class EventoViewModel: ViewModel() {
         _asistentes.value = mutableListOf()
     }
 
-    fun eliminarEvento(evento: Evento){
+    fun eliminarEvento(evento: Evento) {
 
         val eventoRef = database.child(evento.id!!)
 
         eventoRef.removeValue()
-            .addOnCompleteListener{ ee ->
-                if (ee.isSuccessful){
+            .addOnCompleteListener { ee ->
+                if (ee.isSuccessful) {
                     Log.e(TAG, "Evento eliminado con éxito")
-                }
-                else{
+                } else {
                     Log.e(TAG, "Error al eliminar el evento", ee.exception)
                 }
             }
+    }
+
+    fun incribirseEnEvento(eventoId: String, emailUsuario: String, context: Context) {
+        val eventoRef = database.child(eventoId)
+
+        eventoRef.get().addOnSuccessListener { snapshot ->
+            if (snapshot.exists()) {
+                val evento = snapshot.getValue(Evento::class.java)
+                evento?.let {
+                    val listaActualizada = it.inscritos?.toMutableList() ?: mutableListOf()
+
+                    if (!listaActualizada.contains(emailUsuario)) { // Evita duplicados
+                        listaActualizada.add(emailUsuario)
+
+                        // Sube la lista actualizada a Firebase
+                        eventoRef.child("inscritos").setValue(listaActualizada)
+                            .addOnCompleteListener { task ->
+                                if (task.isSuccessful) {
+                                    Log.d("Evento", "Usuario inscrito con éxito")
+                                    Toast.makeText(context, "Te has inscrito en el evento", Toast.LENGTH_SHORT).show()
+                                } else {
+                                    Log.e("Evento", "Error al inscribirse", task.exception)
+                                }
+                            }
+                    } else {
+                        Log.d("Evento", "El usuario ya está inscrito")
+                        Toast.makeText(context, "Ya estás inscrito en este evento", Toast.LENGTH_SHORT).show()
+                    }
+                }
+            } else {
+                Log.e("Evento", "El evento no existe")
+            }
+        }.addOnFailureListener { exception ->
+            Log.e("Evento", "Error al obtener el evento", exception)
+        }
     }
 }
