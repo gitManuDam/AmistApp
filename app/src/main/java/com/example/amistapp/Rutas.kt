@@ -18,4 +18,6 @@ object Rutas {
     var misEventos = "misEventos"
     var bodyVentanaEstandarEventos ="bodyVentanaEstandarEventos"
     var bodyVentanaAdminEventos = "bodyVentanaAdminEventos"
+    var bodyVentanaAdminUsuarios = "bodyVentanaAdminUsuarios"
+    var mostrarInscritos = "mostrarInscritos"
 }

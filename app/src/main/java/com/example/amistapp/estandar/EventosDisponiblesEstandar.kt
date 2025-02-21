@@ -17,6 +17,7 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Attribution
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
@@ -44,8 +45,13 @@ import com.example.amistapp.Modelos.Evento
 import com.example.amistapp.Login.LoginViewModel
 import com.example.amistapp.R
 import com.example.amistapp.Rutas
-
+// Autora: Izaskun
 @Composable
+
+// Eventos disponibles muestra aquellos eventos a los que todavia se puede inscribir
+// plazo inscripcion <= la fecha de hoy
+// por lo tanto no hace falta volver a controlar la fecha para mostrar los inscritos
+// porque siempre será antes del evento
 fun EventosDisponiblesEstandar(
     navController: NavHostController,
     eventoVM: EventoViewModel,
@@ -64,10 +70,13 @@ fun EventosDisponiblesEstandar(
             .padding(vertical = 20.dp)
             .systemBarsPadding()
     ) {
-        LazyColumn(state = listState, verticalArrangement = Arrangement.spacedBy(4.dp)) {
+        LazyColumn(state = listState,
+            verticalArrangement = Arrangement.spacedBy(4.dp),
+            modifier = Modifier.weight(1f)
+        ) {
 
             items(eventos) { evento ->
-                eventoItemDisponible(evento, eventoVM, emailLogeado)
+                eventoItemDisponible(evento, eventoVM, emailLogeado, navController)
             }
         }
 
@@ -77,7 +86,12 @@ fun EventosDisponiblesEstandar(
 }
 
 @Composable
-fun eventoItemDisponible(evento: Evento, eventoVM: EventoViewModel, emailLogeado: String?) {
+fun eventoItemDisponible(
+    evento: Evento,
+    eventoVM: EventoViewModel,
+    emailLogeado: String?,
+    navController: NavHostController
+) {
     var mostrarDialogo by remember { mutableStateOf(false) }
     val context = LocalContext.current
 
@@ -99,16 +113,29 @@ fun eventoItemDisponible(evento: Evento, eventoVM: EventoViewModel, emailLogeado
             Text(text = "Plazo inscripción: ${evento.plazoInscripcion}", fontSize = 15.sp)
             Text(text = "Inscritos: ${evento.inscritos.size}", fontSize = 15.sp)
 
+            Row() {
+                Icon(
+                    imageVector = Icons.Filled.Add,
+                    contentDescription = "Inscribirse al evento",
+                    modifier = Modifier
+                        .size(24.dp) // Tamaño del icono
+                        .clickable() {
+                            mostrarDialogo = true // muestra el dialogo de confirmacion
+                        }, // Acción al hacer clic
+                )
 
-            Icon(
-                imageVector = Icons.Filled.Add,
-                contentDescription = "Inscribirse al evento",
-                modifier = Modifier
-                    .size(24.dp) // Tamaño del icono
-                    .clickable (){
-                        mostrarDialogo = true // muestra el dialogo de confirmacion
-                    }, // Acción al hacer clic
-            )
+                Icon(
+                    imageVector = Icons.Filled.Attribution,
+                    contentDescription = "Inscritos al eventos",
+                    modifier = Modifier
+                        .size(24.dp) // Tamaño del icono
+                        .clickable() {
+                            eventoVM.setEventoId(evento.id!!)
+                            navController.navigate(Rutas.mostrarInscritos)
+                            // muestra una rv con los inscritos al evento
+                        }, // Acción al hacer clic
+                )
+            }
         }
     }
     if(mostrarDialogo){

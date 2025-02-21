@@ -15,6 +15,8 @@ import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.firestore.firestore
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 
 class EstandarViewModel:ViewModel() {
     private val auth: FirebaseAuth = FirebaseAuth.getInstance()
@@ -106,6 +108,14 @@ class EstandarViewModel:ViewModel() {
         }.addOnFailureListener { exception ->
             Log.e("EstandarViewModel", "Error al obtener eventos inscritos", exception)
         }
+    }
+
+    fun fechaActualEsMenor (fechaEvento: String):Boolean{
+        val formato = DateTimeFormatter.ofPattern("yyyy-MM-dd")
+        val fechaEventoFormateada = LocalDate.parse(fechaEvento, formato)
+        val fechaActual = LocalDate.now()
+
+        return fechaActual.isBefore(fechaEventoFormateada)
     }
 }
 

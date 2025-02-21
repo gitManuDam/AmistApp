@@ -26,7 +26,7 @@ import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
 import java.util.Locale
-
+// Autora: Izaskun
 class EventoViewModel: ViewModel() {
     private val coleccion = "eventos"
     val TAG = "Izaskun"
@@ -73,6 +73,9 @@ class EventoViewModel: ViewModel() {
     private val _codigoError = MutableStateFlow(0)
     val codigoError: StateFlow<Int> get() = _codigoError
 
+    private val _eventoId = mutableStateOf("")
+    val eventoId: State<String> get() = _eventoId
+
 //    private val _asistenteEvento = mutableStateOf(AsistenteEvento())
 //    val asistenteEvento: State<AsistenteEvento>  get() = _asistenteEvento
 
@@ -106,6 +109,10 @@ class EventoViewModel: ViewModel() {
         _Error.value = null
     }
 
+    fun setEventoId(nuevoId:String){
+        _eventoId.value = nuevoId
+    }
+
     fun setDescripcion(nuevaDescripcion: String) {
         if (nuevaDescripcion.isEmpty()) {
             _Error.value = "El campo no puede estar vacio"
@@ -128,11 +135,11 @@ class EventoViewModel: ViewModel() {
                 // se guardan todos los eventos
                 _eventos.value = nuevosEvent.toList()
 
-                // se guardan solo los que la fecha es igual o mayor a la actual
+                // se guardan solo los que la fecha de inscripcion es igual o mayor a la actual
                 _proximosEventos.value = nuevosEvent.filter { evento ->
-                    val fechaEvento =
-                        LocalDate.parse(evento.fecha) // Asegúrate de que la fecha está en formato YYYY-MM-DD
-                    fechaEvento >= fechaActual
+                    val fechaInscripcion =
+                        LocalDate.parse(evento.plazoInscripcion) // Asegúrate de que la fecha está en formato YYYY-MM-DD
+                    fechaInscripcion >= fechaActual
                 }
             }
 
@@ -257,6 +264,8 @@ class EventoViewModel: ViewModel() {
                                 if (task.isSuccessful) {
                                     Log.d("Evento", "Usuario inscrito con éxito")
                                     Toast.makeText(context, "Te has inscrito en el evento", Toast.LENGTH_SHORT).show()
+
+                                    _inscritos.value = listaActualizada
                                 } else {
                                     Log.e("Evento", "Error al inscribirse", task.exception)
                                 }
@@ -272,5 +281,20 @@ class EventoViewModel: ViewModel() {
         }.addOnFailureListener { exception ->
             Log.e("Evento", "Error al obtener el evento", exception)
         }
+    }
+
+    fun obtenerInscritos(eventoId: String){
+        val eventoRef = database.child(eventoId).child("inscritos")
+
+        eventoRef.addValueEventListener(object : ValueEventListener {
+            override fun onDataChange(oi: DataSnapshot) {
+                val lista = oi.children.mapNotNull { it.getValue(String::class.java) }
+                _inscritos.value = lista // Actualiza el MutableStateFlow
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                Log.e("EventoViewModel", "Error al cargar inscritos", error.toException())
+            }
+        })
     }
 }

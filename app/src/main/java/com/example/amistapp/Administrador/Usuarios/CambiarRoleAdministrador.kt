@@ -44,7 +44,7 @@ import com.example.amistapp.Login.LoginViewModel
 import com.example.amistapp.R
 import com.example.amistapp.Rutas
 import com.example.amistapp.Modelos.Usuario
-
+// Autora: Izaskun
 @Composable
 fun CambiarRoleAdministrador(
     administradorVM: AdministradorViewModel,
@@ -65,7 +65,8 @@ fun CambiarRoleAdministrador(
             columns = GridCells.Fixed(1),
             verticalArrangement = Arrangement.spacedBy(8.dp),
             horizontalArrangement = Arrangement.spacedBy(8.dp),
-            contentPadding = PaddingValues(8.dp)
+            contentPadding = PaddingValues(8.dp),
+                    modifier = Modifier.weight(1f)
         ) {
             items(listadoUsers) { usuario ->
                 UsItem(usuario, administradorVM, emailLogeado)

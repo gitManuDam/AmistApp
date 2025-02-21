@@ -37,7 +37,7 @@ import com.example.amistapp.Administrador.Eventos.EventoViewModel
 import com.example.amistapp.Login.LoginViewModel
 import com.example.amistapp.R
 import com.example.amistapp.Rutas
-
+// Autora: Izaskun
 @Composable
  fun AltaUsuarios(navController: NavController, administradorVM: AdministradorViewModel, loginVM: LoginViewModel){
     val context = LocalContext.current

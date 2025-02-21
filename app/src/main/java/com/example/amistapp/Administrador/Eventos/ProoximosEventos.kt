@@ -41,7 +41,7 @@ import androidx.compose.ui.window.DialogProperties
 import androidx.navigation.NavHostController
 import com.example.amistapp.R
 import com.example.amistapp.Rutas
-
+// Autora: Izaskun
 @Composable
 fun ProoximosEventos(navController: NavHostController, eventoVM: EventoViewModel) {
 
@@ -56,7 +56,11 @@ fun ProoximosEventos(navController: NavHostController, eventoVM: EventoViewModel
             .systemBarsPadding()
     ) {
 
-        LazyColumn(state = listState, verticalArrangement = Arrangement.spacedBy(4.dp)) {
+        LazyColumn(state = listState,
+            verticalArrangement = Arrangement.spacedBy(4.dp),
+            modifier = Modifier.weight(1f)
+            )
+        {
 
             items(eventos) { evento ->
                 eventoItem(evento, eventoVM)
@@ -64,7 +68,6 @@ fun ProoximosEventos(navController: NavHostController, eventoVM: EventoViewModel
         }
 
         botonVolverProximos(navController)
-
     }
 }
 
@@ -170,16 +173,12 @@ fun confirmacionEliminarEvento(eventoVM: EventoViewModel, evento: Evento, onDism
     }
 }
     @Composable
-    fun botonVolverProximos(navController: NavHostController) {
+    fun botonVolverProximos(navController: NavHostController ) {
         Button(
             onClick = {
-                navController.navigate(Rutas.administrador)
-//                navController.popBackStack()
-//        eventoVM.limpiarDatos()
-//                navController.navigate("bodyVentanaAdminEventos"){
-//                    popUpTo("bodyVentanaAdminEventos"){inclusive = false}
-//                }
-//                navController.popBackStack("Eventos", inclusive = false)
+
+                navController.popBackStack()
+
             },
             colors = ButtonDefaults.buttonColors(
                 containerColor = colorResource(R.color.botones), // Color de fondo del botón

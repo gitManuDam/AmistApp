@@ -21,7 +21,7 @@ import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.firestore.firestore
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.tasks.await
-
+// Autora: Izaskun
 class LoginViewModel: ViewModel() {
 
     private val auth: FirebaseAuth = FirebaseAuth.getInstance()

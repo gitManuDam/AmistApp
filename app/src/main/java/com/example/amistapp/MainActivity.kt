@@ -22,6 +22,7 @@ import com.example.amistapp.Administrador.Eventos.EventoViewModel
 import com.example.amistapp.Administrador.Eventos.GoogleMaps.MapsVentana
 import com.example.amistapp.Administrador.Eventos.HistorialEventos
 import com.example.amistapp.Administrador.Eventos.ProoximosEventos
+import com.example.amistapp.Administrador.Usuarios.BodyVentanaAdminUsuarios
 import com.example.amistapp.Administrador.VentanaAdministrador
 import com.example.amistapp.DatosPerfil.DatosPerfilViewModel
 import com.example.amistapp.DatosPerfil.VentanaDatosPerfil
@@ -31,6 +32,7 @@ import com.example.amistapp.estandar.BodyVentanaEventosEstandar
 import com.example.amistapp.estandar.EstandarViewModel
 import com.example.amistapp.estandar.EventosDisponiblesEstandar
 import com.example.amistapp.estandar.MisEventos
+import com.example.amistapp.estandar.MostrarInscritos
 import com.example.amistapp.estandar.VentanaEstandar
 
 
@@ -40,6 +42,7 @@ class MainActivity : ComponentActivity() {
     val administradorVM = AdministradorViewModel()
     val eventoVM = EventoViewModel()
     val estandarVM = EstandarViewModel()
+    val eventoId = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -103,7 +106,12 @@ class MainActivity : ComponentActivity() {
                     }
                     composable(Rutas.bodyVentanaAdminEventos){
                         BodyVentanaAdminEventos(navController)
-
+                    }
+                    composable(Rutas.bodyVentanaAdminUsuarios){
+                        BodyVentanaAdminUsuarios(navController)
+                    }
+                    composable(Rutas.mostrarInscritos){
+                        MostrarInscritos(navController,eventoVM)
                     }
                 }
             }

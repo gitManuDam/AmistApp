@@ -17,7 +17,7 @@ import com.google.firebase.firestore.firestore
 import kotlinx.coroutines.tasks.await
 import java.io.File
 import java.net.URL
-
+// Autora: Izaskun
 class DatosPerfilViewModel : ViewModel() {
 
     // Para la base de datos que contendrá  a los usuarios

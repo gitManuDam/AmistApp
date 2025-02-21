@@ -49,7 +49,7 @@ import com.google.firebase.perf.util.Timer
 
 import java.time.LocalDate
 import java.time.LocalTime
-
+// Autora: Izaskun
 @Composable
 fun CrearEvento(navController: NavHostController, eventoVM: EventoViewModel){
     Column(modifier = Modifier

@@ -54,7 +54,7 @@ import com.example.amistapp.DatosPerfil.DatosPerfilViewModel
 import com.example.amistapp.Login.LoginViewModel
 import com.example.amistapp.R
 import com.example.amistapp.Rutas
-
+// Autora: Izaskun
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun VentanaEstandar(navController: NavHostController, datosPerfilVM: DatosPerfilViewModel, loginVM: LoginViewModel, estandarVM: EstandarViewModel){

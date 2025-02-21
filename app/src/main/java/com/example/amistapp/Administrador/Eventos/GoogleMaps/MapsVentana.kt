@@ -50,6 +50,8 @@ import com.google.maps.android.compose.MarkerInfoWindow
 import com.google.maps.android.compose.MarkerState
 import com.google.maps.android.compose.rememberCameraPositionState
 
+// Autora: Izaskun
+
 @Composable
 fun MapsVentana(navController: NavHostController, eventoVM: EventoViewModel){
     val TAG = "Izaskun"

@@ -32,15 +32,20 @@ import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
 
 import com.example.amistapp.Administrador.Eventos.BodyVentanaAdminEventos
 import com.example.amistapp.Administrador.Eventos.EventoViewModel
+import com.example.amistapp.Administrador.Eventos.HistorialEventos
+import com.example.amistapp.Administrador.Eventos.ProoximosEventos
 import com.example.amistapp.Administrador.Usuarios.BodyVentanaAdminUsuarios
 import com.example.amistapp.DatosPerfil.DatosPerfilViewModel
 import com.example.amistapp.Login.LoginViewModel
 import com.example.amistapp.R
 import com.example.amistapp.Rutas
-
+// Autora: Izaskun
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun VentanaAdministrador(
@@ -52,6 +57,7 @@ fun VentanaAdministrador(
 
     val context = LocalContext.current
     var currentRoute by remember { mutableStateOf("Usuarios") }
+
     Scaffold(
         topBar = {
             TopAppBar(
@@ -71,7 +77,6 @@ fun VentanaAdministrador(
                 currentRoute = nuevaRuta
             }
         },
-
         ) { innerPadding ->
         Column(
             modifier = Modifier.padding(innerPadding).padding(16.dp),
@@ -132,14 +137,17 @@ fun BottomNavigationBar(navController: NavController, currentRoute: String, onNu
             icon = { Icon(Icons.Default.Person, contentDescription = "Usuarios") },
             label = { Text("Usuarios") },
             selected = currentRoute == "Usuarios",
-            onClick = { onNuevaRuta("Usuarios") }
+            onClick = { onNuevaRuta("Usuarios")}
+
+
 
         )
         BottomNavigationItem(
             icon = { Icon(Icons.Default.DateRange, contentDescription = "Eventos") },
             label = { Text("Eventos") },
             selected = currentRoute == "Eventos",
-            onClick = { onNuevaRuta("Eventos") }
+            onClick = { onNuevaRuta("Eventos")}
+
         )
     }
 }

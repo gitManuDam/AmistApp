@@ -36,7 +36,7 @@ import com.example.amistapp.Modelos.Evento
 import com.example.amistapp.Login.LoginViewModel
 import com.example.amistapp.R
 import com.example.amistapp.Rutas
-
+// Autora: Izaskun
 @Composable
 fun MisEventos(
     navController: NavHostController,
@@ -58,7 +58,10 @@ fun MisEventos(
                 .padding(vertical = 20.dp)
                 .systemBarsPadding()
         ) {
-            LazyColumn(state = listState, verticalArrangement = Arrangement.spacedBy(4.dp)) {
+            LazyColumn(state = listState,
+                verticalArrangement = Arrangement.spacedBy(4.dp),
+                modifier = Modifier.weight(1f)
+                ) {
 
                 items(misEventos) { evento ->
                     eventoItemMisEventos(evento, eventoVM)
