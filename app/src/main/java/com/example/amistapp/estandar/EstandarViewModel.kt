@@ -52,6 +52,9 @@ class EstandarViewModel:ViewModel() {
     private val _longitudUsuario = MutableStateFlow(0.0)
     val longitudUsuario: StateFlow<Double> get() = _longitudUsuario
 
+    private val _emailLogeado = mutableStateOf("")
+    val emailLogeado: State<String> get() = _emailLogeado
+
     private val _Error = MutableLiveData<String?>()
     val Error: LiveData<String?> = _Error
 
@@ -67,6 +70,11 @@ class EstandarViewModel:ViewModel() {
 
     fun setLongitudUsuario(nuevaLongitud: Double) {
         _longitudUsuario.value = nuevaLongitud
+        _Error.value = null
+    }
+
+    fun setEmailLogeado(emailLogeado: String) {
+        _emailLogeado.value = emailLogeado
         _Error.value = null
     }
 

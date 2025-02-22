@@ -1,6 +1,7 @@
 package com.example.amistapp.estandar
 
 import android.content.Context
+import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -55,6 +56,7 @@ fun MisEventos(
 
 ){
         val emailLogeado = loginVM.getCurrentUser()?.email
+        estandarVM.setEmailLogeado(emailLogeado!!)
 
         estandarVM.obtenerMisEventos(emailLogeado!!)
 
@@ -74,7 +76,7 @@ fun MisEventos(
                 ) {
 
                 items(misEventos) { evento ->
-                    eventoItemMisEventos(evento, eventoVM, emailLogeado,contexto, navController, estandarVM)
+                    eventoItemMisEventos(evento, eventoVM, contexto, navController, estandarVM)
                 }
             }
 
@@ -87,7 +89,7 @@ fun MisEventos(
 fun eventoItemMisEventos(
     evento: Evento,
     eventoVM: EventoViewModel,
-    emailLogeado: String,
+
     contexto: Context,
     navController: NavHostController,
     estandarVM: EstandarViewModel
@@ -102,10 +104,13 @@ fun eventoItemMisEventos(
     ) {
         val latitudEvento = evento.latitud
         val longitudEvento = evento.longitud
-        // Ponemos los valores en VM para luego compararlos con los datos
-        // de la ubicación del usuario
-        eventoVM.setLatitud(latitudEvento!!)
-        eventoVM.setLongitud(longitudEvento!!)
+//        // Ponemos los valores en VM para luego compararlos con los datos
+//        // de la ubicación del usuario
+//        Log.e("DEBUG", "Latitud evento antes de asignar al ViewModel: $latitudEvento")
+//        Log.e("DEBUG", "Longitud evento antes de asignar al ViewModel: $longitudEvento")
+//
+//        eventoVM.setLatitud(latitudEvento!!)
+//        eventoVM.setLongitud(longitudEvento!!)
         val direccion= eventoVM.getDireccion(latitudEvento!!, longitudEvento!!)
 
         Column(modifier = Modifier.padding(16.dp)) {
@@ -126,7 +131,7 @@ fun eventoItemMisEventos(
         }
     }
     if(mostrarDialogo){
-        confirmacionAsistirEvento(eventoVM, evento, emailLogeado, contexto, navController, estandarVM) {
+        confirmacionAsistirEvento(eventoVM, evento,  contexto, navController, estandarVM) {
             mostrarDialogo = false
         }
 
@@ -137,12 +142,23 @@ fun eventoItemMisEventos(
 fun confirmacionAsistirEvento(
     eventoVM: EventoViewModel,
     evento: Evento,
-    emailLogeado: String,
+
     context: Context,
     navController: NavHostController,
     estandarVM: EstandarViewModel,
     onDismiss: () -> Unit
 ) {
+
+        val latitudEvento = evento.latitud
+        val longitudEvento = evento.longitud
+        // Ponemos los valores en VM para luego compararlos con los datos
+        // de la ubicación del usuario
+        Log.e("DEBUG", "Latitud evento antes de asignar al ViewModel: $latitudEvento")
+        Log.e("DEBUG", "Longitud evento antes de asignar al ViewModel: $longitudEvento")
+        eventoVM.setEventoId(evento.id!!)
+        eventoVM.setLatitud(latitudEvento!!)
+        eventoVM.setLongitud(longitudEvento!!)
+
 
     var mostrar by remember { mutableStateOf(true) }
     if (mostrar) {

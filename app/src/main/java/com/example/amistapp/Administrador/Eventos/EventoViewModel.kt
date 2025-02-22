@@ -299,9 +299,9 @@ class EventoViewModel: ViewModel() {
         })
     }
 
-    fun asistirAlEvento(eventoId: String, emailLogeado: String, context:Context){
+    fun asistirAlEvento(eventoId: String, emailLogeado:String,  context:Context){
         val eventoRef = database.child(eventoId).child("asistentes")
-
+        val emailLogeado =
         eventoRef.get().addOnSuccessListener { ae ->
             val asistentesActuales = mutableListOf<AsistenteEvento>()
 

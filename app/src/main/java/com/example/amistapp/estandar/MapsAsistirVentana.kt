@@ -67,7 +67,7 @@ fun MapsAsistirVentana(
     Column(modifier = Modifier
         .padding(vertical = 20.dp)
         .systemBarsPadding()) {
-        mapScreenU(mapaViewModel, estandarVM, navController, eventoVM, evento, emailLogeado, contexto)
+        mapScreenU(mapaViewModel, estandarVM, navController, eventoVM, evento,  contexto)
     }
 
 }
@@ -79,7 +79,7 @@ fun mapScreenU(
     navController: NavHostController,
     eventoVM: EventoViewModel,
     evento: Evento,
-    emailLogeado: String,
+
     contexto: Context
 ) {
 //    val context = LocalContext.current
@@ -344,7 +344,7 @@ fun mapScreenU(
 
                     if (estaCerca) {
                         // Si está cerca, inscribimos al usuario en el evento
-                        eventoVM.asistirAlEvento(evento.id!!, emailLogeado, contexto)
+                        eventoVM.asistirAlEvento(eventoVM.eventoId.value, estandarVM.emailLogeado.value, contexto)
                         Toast.makeText(contexto, "Te has inscrito en el evento", Toast.LENGTH_SHORT).show()
                         navController.popBackStack() // Volver a la pantalla anterior (Mis Eventos)
                     } else {
