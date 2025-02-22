@@ -28,9 +28,11 @@ import com.example.amistapp.DatosPerfil.DatosPerfilViewModel
 import com.example.amistapp.DatosPerfil.VentanaDatosPerfil
 import com.example.amistapp.Login.LoginScreen
 import com.example.amistapp.Login.NoEstasActivado
+import com.example.amistapp.Modelos.Evento
 import com.example.amistapp.estandar.BodyVentanaEventosEstandar
 import com.example.amistapp.estandar.EstandarViewModel
 import com.example.amistapp.estandar.EventosDisponiblesEstandar
+import com.example.amistapp.estandar.MapsAsistirVentana
 import com.example.amistapp.estandar.MisEventos
 import com.example.amistapp.estandar.MostrarInscritos
 import com.example.amistapp.estandar.VentanaEstandar
@@ -43,6 +45,8 @@ class MainActivity : ComponentActivity() {
     val eventoVM = EventoViewModel()
     val estandarVM = EstandarViewModel()
     val eventoId = ""
+    val evento = Evento()
+    val emailLogeado = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -99,7 +103,7 @@ class MainActivity : ComponentActivity() {
                         EventosDisponiblesEstandar(navController,eventoVM, loginVM)
                     }
                     composable(Rutas.misEventos) {
-                        MisEventos(navController,estandarVM,loginVM,eventoVM)
+                        MisEventos(navController,estandarVM,loginVM,eventoVM, contexto)
                     }
                     composable(Rutas.bodyVentanaEstandarEventos) {
                         BodyVentanaEventosEstandar(navController)
@@ -112,6 +116,9 @@ class MainActivity : ComponentActivity() {
                     }
                     composable(Rutas.mostrarInscritos){
                         MostrarInscritos(navController,eventoVM)
+                    }
+                    composable(Rutas.mapaUbicacionUsuario){
+                        MapsAsistirVentana(navController, estandarVM, eventoVM, evento, emailLogeado, contexto)
                     }
                 }
             }

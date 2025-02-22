@@ -20,4 +20,5 @@ object Rutas {
     var bodyVentanaAdminEventos = "bodyVentanaAdminEventos"
     var bodyVentanaAdminUsuarios = "bodyVentanaAdminUsuarios"
     var mostrarInscritos = "mostrarInscritos"
+    var mapaUbicacionUsuario = "mapaUbicacionUsuario"
 }

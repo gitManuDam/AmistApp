@@ -1,10 +1,13 @@
 package com.example.amistapp.estandar
 
+import android.location.Location
 import android.util.Log
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.snapshots.SnapshotStateList
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.amistapp.Colecciones
 import com.example.amistapp.Modelos.Evento
@@ -43,10 +46,29 @@ class EstandarViewModel:ViewModel() {
     private val _fotoPerfil = mutableStateOf("")
     val fotoPerfil: State<String> get() = _fotoPerfil
 
+    private val _latitudUsuario = MutableStateFlow(0.0)
+    val latitudUsuario: StateFlow<Double> get() = _latitudUsuario
+
+    private val _longitudUsuario = MutableStateFlow(0.0)
+    val longitudUsuario: StateFlow<Double> get() = _longitudUsuario
+
+    private val _Error = MutableLiveData<String?>()
+    val Error: LiveData<String?> = _Error
+
     //Variables para los estados...
     val isLoading = MutableStateFlow(false)
     val errorMessage = MutableStateFlow<String?>(null)
     val loginSuccess = MutableStateFlow(false)
+
+    fun setLatitudUsuario(nuevaLatitud: Double) {
+        _latitudUsuario.value = nuevaLatitud
+        _Error.value = null
+    }
+
+    fun setLongitudUsuario(nuevaLongitud: Double) {
+        _longitudUsuario.value = nuevaLongitud
+        _Error.value = null
+    }
 
     fun obtenerUsuarios(){
 
@@ -116,6 +138,22 @@ class EstandarViewModel:ViewModel() {
         val fechaActual = LocalDate.now()
 
         return fechaActual.isBefore(fechaEventoFormateada)
+    }
+
+    fun suficienteCerca(latitudEvento: Double, longitudEvento:Double, latitudUsuario: Double, longitudUsuario:Double):Boolean{
+        val eventoLocation = Location("Evento").apply {
+            latitude = latitudEvento
+            longitude = longitudEvento
+        }
+
+        val usuarioLocation = Location("Usuario").apply {
+            latitude = latitudUsuario
+            longitude = longitudUsuario
+        }
+
+        val distancia = eventoLocation.distanceTo(usuarioLocation)
+
+        return distancia <= 20 //
     }
 }
 

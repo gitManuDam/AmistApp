@@ -25,6 +25,7 @@ import java.io.IOException
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
+import java.time.format.DateTimeFormatter
 import java.util.Locale
 // Autora: Izaskun
 class EventoViewModel: ViewModel() {
@@ -297,4 +298,43 @@ class EventoViewModel: ViewModel() {
             }
         })
     }
+
+    fun asistirAlEvento(eventoId: String, emailLogeado: String, context:Context){
+        val eventoRef = database.child(eventoId).child("asistentes")
+
+        eventoRef.get().addOnSuccessListener { ae ->
+            val asistentesActuales = mutableListOf<AsistenteEvento>()
+
+            // se comprueba si la lista de asistentes existe y no está vacía
+            if (ae.exists() && ae.childrenCount > 0) {
+                for (child in ae.children) {
+                    val asistente = child.getValue(AsistenteEvento::class.java)
+                    if (asistente != null) {
+                        asistentesActuales.add(asistente)
+                    }
+                }
+            }
+
+            // el nuevo asistente con la hora actual
+            val horaActual = LocalDateTime.now().format(DateTimeFormatter.ofPattern("HH:mm:ss"))
+            val nuevoAsistente = AsistenteEvento(emailLogeado, horaActual)
+
+            // se añade el nuevo asistente a la lista
+            asistentesActuales.add(nuevoAsistente)
+
+            // Subir la lista actualizada a Firebase
+            eventoRef.setValue(asistentesActuales)
+                .addOnCompleteListener { task ->
+                    if (task.isSuccessful) {
+                        Toast.makeText(context, "Te has unido al evento", Toast.LENGTH_SHORT).show()
+                    } else {
+                        Toast.makeText(context, "Error al unirse al evento", Toast.LENGTH_SHORT).show()
+                    }
+                }
+        }.addOnFailureListener {
+            Toast.makeText(context, "Error al obtener los asistentes", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+
 }
