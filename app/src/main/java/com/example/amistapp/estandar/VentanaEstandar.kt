@@ -105,15 +105,11 @@ fun VentanaEstandar(navController: NavHostController, datosPerfilVM: DatosPerfil
             modifier = Modifier.padding(innerPadding).padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            if (currentRoute == "Amigos") {
-                BodyVentanaAmigos(navController)
-            } else {
-                if (currentRoute == "Compatibles"){
-                BodyVentanaCompatibles(navController)
-                }else{
-                    BodyVentanaEventosEstandar(navController)
-                }
-            }
+            if (currentRoute == "Amigos") BodyVentanaAmigos(navController, estandarVM)
+            else if (currentRoute == "Compatibles")BodyVentanaCompatibles(navController, estandarVM)
+            else BodyVentanaEventosEstandar(navController)
+
+
         }
     }
 }
