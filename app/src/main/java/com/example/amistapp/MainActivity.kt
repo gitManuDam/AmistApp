@@ -25,6 +25,8 @@ import com.example.amistapp.Administrador.Eventos.GoogleMaps.MapsVentana
 import com.example.amistapp.Administrador.Eventos.HistorialEventos
 import com.example.amistapp.Administrador.Eventos.ProoximosEventos
 import com.example.amistapp.Administrador.VentanaAdministrador
+import com.example.amistapp.Chats.ChatViewModel
+import com.example.amistapp.Chats.VentanaChats
 import com.example.amistapp.DatosPerfil.DatosPerfilViewModel
 import com.example.amistapp.DatosPerfil.VentanaDatosPerfil
 import com.example.amistapp.Login.LoginScreen
@@ -39,6 +41,7 @@ class MainActivity : ComponentActivity() {
     val administradorVM = AdministradorViewModel()
     val eventoVM = EventoViewModel()
     val estandarVM = EstandarViewModel()
+    val chatVM = ChatViewModel()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -55,7 +58,7 @@ class MainActivity : ComponentActivity() {
                         LoginScreen(navController, loginVM, datosPerfilVM)
                     }
                     composable(Rutas.estandar){
-                        VentanaEstandar(navController,datosPerfilVM, loginVM, estandarVM)
+                        VentanaEstandar(navController,chatVM, loginVM, estandarVM)
                     }
                     composable(Rutas.administrador){
                         VentanaAdministrador(navController, datosPerfilVM)
@@ -90,6 +93,13 @@ class MainActivity : ComponentActivity() {
                     }
                     composable(Rutas.historialEventos){
                         HistorialEventos(navController,eventoVM)
+                    }
+                    composable(Rutas.chats){
+                        VentanaChats(navController, loginVM, estandarVM, chatVM, null)
+                    }
+                    composable("chats/{email}") { backStackEntry ->
+                        val email = backStackEntry.arguments?.getString("email")
+                        VentanaChats(navController, loginVM, estandarVM, chatVM, email) // Aquí pasas el email al composable
                     }
                 }
             }

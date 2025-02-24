@@ -26,6 +26,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import coil.compose.rememberImagePainter
+import com.example.amistapp.Rutas
 import com.example.amistapp.Usuario
 
 @Composable
@@ -36,7 +37,7 @@ fun BodyVentanaAmigos(navController: NavHostController, estandarVM:EstandarViewM
         LazyColumn(modifier = Modifier.fillMaxSize()) {
             items(estandarVM.listadoAmigos) { usuario ->
                 AmigoItem ( usuario) {
-
+                    navController.navigate("chats/${it}")
                 }
             }
         }
@@ -44,12 +45,12 @@ fun BodyVentanaAmigos(navController: NavHostController, estandarVM:EstandarViewM
 }
 
 @Composable
-fun AmigoItem(usuario: Usuario, onClick: () -> Unit){
+fun AmigoItem(usuario: Usuario, onClick: (String) -> Unit){
     Card(
         modifier = Modifier
             .fillMaxWidth()
             .padding(vertical = 8.dp)
-            .clickable { onClick() },
+            .clickable { onClick(usuario.email) },
         shape = MaterialTheme.shapes.medium
     ) {
         Row(
@@ -66,8 +67,6 @@ fun AmigoItem(usuario: Usuario, onClick: () -> Unit){
             )
 
             Text(text = usuario.perfil?.nick ?: "Sin nombre", fontSize = 18.sp)
-
-
 
 
         }
