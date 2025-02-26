@@ -11,6 +11,8 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.firestore
 import kotlinx.coroutines.flow.MutableStateFlow
 
+// Autora: Izaskun
+
 class AdministradorViewModel : ViewModel(){
     private val auth: FirebaseAuth = FirebaseAuth.getInstance()
     val TAG = "Izaskun"

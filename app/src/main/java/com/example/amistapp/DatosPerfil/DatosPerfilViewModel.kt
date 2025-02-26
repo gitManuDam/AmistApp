@@ -15,6 +15,7 @@ import com.google.firebase.firestore.SetOptions
 import com.google.firebase.firestore.firestore
 import java.io.File
 
+// Autora: Izaskun
 class DatosPerfilViewModel : ViewModel() {
 
     // Para la base de datos que contendrá  a los usuarios

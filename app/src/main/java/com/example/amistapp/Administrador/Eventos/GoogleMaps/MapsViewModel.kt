@@ -7,7 +7,7 @@ import com.google.android.gms.maps.model.LatLng
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
-
+// Autora: Izaskun
 class MapsViewModel: ViewModel() {
     val home = LatLng(38.693245786259595, -4.108508457997148) //CIFP Virgen de Gracia: 38.693245786259595, -4.108508457997148
     private val _markers = MutableStateFlow<List<MapMaker>>(emptyList())

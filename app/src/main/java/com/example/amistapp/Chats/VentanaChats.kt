@@ -89,7 +89,7 @@ fun VentanaChats (navController: NavHostController, loginVM: LoginViewModel,
                 titleContentColor = colorResource(id = R.color.textoBotones)
             ),
             actions = {
-                MenuPuntosEstandar()
+                MenuPuntosEstandar(navController, loginVM)
             }
         )
     },

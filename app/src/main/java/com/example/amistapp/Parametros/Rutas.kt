@@ -14,5 +14,16 @@ object Rutas {
     var crearEvento = "crearEvento"
     var proximosEventos = "proximosEventos"
     var historialEventos = "historialEventos"
+
     var chats = "chats"
+
+    var eventosDisponibles = "eventosDisponibles"
+    var misEventos = "misEventos"
+    var bodyVentanaEstandarEventos ="bodyVentanaEstandarEventos"
+    var bodyVentanaAdminEventos = "bodyVentanaAdminEventos"
+    var bodyVentanaAdminUsuarios = "bodyVentanaAdminUsuarios"
+    var mostrarInscritos = "mostrarInscritos"
+    var mapaUbicacionUsuario = "mapaUbicacionUsuario"
+    var mostrarAsistentes = "mostrarAsistentes"
+
 }

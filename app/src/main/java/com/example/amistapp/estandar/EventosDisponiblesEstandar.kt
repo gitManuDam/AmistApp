@@ -1,6 +1,6 @@
-package com.example.amistapp.Administrador.Eventos
+package com.example.amistapp.estandar
 
-import android.annotation.SuppressLint
+import android.content.Context
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -12,41 +12,53 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Attribution
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
-import com.example.amistapp.Modelos.Evento
-import androidx.compose.foundation.lazy.items
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Delete
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.Icon
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import androidx.navigation.NavHostController
+import com.example.amistapp.Administrador.Eventos.EventoViewModel
+import com.example.amistapp.Modelos.Evento
+import com.example.amistapp.Login.LoginViewModel
 import com.example.amistapp.R
-
-
-
-
+import com.example.amistapp.Parametros.Rutas
 // Autora: Izaskun
 @Composable
-fun ProoximosEventos(navController: NavHostController, eventoVM: EventoViewModel) {
+
+// Eventos disponibles muestra aquellos eventos a los que todavia se puede inscribir
+// plazo inscripcion <= la fecha de hoy
+// por lo tanto no hace falta volver a controlar la fecha para mostrar los inscritos
+// porque siempre será antes del evento
+fun EventosDisponiblesEstandar(
+    navController: NavHostController,
+    eventoVM: EventoViewModel,
+    loginVM: LoginViewModel
+){
+
+    val emailLogeado = loginVM.getCurrentUser()?.email
 
     // Recoge los proximos eventos desde ViewModel
     val eventos by eventoVM.proximosEventos.collectAsState()
@@ -58,67 +70,89 @@ fun ProoximosEventos(navController: NavHostController, eventoVM: EventoViewModel
             .padding(vertical = 20.dp)
             .systemBarsPadding()
     ) {
-
         LazyColumn(state = listState,
             verticalArrangement = Arrangement.spacedBy(4.dp),
             modifier = Modifier.weight(1f)
-            )
-        {
+        ) {
 
             items(eventos) { evento ->
-                eventoItem(evento, eventoVM)
+                eventoItemDisponible(evento, eventoVM, emailLogeado, navController)
             }
         }
 
-        botonVolverProximos(navController)
+        botonVolverEventosDisponibles(navController)
+
     }
 }
 
-    @SuppressLint("StateFlowValueCalledInComposition")
-    @Composable
-    fun eventoItem(evento: Evento, eventoVM: EventoViewModel) {
-        var mostrarDialogo by remember { mutableStateOf(false) }
+@Composable
+fun eventoItemDisponible(
+    evento: Evento,
+    eventoVM: EventoViewModel,
+    emailLogeado: String?,
+    navController: NavHostController
+) {
+    var mostrarDialogo by remember { mutableStateOf(false) }
+    val context = LocalContext.current
 
-        Card(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(8.dp),
-            elevation = CardDefaults.cardElevation(4.dp),
-            shape = RoundedCornerShape(12.dp)
-        ) {
-            val latitud = evento.latitud
-            val longitud = evento.longitud
-            val direccion= eventoVM.getDireccion(latitud!!, longitud!!)
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(8.dp),
+        elevation = CardDefaults.cardElevation(4.dp),
+        shape = RoundedCornerShape(12.dp)
+    ) {
+        val latitud = evento.latitud
+        val longitud = evento.longitud
+        val direccion= eventoVM.getDireccion(latitud!!, longitud!!)
 
-            Column(modifier = Modifier.padding(16.dp)) {
-                Text(text = evento.descripcion, fontSize = 15.sp, fontWeight = FontWeight.Bold)
-                Text(text = "Fecha: ${evento.fecha} - Hora: ${evento.hora}", fontSize = 15.sp)
-                Text(text = "Ubicación: ${direccion}", fontSize = 15.sp)
-                Text(text = "Plazo inscripción: ${evento.plazoInscripcion}", fontSize = 15.sp)
-                Text(text = "Inscritos: ${evento.inscritos.size}", fontSize = 15.sp)
+        Column(modifier = Modifier.padding(16.dp)) {
+            Text(text = evento.descripcion, fontSize = 15.sp, fontWeight = FontWeight.Bold)
+            Text(text = "Fecha: ${evento.fecha} - Hora: ${evento.hora}", fontSize = 15.sp)
+            Text(text = "Ubicación: ${direccion}", fontSize = 15.sp)
+            Text(text = "Plazo inscripción: ${evento.plazoInscripcion}", fontSize = 15.sp)
+            Text(text = "Inscritos: ${evento.inscritos.size}", fontSize = 15.sp)
 
-
+            Row() {
                 Icon(
-                    imageVector = Icons.Filled.Delete,
-                    contentDescription = "Eliminar Evento",
+                    imageVector = Icons.Filled.Add,
+                    contentDescription = "Inscribirse al evento",
                     modifier = Modifier
                         .size(24.dp) // Tamaño del icono
-                        .clickable (){
+                        .clickable() {
                             mostrarDialogo = true // muestra el dialogo de confirmacion
+                        }, // Acción al hacer clic
+                )
+
+                Icon(
+                    imageVector = Icons.Filled.Attribution,
+                    contentDescription = "Inscritos al eventos",
+                    modifier = Modifier
+                        .size(24.dp) // Tamaño del icono
+                        .clickable() {
+                            eventoVM.setEventoId(evento.id!!)
+//                            if (eventoVM.plazoInscripcionAbierto()){
+                                navController.navigate(Rutas.mostrarInscritos)
+//                            }
+//                            else{
+//                                navController.navigate(Rutas.mostrarAsistentes)
+//                            }
+
+                            // muestra una rv con los inscritos al evento
                         }, // Acción al hacer clic
                 )
             }
         }
-        if(mostrarDialogo){
-            confirmacionEliminarEvento(eventoVM, evento) {
-                mostrarDialogo = false
-            }
-
-        }
     }
+    if(mostrarDialogo){
+        confirmacionInscribirseEvento(eventoVM, evento, emailLogeado, context) {
+            mostrarDialogo = false
+        }
 
+    }
+}
 @Composable
-fun confirmacionEliminarEvento(eventoVM: EventoViewModel, evento: Evento, onDismiss:() -> Unit) {
+fun confirmacionInscribirseEvento(eventoVM: EventoViewModel, evento: Evento, emailLogeado: String?, context: Context, onDismiss:() -> Unit) {
 
     var mostrar by remember { mutableStateOf(true) }
     if (mostrar) {
@@ -133,7 +167,7 @@ fun confirmacionEliminarEvento(eventoVM: EventoViewModel, evento: Evento, onDism
                     .background(Color.White, shape = RoundedCornerShape(8.dp))
             ) {
                 Text(
-                    text = "Va a eliminar a  ${evento.descripcion}",
+                    text = "Vas a inscribirte a  ${evento.descripcion}",
                     color = colorResource(R.color.texto),
                     fontSize = 15.sp,
                     modifier = Modifier.padding(bottom = 16.dp)
@@ -146,7 +180,7 @@ fun confirmacionEliminarEvento(eventoVM: EventoViewModel, evento: Evento, onDism
                     Button(
                         onClick = {
                             mostrar = false
-                           eventoVM.eliminarEvento(evento)
+                            eventoVM.incribirseEnEvento(evento.id!! ,emailLogeado!! , context)
                         },
                         modifier = Modifier.weight(1f),
                         colors = ButtonDefaults.buttonColors(
@@ -175,22 +209,22 @@ fun confirmacionEliminarEvento(eventoVM: EventoViewModel, evento: Evento, onDism
         }
     }
 }
-    @Composable
-    fun botonVolverProximos(navController: NavHostController ) {
-        Button(
-            onClick = {
 
-                navController.popBackStack()
 
-            },
-            colors = ButtonDefaults.buttonColors(
-                containerColor = colorResource(R.color.botones), // Color de fondo del botón
-                contentColor = colorResource(R.color.textoBotones) // Color del texto
-            )
+@Composable
+fun botonVolverEventosDisponibles(navController: NavHostController) {
+    Button(
+        onClick = {
+//        eventoVM.limpiarDatos()
+            navController.navigate(Rutas.estandar)
+        },
+        colors = ButtonDefaults.buttonColors(
+            containerColor = colorResource(R.color.botones), // Color de fondo del botón
+            contentColor = colorResource(R.color.textoBotones) // Color del texto
         )
-        {
-            Text(text = "Volver")
-        }
-
+    )
+    {
+        Text(text = "Volver")
     }
 
+}

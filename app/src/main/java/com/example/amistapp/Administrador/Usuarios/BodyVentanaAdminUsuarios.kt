@@ -21,6 +21,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.ui.text.style.TextAlign
 import com.example.amistapp.Parametros.Rutas
 
+// Autora: Izaskun
 @Composable
 fun BodyVentanaAdminUsuarios(navController: NavController){
     Column(

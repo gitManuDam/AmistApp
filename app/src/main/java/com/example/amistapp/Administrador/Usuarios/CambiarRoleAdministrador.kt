@@ -1,4 +1,4 @@
-package com.example.amistapp.Administrador
+package com.example.amistapp.Administrador.Usuarios
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -36,27 +37,46 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
+import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
+import com.example.amistapp.Administrador.AdministradorViewModel
 import com.example.amistapp.Login.LoginViewModel
 import com.example.amistapp.R
+
 import com.example.amistapp.Modelos.Usuario
 
+
+import com.example.amistapp.Parametros.Rutas
+// Autora: Izaskun
 @Composable
-fun CambiarRoleAdministrador(administradorVM: AdministradorViewModel, loginVM: LoginViewModel){
-    administradorVM.obtenerUsuarios()
-    val listadoUsers = administradorVM.listadoUsuarios
-
-    val emailLogeado = loginVM.getCurrentUser()?.email
-
-    LazyVerticalGrid(
-        columns = GridCells.Fixed(1),
-        verticalArrangement = Arrangement.spacedBy(8.dp),
-        horizontalArrangement = Arrangement.spacedBy(8.dp),
-        contentPadding = PaddingValues(8.dp)
+fun CambiarRoleAdministrador(
+    administradorVM: AdministradorViewModel,
+    loginVM: LoginViewModel,
+    navController: NavHostController
+){
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(8.dp)
     ) {
-        items(listadoUsers){ usuario ->
-            UsItem(usuario, administradorVM, emailLogeado)
+        administradorVM.obtenerUsuarios()
+        val listadoUsers = administradorVM.listadoUsuarios
+
+        val emailLogeado = loginVM.getCurrentUser()?.email
+
+        LazyVerticalGrid(
+            columns = GridCells.Fixed(1),
+            verticalArrangement = Arrangement.spacedBy(8.dp),
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
+            contentPadding = PaddingValues(8.dp),
+                    modifier = Modifier.weight(1f)
+        ) {
+            items(listadoUsers) { usuario ->
+                UsItem(usuario, administradorVM, emailLogeado)
+            }
         }
+
+        botonVolverCambiarRoler(navController)
     }
 }
 
@@ -188,4 +208,20 @@ fun modificarRole(administradorVM: AdministradorViewModel, usuario: Usuario, onD
             }
         }
     }
+}
+@Composable
+fun botonVolverCambiarRoler(navController: NavHostController)
+{
+    Button(onClick = {
+//        eventoVM.limpiarDatos()
+        navController.navigate(Rutas.administrador)},
+        colors = ButtonDefaults.buttonColors(
+            containerColor = colorResource(R.color.botones), // Color de fondo del botón
+            contentColor = colorResource(R.color.textoBotones) // Color del texto
+        )
+    )
+    {
+        Text(text = "Volver")
+    }
+
 }

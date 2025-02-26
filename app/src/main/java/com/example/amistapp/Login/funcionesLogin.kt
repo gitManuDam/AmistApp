@@ -47,7 +47,7 @@ import com.example.amistapp.R
 import com.example.amistapp.Parametros.Rutas
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
-
+// Autora: Izaskun
 //https://firebase.google.com/docs/auth?hl=es-419
 @Composable
 fun LoginScreen(navController: NavHostController, loginVM: LoginViewModel, datosPerfilViewModel: DatosPerfilViewModel) {

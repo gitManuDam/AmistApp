@@ -12,14 +12,17 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.example.amistapp.Administrador.Usuarios.ActivarDesactivarUsuarios
 import com.example.amistapp.Administrador.AdministradorViewModel
+
+import com.example.amistapp.Administrador.Eventos.BodyVentanaAdminEventos
 import com.example.amistapp.Administrador.Usuarios.AltaUsuarios
 import com.example.amistapp.Administrador.Usuarios.BajaUsuarios
-import com.example.amistapp.Administrador.CambiarRoleAdministrador
+import com.example.amistapp.Administrador.Usuarios.CambiarRoleAdministrador
 import com.example.amistapp.Administrador.Eventos.CrearEvento
 import com.example.amistapp.Administrador.Eventos.EventoViewModel
 import com.example.amistapp.Administrador.Eventos.GoogleMaps.MapsVentana
 import com.example.amistapp.Administrador.Eventos.HistorialEventos
 import com.example.amistapp.Administrador.Eventos.ProoximosEventos
+import com.example.amistapp.Administrador.Usuarios.BodyVentanaAdminUsuarios
 import com.example.amistapp.Administrador.VentanaAdministrador
 import com.example.amistapp.Chats.ChatViewModel
 import com.example.amistapp.Chats.VentanaChats
@@ -28,7 +31,15 @@ import com.example.amistapp.DatosPerfil.VentanaDatosPerfil
 import com.example.amistapp.Login.LoginScreen
 import com.example.amistapp.Login.NoEstasActivado
 import com.example.amistapp.Parametros.Rutas
+import com.example.amistapp.Modelos.Evento
+import com.example.amistapp.estandar.BodyVentanaEventosEstandar
+
 import com.example.amistapp.estandar.EstandarViewModel
+import com.example.amistapp.estandar.EventosDisponiblesEstandar
+import com.example.amistapp.estandar.MapsAsistirVentana
+import com.example.amistapp.estandar.MisEventos
+import com.example.amistapp.estandar.MostrarAsistentes
+import com.example.amistapp.estandar.MostrarInscritos
 import com.example.amistapp.estandar.VentanaEstandar
 
 
@@ -39,6 +50,9 @@ class MainActivity : ComponentActivity() {
     val eventoVM = EventoViewModel()
     val estandarVM = EstandarViewModel()
     val chatVM = ChatViewModel()
+    val eventoId = ""
+    val evento = Evento()
+    val emailLogeado = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -50,56 +64,97 @@ class MainActivity : ComponentActivity() {
                 val navController = rememberNavController()
                 //Durante la creacion de la ventana proximos evento
 //                NavHost(navController = navController, startDestination = Rutas.historialEventos){
-                NavHost(navController = navController, startDestination = Rutas.login){
-                    composable(Rutas.login){
+                NavHost(navController = navController, startDestination = Rutas.login) {
+                    composable(Rutas.login) {
                         LoginScreen(navController, loginVM, datosPerfilVM)
                     }
-                    composable(Rutas.estandar){
-                        VentanaEstandar(navController,chatVM, loginVM, estandarVM)
+                    composable(Rutas.estandar) {
+                        VentanaEstandar(navController, chatVM, loginVM, estandarVM)
                     }
-                    composable(Rutas.administrador){
-                        VentanaAdministrador(navController, datosPerfilVM)
+                    composable(Rutas.administrador) {
+                        VentanaAdministrador(navController, datosPerfilVM, eventoVM, loginVM)
 //                        Text(text = "Pantalla administrador", fontSize = 24.sp, modifier = Modifier.fillMaxSize())
                     }
-                    composable(Rutas.perfil){
+                    composable(Rutas.perfil) {
                         VentanaDatosPerfil(navController, loginVM, datosPerfilVM, contexto)
                     }
                     composable(Rutas.noActivado) {
-                        NoEstasActivado()
+                        NoEstasActivado(navController, loginVM, contexto)
                     }
                     composable(Rutas.altaUsuario) {
-                        AltaUsuarios(navController,administradorVM,loginVM)
+                        AltaUsuarios(navController, administradorVM, loginVM)
                     }
-                    composable(Rutas.bajaUsuarios){
-                        BajaUsuarios(administradorVM, loginVM)
+                    composable(Rutas.bajaUsuarios) {
+                        BajaUsuarios(administradorVM, loginVM, navController)
                     }
                     composable(Rutas.activarDesActivar) {
-                        ActivarDesactivarUsuarios(administradorVM, loginVM)
+                        ActivarDesactivarUsuarios(administradorVM, loginVM, navController)
                     }
-                    composable(Rutas.cambiarRole){
-                        CambiarRoleAdministrador(administradorVM, loginVM)
+                    composable(Rutas.cambiarRole) {
+                        CambiarRoleAdministrador(administradorVM, loginVM, navController)
                     }
-                    composable(Rutas.mapa){
+                    composable(Rutas.mapa) {
                         MapsVentana(navController, eventoVM)
                     }
-                    composable(Rutas.crearEvento){
-                        CrearEvento(navController,eventoVM)
+                    composable(Rutas.crearEvento) {
+                        CrearEvento(navController, eventoVM)
                     }
-                    composable(Rutas.proximosEventos){
-                        ProoximosEventos(navController,eventoVM)
+                    composable(Rutas.proximosEventos) {
+                        ProoximosEventos(navController, eventoVM)
                     }
-                    composable(Rutas.historialEventos){
-                        HistorialEventos(navController,eventoVM)
+                    composable(Rutas.historialEventos) {
+                        HistorialEventos(navController, eventoVM)
                     }
-                    composable(Rutas.chats){
+
+                    composable(Rutas.chats) {
                         VentanaChats(navController, loginVM, estandarVM, chatVM, null)
                     }
                     composable("chats/{email}") { backStackEntry ->
                         val email = backStackEntry.arguments?.getString("email")
-                        VentanaChats(navController, loginVM, estandarVM, chatVM, email) // Aquí pasas el email al composable
+                        VentanaChats(
+                            navController,
+                            loginVM,
+                            estandarVM,
+                            chatVM,
+                            email
+                        )
+                    }// Aquí pasas el email al composable
+
+                    composable(Rutas.eventosDisponibles) {
+                        EventosDisponiblesEstandar(navController, eventoVM, loginVM)
+                    }
+                    composable(Rutas.misEventos) {
+                        MisEventos(navController, estandarVM, loginVM, eventoVM, contexto)
+                    }
+                    composable(Rutas.bodyVentanaEstandarEventos) {
+                        BodyVentanaEventosEstandar(navController)
+                    }
+                    composable(Rutas.bodyVentanaAdminEventos) {
+                        BodyVentanaAdminEventos(navController)
+                    }
+                    composable(Rutas.bodyVentanaAdminUsuarios) {
+                        BodyVentanaAdminUsuarios(navController)
+                    }
+                    composable(Rutas.mostrarInscritos) {
+                        MostrarInscritos(navController, eventoVM)
+                    }
+                    composable(Rutas.mapaUbicacionUsuario) {
+                        MapsAsistirVentana(
+                            navController,
+                            estandarVM,
+                            eventoVM,
+                            evento,
+                            emailLogeado,
+                            contexto
+                        )
+                    }
+                    composable(Rutas.mostrarAsistentes) {
+                        MostrarAsistentes(navController, eventoVM)
+
                     }
                 }
             }
         }
     }
 }
+

@@ -3,6 +3,7 @@ package com.example.amistapp.Administrador.Usuarios
 import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -30,10 +31,16 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import androidx.navigation.NavHostController
 import com.example.amistapp.Administrador.AdministradorViewModel
+import com.example.amistapp.Administrador.Eventos.EventoViewModel
 import com.example.amistapp.Login.LoginViewModel
 import com.example.amistapp.R
 import com.example.amistapp.Parametros.Rutas
+
+
+
+// Autora: Izaskun
 
 @Composable
  fun AltaUsuarios(navController: NavController, administradorVM: AdministradorViewModel, loginVM: LoginViewModel){
@@ -77,22 +84,57 @@ import com.example.amistapp.Parametros.Rutas
         )
         Spacer(modifier = Modifier.height(16.dp))
 
-        Button(
-            onClick = {
+        Row(horizontalArrangement = Arrangement.spacedBy(16.dp)){
+            Button(
+                onClick = {
                     administradorVM.registerNewUserWithEmail(email.text, password.text)
-            },
-            enabled = !isLoading,
-            colors = ButtonDefaults.buttonColors(
-                containerColor = colorResource(R.color.botones), // Color de fondo del botón
-                contentColor = colorResource(R.color.textoBotones) // Color del texto
-            )
-        ) {
-            Text(
-                "Registrar",
-                color = colorResource(R.color.texto),
-                fontSize = 15.sp,
-            )
+                },
+                enabled = !isLoading,
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = colorResource(R.color.botones), // Color de fondo del botón
+                    contentColor = colorResource(R.color.textoBotones) // Color del texto
+                )
+            ) {
+                Text(
+                    "Registrar",
+                    color = colorResource(R.color.texto),
+                    fontSize = 15.sp,
+                )
+            }
+
+            Button(
+                onClick = {
+                    navController.navigate(Rutas.administrador)
+                },
+                enabled = !isLoading,
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = colorResource(R.color.botones), // Color de fondo del botón
+                    contentColor = colorResource(R.color.textoBotones) // Color del texto
+                )
+            ) {
+                Text(
+                    "Cancelar",
+                    color = colorResource(R.color.texto),
+                    fontSize = 15.sp,
+                )
+            }
         }
+//        Button(
+//            onClick = {
+//                    administradorVM.registerNewUserWithEmail(email.text, password.text)
+//            },
+//            enabled = !isLoading,
+//            colors = ButtonDefaults.buttonColors(
+//                containerColor = colorResource(R.color.botones), // Color de fondo del botón
+//                contentColor = colorResource(R.color.textoBotones) // Color del texto
+//            )
+//        ) {
+//            Text(
+//                "Registrar",
+//                color = colorResource(R.color.texto),
+//                fontSize = 15.sp,
+//            )
+//        }
         Spacer(modifier = Modifier.height(8.dp))
 
 
@@ -112,10 +154,28 @@ import com.example.amistapp.Parametros.Rutas
         if (loginSuccess) {
             Toast.makeText(context, "Usuario dado de alta", Toast.LENGTH_SHORT).show()
             if (!loginVM.existeUsuario()) {
-                loginVM.addUsuario(email.text!!)
+                loginVM.addUsuarioAdmin(email.text!!)
             }
             navController.navigate(Rutas.administrador)
         }
+    }
+
+}
+
+@Composable
+fun botonCancelarAltaNueva(
+    navController: NavHostController, eventoVM: EventoViewModel
+) {
+    Button(onClick = {
+        eventoVM.limpiarDatos()
+        navController.navigate(Rutas.administrador)},
+        colors = ButtonDefaults.buttonColors(
+            containerColor = colorResource(R.color.botones), // Color de fondo del botón
+            contentColor = colorResource(R.color.textoBotones) // Color del texto
+        )
+    )
+    {
+        Text(text = "Cancelar")
     }
 
 }

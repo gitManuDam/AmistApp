@@ -34,8 +34,11 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.example.amistapp.Modelos.Evento
 import com.example.amistapp.R
+
 import com.example.amistapp.Parametros.Rutas
 
+
+// Autora: Izaskun
 @Composable
 fun HistorialEventos(navController: NavHostController, eventoVM: EventoViewModel){
     // Recoge los  eventos desde ViewModel
@@ -53,7 +56,10 @@ fun HistorialEventos(navController: NavHostController, eventoVM: EventoViewModel
 
 
         // LazyColumn para mostrar las comandas, con el estado de desplazamiento
-        LazyColumn(state = listState, verticalArrangement = Arrangement.spacedBy(4.dp)) {
+        LazyColumn(state = listState,
+            verticalArrangement = Arrangement.spacedBy(4.dp),
+            modifier = Modifier.weight(1f)
+            ) {
 
             items(eventos) { evento ->
                 eventoItemHistorial(evento, eventoVM)
@@ -109,7 +115,8 @@ fun botonVolverHistorial(navController: NavHostController)
 {
     Button(onClick = {
 //        eventoVM.limpiarDatos()
-        navController.navigate(Rutas.administrador)},
+        navController.popBackStack()},
+//        navController.navigate(Rutas.administrador)},
         colors = ButtonDefaults.buttonColors(
             containerColor = colorResource(R.color.botones), // Color de fondo del botón
             contentColor = colorResource(R.color.textoBotones) // Color del texto
