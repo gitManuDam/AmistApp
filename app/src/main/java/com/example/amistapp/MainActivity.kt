@@ -106,9 +106,7 @@ class MainActivity : ComponentActivity() {
                         HistorialEventos(navController, eventoVM)
                     }
 
-                    composable(Rutas.chats) {
-                        VentanaChats(navController, loginVM, estandarVM, chatVM, null)
-                    }
+
                     composable("chats/{email}") { backStackEntry ->
                         val email = backStackEntry.arguments?.getString("email")
                         VentanaChats(
