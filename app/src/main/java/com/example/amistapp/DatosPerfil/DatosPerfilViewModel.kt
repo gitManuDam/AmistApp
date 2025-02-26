@@ -9,14 +9,12 @@ import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.example.amistapp.Colecciones
-import com.example.amistapp.Login.LoginViewModel
+import com.example.amistapp.Parametros.Colecciones
 import com.google.firebase.Firebase
 import com.google.firebase.firestore.SetOptions
 import com.google.firebase.firestore.firestore
-import kotlinx.coroutines.tasks.await
 import java.io.File
-import java.net.URL
+
 // Autora: Izaskun
 class DatosPerfilViewModel : ViewModel() {
 

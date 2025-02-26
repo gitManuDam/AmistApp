@@ -42,7 +42,7 @@ import coil.compose.AsyncImage
 import com.example.amistapp.Administrador.AdministradorViewModel
 import com.example.amistapp.Login.LoginViewModel
 import com.example.amistapp.R
-import com.example.amistapp.Rutas
+import com.example.amistapp.Parametros.Rutas
 import com.example.amistapp.Modelos.Usuario
 // Autora: Izaskun
 @Composable

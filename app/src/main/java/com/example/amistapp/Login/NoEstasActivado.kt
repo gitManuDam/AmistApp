@@ -17,7 +17,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.example.amistapp.R
-import com.example.amistapp.Rutas
+import com.example.amistapp.Parametros.Rutas
 // Autora: Izaskun
 @Composable
 fun NoEstasActivado(navController: NavHostController, loginVM: LoginViewModel, contexto: Context) {

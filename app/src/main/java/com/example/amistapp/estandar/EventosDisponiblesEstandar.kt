@@ -44,7 +44,7 @@ import com.example.amistapp.Administrador.Eventos.EventoViewModel
 import com.example.amistapp.Modelos.Evento
 import com.example.amistapp.Login.LoginViewModel
 import com.example.amistapp.R
-import com.example.amistapp.Rutas
+import com.example.amistapp.Parametros.Rutas
 // Autora: Izaskun
 @Composable
 
@@ -131,7 +131,13 @@ fun eventoItemDisponible(
                         .size(24.dp) // Tamaño del icono
                         .clickable() {
                             eventoVM.setEventoId(evento.id!!)
-                            navController.navigate(Rutas.mostrarInscritos)
+//                            if (eventoVM.plazoInscripcionAbierto()){
+                                navController.navigate(Rutas.mostrarInscritos)
+//                            }
+//                            else{
+//                                navController.navigate(Rutas.mostrarAsistentes)
+//                            }
+
                             // muestra una rv con los inscritos al evento
                         }, // Acción al hacer clic
                 )

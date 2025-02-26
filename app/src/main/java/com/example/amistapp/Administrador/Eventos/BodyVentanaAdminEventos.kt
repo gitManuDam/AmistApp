@@ -19,7 +19,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.amistapp.R
-import com.example.amistapp.Rutas
+import com.example.amistapp.Parametros.Rutas
 // Autora: Izaskun
 @Composable
 fun BodyVentanaAdminEventos(navController: NavController ){

@@ -1,7 +1,5 @@
 package com.example.amistapp.estandar
 
-import android.os.Handler
-import android.os.Looper
 import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.Image
@@ -33,7 +31,6 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -53,7 +50,7 @@ import coil.compose.rememberAsyncImagePainter
 import com.example.amistapp.DatosPerfil.DatosPerfilViewModel
 import com.example.amistapp.Login.LoginViewModel
 import com.example.amistapp.R
-import com.example.amistapp.Rutas
+import com.example.amistapp.Parametros.Rutas
 // Autora: Izaskun
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

@@ -1,6 +1,5 @@
 package com.example.amistapp.estandar
 
-import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -16,7 +15,6 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
@@ -27,30 +25,22 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.example.amistapp.Administrador.Eventos.EventoViewModel
+import com.example.amistapp.Modelos.AsistenteEvento
 import com.example.amistapp.R
 import com.example.amistapp.Parametros.Rutas
 
-// Autora: Izaskun
-
 @Composable
-fun MostrarInscritos(navController: NavHostController,
-                     eventoVM: EventoViewModel
+fun MostrarAsistentes(navController: NavHostController,
+                      eventoVM: EventoViewModel
 ){
     val context = LocalContext.current
     val listState = rememberLazyListState()
 
     val eventoId = eventoVM.eventoId.value
 
-    // Recoge los inscritos al evento
-    eventoVM.obtenerInscritos(eventoId)
-    val inscritos by eventoVM.inscritos.collectAsState()
-
-    // la primera vez muestra el toast aunque no esté vacia,
-    LaunchedEffect(inscritos) {
-        if (inscritos.isEmpty()) {
-            Toast.makeText(context, "No hay inscritos en este evento", Toast.LENGTH_SHORT).show()
-        }
-    }
+    // Recoge los asistentes al evento
+    eventoVM.obtenerAsistentes(eventoId)
+    val asistentes by eventoVM.asistentes.collectAsState()
 
     Column(
         modifier = Modifier
@@ -62,18 +52,18 @@ fun MostrarInscritos(navController: NavHostController,
             modifier = Modifier.weight(1f)
         ) {
 
-            items(inscritos) { inscrito ->
-                eventoItemInscritos(inscrito, eventoVM)
+            items(asistentes) { asistente ->
+                eventoItemAsistentes(asistente, eventoVM)
             }
         }
 
-        botonVolverEventosInscritos(navController)
+        botonVolverMostrarAsistentes(navController)
 
     }
 }
 
 @Composable
-fun eventoItemInscritos(inscrito: String, eventoVM: EventoViewModel){
+fun eventoItemAsistentes(asistente: AsistenteEvento, eventoVM: EventoViewModel) {
 
     Card(
         modifier = Modifier
@@ -82,17 +72,15 @@ fun eventoItemInscritos(inscrito: String, eventoVM: EventoViewModel){
         elevation = CardDefaults.cardElevation(4.dp),
         shape = RoundedCornerShape(12.dp)
     ) {
-
         Column(modifier = Modifier.padding(16.dp)) {
-            Text(text = inscrito, fontSize = 15.sp, fontWeight = FontWeight.Bold)
-
+            Text(text = "Email: ${asistente.email}", fontSize = 15.sp, fontWeight = FontWeight.Bold)
+            Text(text = "Hora: ${asistente.hora}", fontSize = 14.sp)
         }
     }
-
 }
 
 @Composable
-fun botonVolverEventosInscritos(navController: NavHostController){
+fun botonVolverMostrarAsistentes(navController: NavHostController){
     Button(
         onClick = {
 //        eventoVM.limpiarDatos()

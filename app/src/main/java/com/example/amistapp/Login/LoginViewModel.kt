@@ -8,7 +8,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.example.amistapp.Colecciones
+import com.example.amistapp.Parametros.Colecciones
 import com.example.amistapp.R
 import com.example.amistapp.Modelos.Usuario
 

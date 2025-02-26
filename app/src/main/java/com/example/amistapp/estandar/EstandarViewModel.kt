@@ -9,7 +9,7 @@ import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.example.amistapp.Colecciones
+import com.example.amistapp.Parametros.Colecciones
 import com.example.amistapp.Modelos.Evento
 import com.example.amistapp.Modelos.Usuario
 import com.google.firebase.Firebase

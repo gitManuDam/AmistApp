@@ -1,7 +1,6 @@
 package com.example.amistapp.Administrador.Eventos
 
 import android.annotation.SuppressLint
-import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -32,19 +31,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontWeight
 
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
 import androidx.navigation.NavHostController
-import com.example.amistapp.DatosPerfil.DatosPerfilViewModel
 
 import com.example.amistapp.R
-import com.example.amistapp.Rutas
-import androidx.compose.runtime.collectAsState
-import com.google.firebase.perf.util.Timer
+import com.example.amistapp.Parametros.Rutas
 
 
 import java.time.LocalDate

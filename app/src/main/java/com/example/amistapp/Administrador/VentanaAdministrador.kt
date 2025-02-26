@@ -32,19 +32,14 @@ import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
-import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
-import androidx.navigation.compose.rememberNavController
 
 import com.example.amistapp.Administrador.Eventos.BodyVentanaAdminEventos
 import com.example.amistapp.Administrador.Eventos.EventoViewModel
-import com.example.amistapp.Administrador.Eventos.HistorialEventos
-import com.example.amistapp.Administrador.Eventos.ProoximosEventos
 import com.example.amistapp.Administrador.Usuarios.BodyVentanaAdminUsuarios
 import com.example.amistapp.DatosPerfil.DatosPerfilViewModel
 import com.example.amistapp.Login.LoginViewModel
 import com.example.amistapp.R
-import com.example.amistapp.Rutas
+import com.example.amistapp.Parametros.Rutas
 // Autora: Izaskun
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

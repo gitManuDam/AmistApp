@@ -1,4 +1,4 @@
-package com.example.amistapp
+package com.example.amistapp.Parametros
 
 object Rutas {
     val login = "login"
@@ -21,4 +21,5 @@ object Rutas {
     var bodyVentanaAdminUsuarios = "bodyVentanaAdminUsuarios"
     var mostrarInscritos = "mostrarInscritos"
     var mapaUbicacionUsuario = "mapaUbicacionUsuario"
+    var mostrarAsistentes = "mostrarAsistentes"
 }

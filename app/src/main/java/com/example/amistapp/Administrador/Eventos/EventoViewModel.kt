@@ -299,6 +299,21 @@ class EventoViewModel: ViewModel() {
         })
     }
 
+    fun obtenerAsistentes(eventoId: String) {
+        val eventoRef = database.child(eventoId).child("asistentes")
+
+        eventoRef.addValueEventListener(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                val lista = snapshot.children.mapNotNull { it.getValue(AsistenteEvento::class.java) }
+                _asistentes.value = lista // Actualiza el MutableStateFlow con la nueva lista
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                Log.e("EventoViewModel", "Error al cargar asistentes", error.toException())
+            }
+        })
+    }
+
     fun asistirAlEvento(eventoId: String, emailLogeado:String,  context:Context){
         val eventoRef = database.child(eventoId).child("asistentes")
         val emailLogeado =
@@ -336,5 +351,18 @@ class EventoViewModel: ViewModel() {
         }
     }
 
+    fun plazoInscripcionAbierto():Boolean{
+        val eventoId = eventoId.value
+        val evento = database.child(eventoId).get().result?.getValue(Evento::class.java)
 
+        return if (evento != null) {
+            val formato = DateTimeFormatter.ofPattern("yyyy-MM-dd")
+            val fechaPlazo = LocalDate.parse(evento.plazoInscripcion, formato)
+            val fechaHoy = LocalDate.now()
+
+            fechaHoy.isBefore(fechaPlazo) || fechaHoy.isEqual(fechaPlazo)
+        } else {
+            false
+        }
+    }
 }

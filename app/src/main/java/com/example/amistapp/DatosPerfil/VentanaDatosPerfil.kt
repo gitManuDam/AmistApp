@@ -54,7 +54,7 @@ import coil.compose.AsyncImage
 import com.example.amistapp.Login.LoginViewModel
 import com.example.amistapp.R
 import com.example.amistapp.BuildConfig
-import com.example.amistapp.Rutas
+import com.example.amistapp.Parametros.Rutas
 import java.io.File
 import java.time.LocalDate
 import java.time.Period

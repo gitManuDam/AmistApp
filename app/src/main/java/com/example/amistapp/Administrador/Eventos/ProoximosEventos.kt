@@ -40,7 +40,7 @@ import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import androidx.navigation.NavHostController
 import com.example.amistapp.R
-import com.example.amistapp.Rutas
+
 // Autora: Izaskun
 @Composable
 fun ProoximosEventos(navController: NavHostController, eventoVM: EventoViewModel) {
