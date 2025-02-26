@@ -1,7 +1,8 @@
-package com.example.amistapp.Administrador.Eventos.GoogleMaps
+package com.example.amistapp.estandar
 
 import android.Manifest
 import android.content.ContentValues.TAG
+import android.content.Context
 import android.content.pm.PackageManager
 import android.location.Location
 import android.util.Log
@@ -30,13 +31,14 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.core.app.ActivityCompat
 import androidx.navigation.NavHostController
 import com.example.amistapp.Administrador.Eventos.EventoViewModel
+import com.example.amistapp.Administrador.Eventos.GoogleMaps.MapsViewModel
+import com.example.amistapp.Modelos.Evento
 import com.example.amistapp.R
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.model.CameraPosition
@@ -50,34 +52,43 @@ import com.google.maps.android.compose.MarkerInfoWindow
 import com.google.maps.android.compose.MarkerState
 import com.google.maps.android.compose.rememberCameraPositionState
 
-// Autora: Izaskun
-
 @Composable
-fun MapsVentana(navController: NavHostController, eventoVM: EventoViewModel){
+fun MapsAsistirVentana(
+    navController: NavHostController,
+    estandarVM: EstandarViewModel,
+    eventoVM: EventoViewModel,
+    evento: Evento,
+    emailLogeado: String,
+    contexto: Context
+){
     val TAG = "Izaskun"
     val mapaViewModel = MapsViewModel()
 
     Column(modifier = Modifier
         .padding(vertical = 20.dp)
         .systemBarsPadding()) {
-        mapScreen(mapaViewModel, eventoVM, navController)
+        mapScreenU(mapaViewModel, estandarVM, navController, eventoVM, evento,  contexto)
     }
 
 }
 
 @Composable
-fun mapScreen(
+fun mapScreenU(
     viewModel: MapsViewModel,
+    estandarVM: EstandarViewModel,
+    navController: NavHostController,
     eventoVM: EventoViewModel,
-    navController: NavHostController
+    evento: Evento,
+
+    contexto: Context
 ) {
-    val context = LocalContext.current
+//    val context = LocalContext.current
 
     val markers by viewModel.markers.collectAsState()
     val cameraPosition by viewModel.cameraPosition.collectAsState()
 
     val selectedCoordinates by viewModel.selectedCoordinates.collectAsState()
-    val fusedLocationClient = LocationServices.getFusedLocationProviderClient(context)
+    val fusedLocationClient = LocationServices.getFusedLocationProviderClient(contexto)
 
     var longitude by remember { mutableStateOf(TextFieldValue("")) }
     var latitude by remember { mutableStateOf(TextFieldValue("")) }
@@ -109,10 +120,10 @@ fun mapScreen(
     LaunchedEffect(locationPermissionGranted) {
         if (locationPermissionGranted) {
             if (ActivityCompat.checkSelfPermission(
-                    context,
+                    contexto,
                     Manifest.permission.ACCESS_FINE_LOCATION
                 ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
-                    context,
+                    contexto,
                     Manifest.permission.ACCESS_COARSE_LOCATION
                 ) != PackageManager.PERMISSION_GRANTED
             ) {
@@ -178,11 +189,14 @@ fun mapScreen(
                 viewModel.updateCameraPosition(latLng)
             },
             onPOIClick = { poi ->
-                Toast.makeText(context, "POI: ${poi.name}", Toast.LENGTH_SHORT).show()
+                Toast.makeText(contexto, "POI: ${poi.name}", Toast.LENGTH_SHORT).show()
                 viewModel.selectCoordinates(poi.latLng)
                 longitude = TextFieldValue(poi.latLng.longitude.toString())
                 latitude = TextFieldValue(poi.latLng.latitude.toString())
                 viewModel.updateCameraPosition(poi.latLng)
+
+                Log.d(TAG, "Ubicación seleccionada - Longitud: ${longitude}, Latitud: ${latitude}")
+
             },
             onMapClick = { latLng ->
                 viewModel.selectCoordinates(latLng)
@@ -206,7 +220,7 @@ fun mapScreen(
             },
             //Estp se lanza cuando pulsamos en la diana de arriba.
             onMyLocationButtonClick = {
-                Toast.makeText(context, "Volviendo a casa", Toast.LENGTH_SHORT).show()
+                Toast.makeText(contexto, "Volviendo a casa", Toast.LENGTH_SHORT).show()
                 viewModel.irAHome()
                 Log.d(TAG, "Cámara actualizada: $cameraPosition")
                 true
@@ -215,7 +229,7 @@ fun mapScreen(
             onMyLocationClick = {
                 longitude = TextFieldValue(it.longitude.toString())
                 latitude = TextFieldValue(it.latitude.toString())
-                Toast.makeText(context, "Estoy aquí", Toast.LENGTH_SHORT).show()
+                Toast.makeText(contexto, "Estoy aquí", Toast.LENGTH_SHORT).show()
             }
         ) {
 
@@ -249,7 +263,7 @@ fun mapScreen(
                 markerLocation.longitude = viewModel.home.longitude
 
                 val distanceInMeters = userLocation.distanceTo(markerLocation)
-                Log.e(TAG, "Distancia: $distanceInMeters metros")
+//                Log.e(TAG, "Distancia: $distanceInMeters metros")
             }
 
             //Dibuja los marcadores almacenados en el viewmodel, usando MarkerInfoWindow.
@@ -260,7 +274,7 @@ fun mapScreen(
                     snippet = marker.snippet,
                     onInfoWindowClick = {
                         viewModel.removeMarker(marker)
-                        Toast.makeText(context, "Marcador eliminado", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(contexto, "Marcador eliminado", Toast.LENGTH_SHORT).show()
                     }
                 )
             }
@@ -312,9 +326,37 @@ fun mapScreen(
         ){
             Button(
                 onClick = {
-                    eventoVM.setLatitud(latitude.text.toDouble())
-                    eventoVM.setLongitud(longitude.text.toDouble())
-                    navController.popBackStack() // vuelve a la pantalla anterior
+                    estandarVM.setLatitudUsuario(latitude.text.toDouble())
+                    estandarVM.setLongitudUsuario(longitude.text.toDouble())
+
+                    // Ahora verificamos si el usuario está cerca del evento
+                    val latitudEvento = eventoVM.latitud.value
+                    val longitudEvento = eventoVM.longitud.value
+                    val latitudUsuario = estandarVM.latitudUsuario.value // Usamos las coordenadas ingresadas por el usuario
+                    val longitudUsuario = estandarVM.longitudUsuario.value
+
+                    // Log para ver las coordenadas del evento y del usuario
+                    Log.e("UbicacionEvento", "Latitud evento: $latitudEvento, Longitud evento: $longitudEvento")
+                    Log.e("UbicacionUsuario", "Latitud usuario: $latitudUsuario, Longitud usuario: $longitudUsuario")
+
+
+                    val estaCerca = estandarVM.suficienteCerca(latitudEvento, longitudEvento, latitudUsuario, longitudUsuario)
+
+                    if (estaCerca) {
+                        // Si está cerca, inscribimos al usuario en el evento
+                        eventoVM.asistirAlEvento(eventoVM.eventoId.value, estandarVM.emailLogeado.value, contexto)
+                        Toast.makeText(contexto, "Te has inscrito en el evento", Toast.LENGTH_SHORT).show()
+                        navController.popBackStack() // Volver a la pantalla anterior (Mis Eventos)
+                    } else {
+                        // Si no está cerca, mostramos un mensaje
+                        Toast.makeText(contexto, "No estás lo suficientemente cerca para inscribirte", Toast.LENGTH_SHORT).show()
+                        navController.popBackStack() // Volver a la pantalla anterior (Mis Eventos)
+                    }
+
+
+
+
+//                    navController.popBackStack() // vuelve a la pantalla anterior
                 },
                 colors = ButtonDefaults.buttonColors(
                     containerColor = colorResource(R.color.botones), // Color de fondo del botón

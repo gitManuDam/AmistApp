@@ -16,9 +16,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.BottomNavigation
 import androidx.compose.material.BottomNavigationItem
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.Chat
 import androidx.compose.material.icons.filled.Accessibility
-import androidx.compose.material.icons.filled.Chat
 import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.Person
@@ -51,15 +49,13 @@ import com.example.amistapp.Administrador.BottomNavigationBar
 import com.example.amistapp.Administrador.Eventos.BodyVentanAdminEventos
 import com.example.amistapp.Administrador.MenuPuntos
 import com.example.amistapp.Administrador.Usuarios.BodyVentanaAdminUsuarios
-import com.example.amistapp.Chats.BodyChats
-import com.example.amistapp.Chats.ChatViewModel
 import com.example.amistapp.DatosPerfil.DatosPerfilViewModel
 import com.example.amistapp.Login.LoginViewModel
 import com.example.amistapp.R
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun VentanaEstandar(navController: NavHostController, chatVM: ChatViewModel, loginVM: LoginViewModel, estandarVM: EstandarViewModel){
+fun VentanaEstandar(navController: NavHostController, datosPerfilVM: DatosPerfilViewModel, loginVM: LoginViewModel, estandarVM: EstandarViewModel){
     val context = LocalContext.current
     var currentRoute by remember { mutableStateOf("Amigos") }
 
@@ -109,12 +105,15 @@ fun VentanaEstandar(navController: NavHostController, chatVM: ChatViewModel, log
             modifier = Modifier.padding(innerPadding).padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            if (currentRoute == "Amigos") BodyVentanaAmigos(navController, estandarVM)
-            else if (currentRoute == "Compatibles")BodyVentanaCompatibles(navController, estandarVM)
-            else if (currentRoute == "Chats") BodyChats(navController, estandarVM , chatVM)
-            else BodyVentanaEventosEstandar(navController)
-
-
+            if (currentRoute == "Amigos") {
+                BodyVentanaAmigos(navController)
+            } else {
+                if (currentRoute == "Compatibles"){
+                BodyVentanaCompatibles(navController)
+                }else{
+                    BodyVentanaEventosEstandar(navController)
+                }
+            }
         }
     }
 }
@@ -172,12 +171,6 @@ fun BottomNavigationBarEstandar(navController: NavController, currentRoute: Stri
             label = { Text("Compatibles") },
             selected = currentRoute == "Compatibles",
             onClick = { onNuevaRuta("Compatibles") }
-        )
-        BottomNavigationItem(
-            icon = { Icon(Icons.AutoMirrored.Filled.Chat, contentDescription = "Chats") },
-            label = { Text("Chats") },
-            selected = currentRoute == "Chats",
-            onClick = { onNuevaRuta("Chats") }
         )
 
     }

@@ -19,7 +19,7 @@ import com.example.amistapp.R
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.ui.text.style.TextAlign
-import com.example.amistapp.Parametros.Rutas
+import com.example.amistapp.Rutas
 
 @Composable
 fun BodyVentanaAdminUsuarios(navController: NavController){

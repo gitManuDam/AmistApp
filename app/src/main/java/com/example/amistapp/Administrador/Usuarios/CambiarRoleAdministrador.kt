@@ -39,7 +39,7 @@ import androidx.compose.ui.window.DialogProperties
 import coil.compose.AsyncImage
 import com.example.amistapp.Login.LoginViewModel
 import com.example.amistapp.R
-import com.example.amistapp.Modelos.Usuario
+import com.example.amistapp.Usuario
 
 @Composable
 fun CambiarRoleAdministrador(administradorVM: AdministradorViewModel, loginVM: LoginViewModel){

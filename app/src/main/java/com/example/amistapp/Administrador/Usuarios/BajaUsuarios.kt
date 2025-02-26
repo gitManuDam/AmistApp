@@ -44,7 +44,7 @@ import coil.compose.AsyncImage
 import com.example.amistapp.Administrador.AdministradorViewModel
 import com.example.amistapp.Login.LoginViewModel
 import com.example.amistapp.R
-import com.example.amistapp.Modelos.Usuario
+import com.example.amistapp.Usuario
 
 @Composable
 fun BajaUsuarios(administradorVM: AdministradorViewModel, loginVM: LoginViewModel){

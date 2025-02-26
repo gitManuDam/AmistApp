@@ -32,36 +32,47 @@ import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
-import com.example.amistapp.Administrador.Eventos.BodyVentanAdminEventos
+
+import com.example.amistapp.Administrador.Eventos.BodyVentanaAdminEventos
+import com.example.amistapp.Administrador.Eventos.EventoViewModel
 import com.example.amistapp.Administrador.Usuarios.BodyVentanaAdminUsuarios
 import com.example.amistapp.DatosPerfil.DatosPerfilViewModel
+import com.example.amistapp.Login.LoginViewModel
 import com.example.amistapp.R
-
+import com.example.amistapp.Parametros.Rutas
+// Autora: Izaskun
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun VentanaAdministrador(navController: NavHostController, datosPerfilVM: DatosPerfilViewModel) {
+fun VentanaAdministrador(
+    navController: NavHostController,
+    datosPerfilVM: DatosPerfilViewModel,
+    eventoVM: EventoViewModel,
+    loginVM: LoginViewModel
+) {
 
     val context = LocalContext.current
     var currentRoute by remember { mutableStateOf("Usuarios") }
+
     Scaffold(
         topBar = {
             TopAppBar(
                 title = { Text("Administrador") },
-                colors = TopAppBarDefaults.topAppBarColors(containerColor = colorResource(id = R.color.botones),
-                titleContentColor = colorResource(id = R.color.textoBotones)
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = colorResource(id = R.color.botones),
+                    titleContentColor = colorResource(id = R.color.textoBotones)
                 ),
                 actions = {
-                    MenuPuntos()
+                    MenuPuntos(navController, loginVM)
                 }
             )
         },
         bottomBar = {
+//            BottomNavigationBar(navController)
             BottomNavigationBar(navController, currentRoute){nuevaRuta ->
                 currentRoute = nuevaRuta
             }
         },
-
-    ) { innerPadding ->
+        ) { innerPadding ->
         Column(
             modifier = Modifier.padding(innerPadding).padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp)
@@ -69,14 +80,16 @@ fun VentanaAdministrador(navController: NavHostController, datosPerfilVM: DatosP
             if (currentRoute == "Usuarios") {
                BodyVentanaAdminUsuarios(navController)
             } else {
-                BodyVentanAdminEventos(navController)
+                BodyVentanaAdminEventos(navController)
             }
+//
+
         }
     }
 }
 
 @Composable
-fun MenuPuntos() {
+fun MenuPuntos(navController: NavHostController, loginVM: LoginViewModel) {
     val context = LocalContext.current
     var expanded by remember { mutableStateOf(false) }
 
@@ -98,9 +111,13 @@ fun MenuPuntos() {
             DropdownMenuItem(
                 text = { Text("Cerrar sesión") },
                 onClick = {
-                Toast.makeText(context, "Cerrar sesión", Toast.LENGTH_SHORT).show()
-                expanded = false
-            })
+                    loginVM.signOut(context)
+                    expanded = false
+                    Toast.makeText(context, "Cerrando sesión...", Toast.LENGTH_SHORT).show()
+                    navController.navigate(Rutas.login) {
+                        popUpTo(Rutas.login) { inclusive = true }
+                    }
+                })
         }
     }
 }
@@ -115,14 +132,17 @@ fun BottomNavigationBar(navController: NavController, currentRoute: String, onNu
             icon = { Icon(Icons.Default.Person, contentDescription = "Usuarios") },
             label = { Text("Usuarios") },
             selected = currentRoute == "Usuarios",
-            onClick = { onNuevaRuta("Usuarios") }
+            onClick = { onNuevaRuta("Usuarios")}
+
+
 
         )
         BottomNavigationItem(
             icon = { Icon(Icons.Default.DateRange, contentDescription = "Eventos") },
             label = { Text("Eventos") },
             selected = currentRoute == "Eventos",
-            onClick = { onNuevaRuta("Eventos") }
+            onClick = { onNuevaRuta("Eventos")}
+
         )
     }
 }

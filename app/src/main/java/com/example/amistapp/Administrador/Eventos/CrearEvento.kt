@@ -44,7 +44,7 @@ import com.example.amistapp.Parametros.Rutas
 
 import java.time.LocalDate
 import java.time.LocalTime
-
+// Autora: Izaskun
 @Composable
 fun CrearEvento(navController: NavHostController, eventoVM: EventoViewModel){
     Column(modifier = Modifier

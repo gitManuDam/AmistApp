@@ -2,7 +2,7 @@ package com.example.amistapp.Modelos
 
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
-
+// Autora: Izaskun
 data class Evento(
     var id: String? = null,
     val descripcion: String = "",

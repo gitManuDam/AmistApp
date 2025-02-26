@@ -1,4 +1,4 @@
-package com.example.amistapp.Parametros
+package com.example.amistapp
 
 object Rutas {
     val login = "login"
@@ -14,5 +14,4 @@ object Rutas {
     var crearEvento = "crearEvento"
     var proximosEventos = "proximosEventos"
     var historialEventos = "historialEventos"
-    var chats = "chats"
 }

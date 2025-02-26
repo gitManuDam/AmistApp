@@ -59,7 +59,7 @@ import java.io.File
 import java.time.LocalDate
 import java.time.Period
 import kotlin.math.roundToInt
-
+// Autora: Izaskun
 @Composable
 fun VentanaDatosPerfil(
     navController: NavHostController,
