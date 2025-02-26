@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -31,7 +32,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
@@ -40,31 +40,51 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
+import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
 import com.example.amistapp.Administrador.AdministradorViewModel
 import com.example.amistapp.Login.LoginViewModel
 import com.example.amistapp.R
-import com.example.amistapp.Usuario
+
+import com.example.amistapp.Modelos.Usuario
+
+
+import com.example.amistapp.Parametros.Rutas
+
+// Autora: Izaskun
 
 @Composable
-fun BajaUsuarios(administradorVM: AdministradorViewModel, loginVM: LoginViewModel){
-
-    administradorVM.obtenerUsuarios()
-    val listadoUsers = administradorVM.listadoUsuarios
-
-    val emailLogeado = loginVM.getCurrentUser()?.email
-
-    LazyVerticalGrid(
-        columns = GridCells.Fixed(1),
-        verticalArrangement = Arrangement.spacedBy(8.dp),
-        horizontalArrangement = Arrangement.spacedBy(8.dp),
-        contentPadding = PaddingValues(8.dp)
+fun BajaUsuarios(
+    administradorVM: AdministradorViewModel,
+    loginVM: LoginViewModel,
+    navController: NavHostController
+){
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(8.dp)
     ) {
-        items(listadoUsers){ usuario ->
-            UsuarioItem(usuario = usuario, administradorVM, emailLogeado)
-        }
-    }
 
+        administradorVM.obtenerUsuarios()
+        val listadoUsers = administradorVM.listadoUsuarios
+
+        val emailLogeado = loginVM.getCurrentUser()?.email
+
+        LazyVerticalGrid(
+            columns = GridCells.Fixed(1),
+            verticalArrangement = Arrangement.spacedBy(8.dp),
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
+            contentPadding = PaddingValues(8.dp),
+            modifier = Modifier.weight(1f)
+        ) {
+            items(listadoUsers) { usuario ->
+                UsuarioItem(usuario = usuario, administradorVM, emailLogeado)
+            }
+        }
+
+        botonVolverBajaUsuario(navController)
+
+    }
 }
 @Composable
 fun UsuarioItem(usuario: Usuario, administradorVM: AdministradorViewModel, emailLogeado: String?){
@@ -113,8 +133,8 @@ fun UsuarioItem(usuario: Usuario, administradorVM: AdministradorViewModel, email
                 contentDescription = "Eliminar usuario",
                 modifier = Modifier
                     .size(24.dp) // Tamaño del icono
-                    .alpha(if (esElMismoUsuario) 0.3f else 1f)
-                    .clickable (enabled = !esElMismoUsuario){
+//                    .alpha(if (esElMismoUsuario) 0.3f else 1f)
+                    .clickable (){
                         mostrarDialogo = true // muestra el dialogo de confirmacion
                                }, // Acción al hacer clic
 
@@ -183,4 +203,21 @@ fun confirmacionEliminar(administradorVM: AdministradorViewModel, email:String, 
             }}
         }
     }
+}
+
+@Composable
+fun botonVolverBajaUsuario(navController: NavHostController)
+{
+    Button(onClick = {
+//        eventoVM.limpiarDatos()
+        navController.navigate(Rutas.administrador)},
+        colors = ButtonDefaults.buttonColors(
+            containerColor = colorResource(R.color.botones), // Color de fondo del botón
+            contentColor = colorResource(R.color.textoBotones) // Color del texto
+        )
+    )
+    {
+        Text(text = "Volver")
+    }
+
 }

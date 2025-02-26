@@ -1,5 +1,6 @@
 package com.example.amistapp.estandar
 
+import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -16,7 +17,9 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.BottomNavigation
 import androidx.compose.material.BottomNavigationItem
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.Chat
 import androidx.compose.material.icons.filled.Accessibility
+import androidx.compose.material.icons.filled.Chat
 import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.Person
@@ -45,22 +48,34 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import coil.compose.rememberAsyncImagePainter
+
 import com.example.amistapp.Administrador.BottomNavigationBar
-import com.example.amistapp.Administrador.Eventos.BodyVentanAdminEventos
+import com.example.amistapp.Administrador.Eventos.BodyVentanaAdminEventos
 import com.example.amistapp.Administrador.MenuPuntos
 import com.example.amistapp.Administrador.Usuarios.BodyVentanaAdminUsuarios
+import com.example.amistapp.Chats.BodyChats
+import com.example.amistapp.Chats.ChatViewModel
+
+
 import com.example.amistapp.DatosPerfil.DatosPerfilViewModel
 import com.example.amistapp.Login.LoginViewModel
 import com.example.amistapp.R
-
+import com.example.amistapp.Parametros.Rutas
+// Autora: Izaskun
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun VentanaEstandar(navController: NavHostController, datosPerfilVM: DatosPerfilViewModel, loginVM: LoginViewModel, estandarVM: EstandarViewModel){
+fun VentanaEstandar(navController: NavHostController, chatVM: ChatViewModel, loginVM: LoginViewModel, estandarVM: EstandarViewModel){
     val context = LocalContext.current
     var currentRoute by remember { mutableStateOf("Amigos") }
 
     val emailUsuarioLogeado = loginVM.getCurrentUser()?.email
-    estandarVM.obtenerFotoPerfil(emailUsuarioLogeado!!)
+//    estandarVM.obtenerFotoPerfil(emailUsuarioLogeado!!)
+    if (!emailUsuarioLogeado.isNullOrEmpty()) {
+        estandarVM.obtenerFotoPerfil(emailUsuarioLogeado)
+    } else {
+        Log.e("VentanaEstandar", "El email del usuario está vacío o null después de cerrar sesión")
+        // Puedes poner un valor por defecto o manejar el caso aquí.
+    }
 
     Scaffold(
         topBar = {
@@ -79,7 +94,7 @@ fun VentanaEstandar(navController: NavHostController, datosPerfilVM: DatosPerfil
                         Spacer(modifier = Modifier.width(8.dp))
 
                         Text(
-                            text = emailUsuarioLogeado,
+                            text = emailUsuarioLogeado ?: "No disponible",
                             color = colorResource(R.color.texto),
                             fontSize = 15.sp,
                             modifier = Modifier.padding(bottom = 16.dp)
@@ -90,7 +105,7 @@ fun VentanaEstandar(navController: NavHostController, datosPerfilVM: DatosPerfil
                     titleContentColor = colorResource(id = R.color.textoBotones)
                 ),
                 actions = {
-                    MenuPuntosEstandar()
+                    MenuPuntosEstandar(navController, loginVM)
                 }
             )
         },
@@ -105,21 +120,18 @@ fun VentanaEstandar(navController: NavHostController, datosPerfilVM: DatosPerfil
             modifier = Modifier.padding(innerPadding).padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            if (currentRoute == "Amigos") {
-                BodyVentanaAmigos(navController)
-            } else {
-                if (currentRoute == "Compatibles"){
-                BodyVentanaCompatibles(navController)
-                }else{
-                    BodyVentanaEventosEstandar(navController)
-                }
-            }
+            if (currentRoute == "Amigos") BodyVentanaAmigos(navController, estandarVM)
+            else if (currentRoute == "Compatibles")BodyVentanaCompatibles(navController, estandarVM)
+            else if (currentRoute == "Chats") BodyChats(navController, estandarVM , chatVM)
+            else BodyVentanaEventosEstandar(navController)
+
+
         }
     }
 }
 
 @Composable
-fun MenuPuntosEstandar(){
+fun MenuPuntosEstandar(navController: NavHostController, loginVM: LoginViewModel) {
     val context = LocalContext.current
     var expanded by remember { mutableStateOf(false) }
 
@@ -141,8 +153,12 @@ fun MenuPuntosEstandar(){
             DropdownMenuItem(
                 text = { Text("Cerrar sesión") },
                 onClick = {
-                    Toast.makeText(context, "Cerrar sesión", Toast.LENGTH_SHORT).show()
+                    loginVM.signOut(context)
                     expanded = false
+                    Toast.makeText(context, "Cerrando sesión...", Toast.LENGTH_SHORT).show()
+                    navController.navigate(Rutas.login) {
+                        popUpTo(Rutas.login) { inclusive = true }
+                    }
                 })
         }
     }
@@ -171,6 +187,12 @@ fun BottomNavigationBarEstandar(navController: NavController, currentRoute: Stri
             label = { Text("Compatibles") },
             selected = currentRoute == "Compatibles",
             onClick = { onNuevaRuta("Compatibles") }
+        )
+        BottomNavigationItem(
+            icon = { Icon(Icons.AutoMirrored.Filled.Chat, contentDescription = "Chats") },
+            label = { Text("Chats") },
+            selected = currentRoute == "Chats",
+            onClick = { onNuevaRuta("Chats") }
         )
 
     }
