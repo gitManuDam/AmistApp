@@ -4,11 +4,11 @@ import android.util.Log
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.lifecycle.ViewModel
-import com.example.amistapp.Chat
-import com.example.amistapp.Colecciones
-import com.example.amistapp.MensajeChat
-import com.example.amistapp.Usuario
-import com.example.amistapp.UsuarioChat
+import com.example.amistapp.Modelos.Chat
+import com.example.amistapp.Parametros.Colecciones
+import com.example.amistapp.Modelos.MensajeChat
+import com.example.amistapp.Modelos.Usuario
+import com.example.amistapp.Modelos.UsuarioChat
 import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot

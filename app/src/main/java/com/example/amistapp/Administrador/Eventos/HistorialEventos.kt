@@ -32,9 +32,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
-import com.example.amistapp.Evento
+import com.example.amistapp.Modelos.Evento
 import com.example.amistapp.R
-import com.example.amistapp.Rutas
+import com.example.amistapp.Parametros.Rutas
 
 @Composable
 fun HistorialEventos(navController: NavHostController, eventoVM: EventoViewModel){

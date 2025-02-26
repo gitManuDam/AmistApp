@@ -33,7 +33,7 @@ import androidx.navigation.NavController
 import com.example.amistapp.Administrador.AdministradorViewModel
 import com.example.amistapp.Login.LoginViewModel
 import com.example.amistapp.R
-import com.example.amistapp.Rutas
+import com.example.amistapp.Parametros.Rutas
 
 @Composable
  fun AltaUsuarios(navController: NavController, administradorVM: AdministradorViewModel, loginVM: LoginViewModel){

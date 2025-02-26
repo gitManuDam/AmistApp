@@ -32,7 +32,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.example.amistapp.Login.LoginViewModel
-import com.example.amistapp.MensajeChat
+import com.example.amistapp.Modelos.MensajeChat
 
 @Composable
 fun ChatScreen(

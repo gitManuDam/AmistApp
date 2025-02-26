@@ -4,14 +4,10 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material3.Text
-import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.compose.rememberNavController
 import com.example.amistapp.Login.LoginViewModel
 import com.example.amistapp.ui.theme.AmistAppTheme
-import androidx.compose.ui.unit.sp
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.example.amistapp.Administrador.Usuarios.ActivarDesactivarUsuarios
@@ -31,6 +27,7 @@ import com.example.amistapp.DatosPerfil.DatosPerfilViewModel
 import com.example.amistapp.DatosPerfil.VentanaDatosPerfil
 import com.example.amistapp.Login.LoginScreen
 import com.example.amistapp.Login.NoEstasActivado
+import com.example.amistapp.Parametros.Rutas
 import com.example.amistapp.estandar.EstandarViewModel
 import com.example.amistapp.estandar.VentanaEstandar
 

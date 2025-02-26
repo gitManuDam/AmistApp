@@ -2,16 +2,15 @@ package com.example.amistapp.Login
 
 import android.content.Context
 import android.util.Log
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.example.amistapp.Colecciones
+import com.example.amistapp.Parametros.Colecciones
 import com.example.amistapp.R
-import com.example.amistapp.Usuario
+import com.example.amistapp.Modelos.Usuario
 
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions

@@ -40,7 +40,7 @@ import coil.compose.AsyncImage
 import com.example.amistapp.Administrador.AdministradorViewModel
 import com.example.amistapp.Login.LoginViewModel
 import com.example.amistapp.R
-import com.example.amistapp.Usuario
+import com.example.amistapp.Modelos.Usuario
 
 @Composable
 fun ActivarDesactivarUsuarios(administradorVM: AdministradorViewModel, loginVM: LoginViewModel){

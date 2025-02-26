@@ -6,10 +6,10 @@ import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.lifecycle.ViewModel
-import com.example.amistapp.Colecciones
-import com.example.amistapp.Perfil
-import com.example.amistapp.Usuario
-import com.example.amistapp.UsuarioCompatibilidad
+import com.example.amistapp.Parametros.Colecciones
+import com.example.amistapp.Modelos.Perfil
+import com.example.amistapp.Modelos.Usuario
+import com.example.amistapp.Modelos.UsuarioCompatibilidad
 import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.firestore

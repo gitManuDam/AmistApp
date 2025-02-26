@@ -1,4 +1,4 @@
-package com.example.amistapp
+package com.example.amistapp.Parametros
 
 object Rutas {
     val login = "login"

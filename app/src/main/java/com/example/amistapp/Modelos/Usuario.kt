@@ -1,4 +1,4 @@
-package com.example.amistapp
+package com.example.amistapp.Modelos
 
 data class Usuario(
     val idUsuario: String?= null,

@@ -1,4 +1,4 @@
-package com.example.amistapp
+package com.example.amistapp.Modelos
 
 data class Chat(
     val id: String? = null,
@@ -6,7 +6,7 @@ data class Chat(
     val mensajes: List<MensajeChat>,
 
 
-) {
+    ) {
     constructor() : this(
         id = null,
         usuarios = emptyList(),
