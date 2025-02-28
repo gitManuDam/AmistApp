@@ -38,7 +38,8 @@ import com.example.amistapp.estandar.EstandarViewModel
 import com.example.amistapp.estandar.EventosDisponiblesEstandar
 import com.example.amistapp.estandar.MapsAsistirVentana
 import com.example.amistapp.estandar.MisEventos
-import com.example.amistapp.estandar.MostrarAsistentes
+import com.example.amistapp.Administrador.Eventos.MostrarAsistentes
+import com.example.amistapp.Administrador.Eventos.MostrarInscritosAdmin
 import com.example.amistapp.estandar.MostrarInscritos
 import com.example.amistapp.estandar.VentanaEstandar
 
@@ -149,6 +150,9 @@ class MainActivity : ComponentActivity() {
                     composable(Rutas.mostrarAsistentes) {
                         MostrarAsistentes(navController, eventoVM)
 
+                    }
+                    composable(Rutas.mostrarInscritosAdmin){
+                        MostrarInscritosAdmin(navController,eventoVM)
                     }
                 }
             }

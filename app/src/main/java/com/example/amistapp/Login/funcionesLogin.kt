@@ -43,8 +43,10 @@ import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import androidx.navigation.NavHostController
 import com.example.amistapp.DatosPerfil.DatosPerfilViewModel
-import com.example.amistapp.R
 import com.example.amistapp.Parametros.Rutas
+import com.example.amistapp.R
+
+
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 // Autora: Izaskun

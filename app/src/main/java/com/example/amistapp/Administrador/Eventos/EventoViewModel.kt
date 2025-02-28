@@ -88,7 +88,7 @@ class EventoViewModel: ViewModel() {
 //    val horaAsistenteEvento: StateFlow<Timestamp> get() = _horaAsistenteEvento
 
     fun setLatitud(nuevaLatitud: Double) {
-        _latitud.value = nuevaLatitud
+       _latitud.value = nuevaLatitud
         _Error.value = null
     }
 
@@ -305,6 +305,8 @@ class EventoViewModel: ViewModel() {
         eventoRef.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 val lista = snapshot.children.mapNotNull { it.getValue(AsistenteEvento::class.java) }
+                Log.e(TAG, "id del evento en obtener asistentes es: $eventoId")
+                Log.e(TAG, "Asistentes obtenidos: $lista")
                 _asistentes.value = lista // Actualiza el MutableStateFlow con la nueva lista
             }
 
@@ -316,7 +318,7 @@ class EventoViewModel: ViewModel() {
 
     fun asistirAlEvento(eventoId: String, emailLogeado:String,  context:Context){
         val eventoRef = database.child(eventoId).child("asistentes")
-        val emailLogeado =
+//        val emailLogeado =
         eventoRef.get().addOnSuccessListener { ae ->
             val asistentesActuales = mutableListOf<AsistenteEvento>()
 
@@ -363,6 +365,66 @@ class EventoViewModel: ViewModel() {
             fechaHoy.isBefore(fechaPlazo) || fechaHoy.isEqual(fechaPlazo)
         } else {
             false
+        }
+    }
+
+    fun estaInscrito(eventoId: String, emailUsuario: String, onResultado: (Boolean) -> Unit) {
+
+        val eventoRef = database.child(eventoId).child("inscritos")
+
+        eventoRef.get().addOnSuccessListener { ea ->
+            if (ea.exists()) {
+                val listaInscritos = ea.children.mapNotNull { it.getValue(String::class.java) }
+                onResultado(listaInscritos.contains(emailUsuario))
+            } else {
+                onResultado(false)
+            }
+        }.addOnFailureListener {
+            Log.e("Evento", "Error al verificar inscripción", it)
+            onResultado(false)
+        }
+
+    }
+
+    fun eliminarInscrito(emailInscrito: String) {
+
+        Log.e(TAG, "Intentando eliminar al asistente con email: $emailInscrito")
+
+        val eventoId = _eventoId.value
+//        val eventoRef = database.child("eventos").child(eventoId)
+        val eventoRef = database.child(eventoId)
+        Log.e(TAG, "Intentando eliminar usuario con email: $emailInscrito del evento: ${eventoId}")
+        Log.e(TAG, "el evento es : $eventoId")
+
+        eventoRef.get().addOnSuccessListener { snapshot ->
+            if (snapshot.exists()) {
+                val eventoActualizado = snapshot.getValue(Evento::class.java)
+
+                eventoActualizado?.let {
+                    val listaInscritos = it.inscritos?.toMutableList() ?: mutableListOf()
+                    Log.e(TAG, "Lista de inscritos antes de eliminar: $listaInscritos")
+
+                    if (listaInscritos.contains(emailInscrito)) {
+                        listaInscritos.remove(emailInscrito)
+
+                        eventoRef.child("inscritos").setValue(listaInscritos)
+                            .addOnCompleteListener { task ->
+                                if (task.isSuccessful) {
+                                    Log.d(TAG, "Usuario eliminado con éxito")
+                                    _inscritos.value = listaInscritos
+                                } else {
+                                    Log.e(TAG, "Error al actualizar Firebase", task.exception)
+                                }
+                            }
+                    } else {
+                        Log.d(TAG, "El usuario no está inscrito en este evento")
+                    }
+                }
+            } else {
+                Log.e(TAG, "El evento no existe en Firebase")
+            }
+        }.addOnFailureListener { exception ->
+            Log.e(TAG, "Error al obtener el evento", exception)
         }
     }
 }

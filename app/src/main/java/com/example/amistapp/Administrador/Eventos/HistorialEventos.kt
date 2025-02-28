@@ -13,6 +13,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Attribution
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -33,9 +34,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.example.amistapp.Modelos.Evento
-import com.example.amistapp.R
-
 import com.example.amistapp.Parametros.Rutas
+import com.example.amistapp.R
 
 
 // Autora: Izaskun
@@ -62,7 +62,7 @@ fun HistorialEventos(navController: NavHostController, eventoVM: EventoViewModel
             ) {
 
             items(eventos) { evento ->
-                eventoItemHistorial(evento, eventoVM)
+                eventoItemHistorial(evento, eventoVM, navController)
             }
         }
 
@@ -72,7 +72,7 @@ fun HistorialEventos(navController: NavHostController, eventoVM: EventoViewModel
 }
 @SuppressLint("StateFlowValueCalledInComposition")
 @Composable
-fun eventoItemHistorial(evento: Evento, eventoVM: EventoViewModel) {
+fun eventoItemHistorial(evento: Evento, eventoVM: EventoViewModel, navController: NavHostController) {
     var mostrarDialogo by remember { mutableStateOf(false) }
     Card(
         modifier = Modifier
@@ -100,6 +100,18 @@ fun eventoItemHistorial(evento: Evento, eventoVM: EventoViewModel) {
                         mostrarDialogo = true // muestra el dialogo de confirmacion
                     }, // Acción al hacer clic
             )
+
+            Icon(
+                imageVector = Icons.Filled.Attribution,
+                contentDescription = "Asistentes al evento",
+                modifier = Modifier
+                    .size(24.dp) // Tamaño del icono
+                    .clickable (){
+                        eventoVM.setEventoId(evento.id!!)
+                        navController.navigate(Rutas.mostrarAsistentes)
+                       // mostrar los asistentes
+                    }, // Acción al hacer clic
+            )
         }
     }
     if(mostrarDialogo){
@@ -115,6 +127,8 @@ fun botonVolverHistorial(navController: NavHostController)
 {
     Button(onClick = {
 //        eventoVM.limpiarDatos()
+
+//       navController.popBackStack(Rutas.mostrarAsistentes, inclusive = true)},
         navController.popBackStack()},
 //        navController.navigate(Rutas.administrador)},
         colors = ButtonDefaults.buttonColors(

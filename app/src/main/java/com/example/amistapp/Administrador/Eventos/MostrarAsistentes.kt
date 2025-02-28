@@ -1,5 +1,6 @@
-package com.example.amistapp.estandar
+package com.example.amistapp.Administrador.Eventos
 
+import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -24,7 +25,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
-import com.example.amistapp.Administrador.Eventos.EventoViewModel
 import com.example.amistapp.Modelos.AsistenteEvento
 import com.example.amistapp.R
 import com.example.amistapp.Parametros.Rutas
@@ -41,6 +41,8 @@ fun MostrarAsistentes(navController: NavHostController,
     // Recoge los asistentes al evento
     eventoVM.obtenerAsistentes(eventoId)
     val asistentes by eventoVM.asistentes.collectAsState()
+
+    Log.e("Izaskun", "Asistentes en la UI: $asistentes")
 
     Column(
         modifier = Modifier
@@ -84,7 +86,8 @@ fun botonVolverMostrarAsistentes(navController: NavHostController){
     Button(
         onClick = {
 //        eventoVM.limpiarDatos()
-            navController.navigate(Rutas.eventosDisponibles)
+            navController.popBackStack()
+//            navController.navigate(Rutas.historialEventos)
         },
         colors = ButtonDefaults.buttonColors(
             containerColor = colorResource(R.color.botones), // Color de fondo del botón

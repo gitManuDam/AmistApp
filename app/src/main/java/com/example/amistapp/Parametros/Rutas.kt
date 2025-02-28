@@ -25,5 +25,6 @@ object Rutas {
     var mostrarInscritos = "mostrarInscritos"
     var mapaUbicacionUsuario = "mapaUbicacionUsuario"
     var mostrarAsistentes = "mostrarAsistentes"
+    var mostrarInscritosAdmin = "mostrarInscritosAdmin"
 
 }
