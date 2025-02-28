@@ -27,4 +27,7 @@ object Rutas {
     var mostrarAsistentes = "mostrarAsistentes"
     var mostrarInscritosAdmin = "mostrarInscritosAdmin"
 
+    var subirFotosEventos = "subirFotosEventos"
+    var mostrarFotosEventos = "mostrarFotosEventos"
+
 }

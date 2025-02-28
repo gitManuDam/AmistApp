@@ -2,4 +2,9 @@
     <string name="app_name">AmistApp</string>
     <string name="client_id">482268788040-3lpvtffa9dgj06q7ha301iqa802747ta.apps.googleusercontent.com</string>
     <string name="default_web_client_id" />
+    <string name="pfp_updated">Foto de perfil subida correctamente</string>
+
+    <string name="pfp">Foto de perfil</string>
+    <string name="take_pfp">Tomar foto de perfil</string>
+    <string name="change_pfp">Subir foto de perfil</string>
 </resources>

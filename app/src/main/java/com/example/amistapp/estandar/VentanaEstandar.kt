@@ -171,26 +171,26 @@ fun BottomNavigationBarEstandar(navController: NavController, currentRoute: Stri
 
         BottomNavigationItem(
             icon = { Icon(Icons.Default.Person, contentDescription = "Amigos") },
-            label = { Text("Amigos") },
+            label = { Text("Amigos", fontSize = 13.sp) },
             selected = currentRoute == "Amigos",
             onClick = { onNuevaRuta("Amigos") }
 
         )
         BottomNavigationItem(
             icon = { Icon(Icons.Default.DateRange, contentDescription = "Eventos") },
-            label = { Text("Eventos") },
+            label = { Text("Eventos", fontSize = 13.sp) },
             selected = currentRoute == "Eventos",
             onClick = { onNuevaRuta("Eventos") }
         )
         BottomNavigationItem(
             icon = { Icon(Icons.Default.Accessibility, contentDescription = "Compatibles") },
-            label = { Text("Compatibles") },
+            label = { Text("Compatibles", fontSize = 13.sp) },
             selected = currentRoute == "Compatibles",
             onClick = { onNuevaRuta("Compatibles") }
         )
         BottomNavigationItem(
             icon = { Icon(Icons.AutoMirrored.Filled.Chat, contentDescription = "Chats") },
-            label = { Text("Chats") },
+            label = { Text("Chats", fontSize = 13.sp) },
             selected = currentRoute == "Chats",
             onClick = { onNuevaRuta("Chats") }
         )

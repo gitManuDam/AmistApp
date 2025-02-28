@@ -13,7 +13,8 @@ data class Evento(
     val fecha: String = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")),
     val hora: String = LocalDateTime.now().format(DateTimeFormatter.ofPattern("HH:mm:ss")),
     val plazoInscripcion: String = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")),
-    val timestamp: Long = System.currentTimeMillis() // para ordenarlos en la rv
+    val timestamp: Long = System.currentTimeMillis(), // para ordenarlos en la rv
+    val fotos: List<String> = emptyList()
 ){
     // Constructor sin argumentos  por Firebase, daba error sin él
     constructor() : this(

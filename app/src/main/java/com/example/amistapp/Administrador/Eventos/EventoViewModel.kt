@@ -3,6 +3,7 @@ package com.example.amistapp.Administrador.Eventos
 import android.annotation.SuppressLint
 import android.content.Context
 import android.location.Geocoder
+import android.net.Uri
 import android.util.Log
 import android.widget.Toast
 import androidx.compose.runtime.Composable
@@ -15,13 +16,18 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.amistapp.Modelos.AsistenteEvento
 import com.example.amistapp.Modelos.Evento
+import com.example.amistapp.R
+import com.google.firebase.Firebase
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
+import com.google.firebase.storage.storage
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import java.io.File
 import java.io.IOException
+import java.net.URL
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
@@ -77,15 +83,48 @@ class EventoViewModel: ViewModel() {
     private val _eventoId = mutableStateOf("")
     val eventoId: State<String> get() = _eventoId
 
-//    private val _asistenteEvento = mutableStateOf(AsistenteEvento())
-//    val asistenteEvento: State<AsistenteEvento>  get() = _asistenteEvento
+    // Contendrá la lista de los inscritos al evento
+    private val _fotos = MutableStateFlow<List<String>>(emptyList())
+    val fotos: StateFlow<List<String>> get() = _fotos
 
-//    // Estas dos variables conformarán AsistenteEvento
-//    private val _EmailAsistenteEvento =  mutableStateOf("")
-//    val emailAsitenteEvento: State<String> get() = _EmailAsistenteEvento
-//
-//    private val _horaAsistenteEvento= MutableStateFlow(Timestamp.now())
-//    val horaAsistenteEvento: StateFlow<Timestamp> get() = _horaAsistenteEvento
+    // para los archivos del storage, en este caso fotos
+    val storage = Firebase.storage
+    var storageRef = storage.reference /*
+    Crea una referencia para subir, descargar o borrar un archivo, o para obtener o actualizar sus metadatos. Se puede decir que una referencia es un indicador
+    que apunta a un archivo en la nube. Las referencias son livianas, por lo que puedes crear todas las que necesites. También se pueden reutilizar en varias operaciones.
+    */
+
+    private val _urlPfp = MutableLiveData<URL?>()
+    val urlPfp: LiveData<URL?> = _urlPfp
+
+    private val _imageUri = MutableLiveData<Uri>(Uri.EMPTY)
+    val imageUri: LiveData<Uri> get() = _imageUri
+
+    private val _imageFile = MutableLiveData<File?>()
+    val imageFile: LiveData<File?> get() = _imageFile
+
+    private val _isUploading = MutableLiveData<Boolean>(false)
+    val isUploading: LiveData<Boolean> get() = _isUploading
+
+    private val _uploadSuccess = MutableLiveData<Boolean>()
+    val uploadSuccess: LiveData<Boolean> get() = _uploadSuccess
+
+    private val _fileList = MutableLiveData<List<String>>(emptyList())
+    val fileList: LiveData<List<String>> get() = _fileList
+
+    fun updateImageUri(uri: Uri) {
+        _imageUri.value = uri
+    }
+
+    fun setImageFile(file: File) {
+        _imageFile.value = file
+    }
+
+    fun setUrlPfp(url: URL) {
+        this._urlPfp.value = url
+    }
+
+
 
     fun setLatitud(nuevaLatitud: Double) {
        _latitud.value = nuevaLatitud
@@ -127,6 +166,126 @@ class EventoViewModel: ViewModel() {
         observeEventos()
     }
 
+    //Subir la imagen a Storage.
+    //Para subir un archivo a Cloud Storage, primero debes crear una referencia a la ruta de acceso completa del archivo, incluido el nombre.
+    //https://firebase.google.com/docs/storage/android/upload-files?hl=es-419
+    fun uploadImage(context: Context) {
+        val file = _imageFile.value ?: return
+        val fileUri = Uri.fromFile(file)
+        val ref = storageRef.child("images/${fileUri.lastPathSegment}")
+
+        _isUploading.value = true
+        ref.putFile(fileUri)
+            .addOnSuccessListener {
+                _isUploading.value = false
+                _uploadSuccess.value = true
+                Toast.makeText(context, context.getString(R.string.pfp_updated), Toast.LENGTH_SHORT).show()
+                loadFileList()
+                Log.d(TAG, "Imagen subida correctamente. URL de la misma: ${ref.downloadUrl}")
+            }
+            .addOnFailureListener { exception ->
+                _isUploading.value = false
+                _uploadSuccess.value = false
+                Toast.makeText(context, "Error: ${exception.message}", Toast.LENGTH_SHORT).show()
+            }
+    }
+
+    fun uploadImageAndSaveToEvent(context: Context, eventoId: String) {
+        val file = _imageFile.value ?: return
+        val fileUri = Uri.fromFile(file)
+        val ref = storageRef.child("images/${fileUri.lastPathSegment}")
+
+        _isUploading.value = true
+
+        Log.e("Evento", "El id del evento es $eventoId.")
+
+        ref.putFile(fileUri)
+            .addOnSuccessListener { taskSnapshot ->
+                //  URL de la imagen subida
+                ref.downloadUrl.addOnSuccessListener { uri ->
+                    val imageUrl = uri.toString()  //  URL a guardar
+
+                    // se guarda  la URL en el evento correspondiente
+                    val eventoRef = database.child(eventoId)
+
+                    eventoRef.get().addOnSuccessListener { snapshot ->
+                        if (snapshot.exists()) {
+                            // Obtiene las fotos existentes
+                            val fotosExistentes = snapshot.child("fotos").children
+                                .mapNotNull { it.getValue(String::class.java) }
+                                .toMutableList()
+
+                            // Agrega la nueva URL a la lista de fotos
+                            fotosExistentes.add(imageUrl)
+
+                            // Guarda la lista de fotos actualizada
+                            eventoRef.child("fotos").setValue(fotosExistentes)
+                                .addOnCompleteListener { task ->
+                                    if (task.isSuccessful) {
+                                        _isUploading.value = false
+                                        _uploadSuccess.value = true
+                                        Toast.makeText(context, "Imagen subida y guardada en el evento", Toast.LENGTH_SHORT).show()
+                                        Log.d(TAG, "Imagen subida y URL guardada correctamente en el evento")
+                                    } else {
+                                        _isUploading.value = false
+                                        _uploadSuccess.value = false
+                                        Toast.makeText(context, "Error al guardar la foto en el evento", Toast.LENGTH_SHORT).show()
+                                    }
+                                }
+                        } else {
+                            Log.e("Evento", "El evento no existe en la base de datos.")
+                        }
+                    }
+                }
+            }
+            .addOnFailureListener { exception ->
+                _isUploading.value = false
+                _uploadSuccess.value = false
+                Toast.makeText(context, "Error al subir la imagen: ${exception.message}", Toast.LENGTH_SHORT).show()
+            }
+    }
+
+
+    //Carga la lista de archivos desde Firebase Storage.
+    fun loadFileList() {
+        storageRef.child("images").listAll()
+            .addOnSuccessListener { result ->
+                val urls = mutableListOf<String>()
+                val tasks = result.items.map { ref ->
+                    ref.downloadUrl.addOnSuccessListener { uri ->
+                        urls.add(uri.toString())
+                        if (urls.size == result.items.size) {
+                            _fileList.value = urls
+                        }
+                    }
+                }
+                tasks.forEach { it }
+            }
+            .addOnFailureListener { exception ->
+                Log.e(TAG, "Error al cargar la lista: ${exception.message}")
+            }
+    }
+
+    fun deleteFile(fileUrl: String, context: Context) {
+        val ref = storage.getReferenceFromUrl(fileUrl)
+        ref.delete()
+            .addOnSuccessListener {
+                Toast.makeText(context, "Archivo eliminado correctamente", Toast.LENGTH_SHORT).show()
+                loadFileList() //Recargamos la lista de archivos tras eliminar uno.
+            }
+            .addOnFailureListener { exception ->
+                Log.e(TAG, "Error al eliminar archivo: ${exception.message}")
+                Toast.makeText(context, "Error: ${exception.message}", Toast.LENGTH_SHORT).show()
+            }
+    }
+
+
+    //Actualiza la URI de la imagen seleccionada
+    fun selectImage(uri: String) {
+        _imageUri.value = Uri.parse(uri)
+    }
+
+
     private fun observeEventos() {
         database.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
@@ -136,12 +295,26 @@ class EventoViewModel: ViewModel() {
                 // se guardan todos los eventos
                 _eventos.value = nuevosEvent.toList()
 
-                // se guardan solo los que la fecha de inscripcion es igual o mayor a la actual
+//                // se guardan solo los que la fecha de inscripcion es igual o mayor a la actual
+//                _proximosEventos.value = nuevosEvent.filter { evento ->
+//                    val fechaInscripcion =
+//                        LocalDate.parse(evento.plazoInscripcion) // Asegúrate de que la fecha está en formato YYYY-MM-DD
+//                    fechaInscripcion >= fechaActual
+//                }
+
+                // Se guardan solo los que la fecha de inscripción es igual o mayor a la actual
                 _proximosEventos.value = nuevosEvent.filter { evento ->
-                    val fechaInscripcion =
-                        LocalDate.parse(evento.plazoInscripcion) // Asegúrate de que la fecha está en formato YYYY-MM-DD
-                    fechaInscripcion >= fechaActual
+                    val fechaInscripcionString = evento.plazoInscripcion
+                    // Comprobar si la fecha no está vacía ni nula
+                    if (!fechaInscripcionString.isNullOrEmpty()) {
+                        val fechaInscripcion = LocalDate.parse(fechaInscripcionString)
+                        fechaInscripcion >= fechaActual
+                    } else {
+                        // Si la fecha está vacía o nula, puedes decidir qué hacer (por ejemplo, no incluir el evento)
+                        false
+                    }
                 }
+
             }
 
             override fun onCancelled(error: DatabaseError) {
@@ -149,6 +322,23 @@ class EventoViewModel: ViewModel() {
             }
         })
 
+    }
+
+    fun obtenerFotosDelEvento(eventoId: String) {
+        val eventoRef = database.child(eventoId)
+
+        eventoRef.get().addOnSuccessListener { snapshot ->
+            if (snapshot.exists()) {
+                // Extraemos las URLs de las fotos del evento
+                val fotos = snapshot.child("fotos").children.mapNotNull { it.getValue(String::class.java) }
+                // Actualizamos el StateFlow con las fotos obtenidas
+                _fotos.value = fotos
+            } else {
+                Log.e(TAG, "El evento con ID $eventoId no existe.")
+            }
+        }.addOnFailureListener { exception ->
+            Log.e(TAG, "Error al obtener las fotos: ${exception.message}")
+        }
     }
 
     fun addInscrito(nuevoInscrito: String) {
@@ -203,7 +393,8 @@ class EventoViewModel: ViewModel() {
             hora = _hora.value.toString(),
             plazoInscripcion = _plazoInscripcion.value.toString(),
             inscritos = _inscritos.value,
-            asistentes = _asistentes.value
+            asistentes = _asistentes.value,
+            fotos = _fotos.value
 //            inscritos = if (_inscritos.value.isEmpty()) listOf("") else _inscritos.value,
 //            asistentes = if (_asistentes.value.isEmpty()) listOf(AsistenteEvento("", "")) else _asistentes.value
         )
@@ -318,7 +509,7 @@ class EventoViewModel: ViewModel() {
 
     fun asistirAlEvento(eventoId: String, emailLogeado:String,  context:Context){
         val eventoRef = database.child(eventoId).child("asistentes")
-//        val emailLogeado =
+
         eventoRef.get().addOnSuccessListener { ae ->
             val asistentesActuales = mutableListOf<AsistenteEvento>()
 
@@ -376,6 +567,24 @@ class EventoViewModel: ViewModel() {
             if (ea.exists()) {
                 val listaInscritos = ea.children.mapNotNull { it.getValue(String::class.java) }
                 onResultado(listaInscritos.contains(emailUsuario))
+            } else {
+                onResultado(false)
+            }
+        }.addOnFailureListener {
+            Log.e("Evento", "Error al verificar inscripción", it)
+            onResultado(false)
+        }
+
+    }
+
+    fun asistio(eventoId: String, emailUsuario: String, onResultado: (Boolean) -> Unit) {
+
+        val eventoRef = database.child(eventoId).child("asistentes")
+
+        eventoRef.get().addOnSuccessListener { ea ->
+            if (ea.exists()) {
+                val listaAsistentes = ea.children.mapNotNull { it.getValue(AsistenteEvento::class.java) }
+                onResultado(listaAsistentes.any { it.email == emailUsuario }) // Verifica si el email está en la lista
             } else {
                 onResultado(false)
             }

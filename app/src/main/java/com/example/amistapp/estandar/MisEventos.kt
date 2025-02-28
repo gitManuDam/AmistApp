@@ -17,7 +17,9 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AddAPhoto
 import androidx.compose.material.icons.filled.AddLocationAlt
+import androidx.compose.material.icons.filled.Image
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
@@ -32,6 +34,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -75,7 +78,7 @@ fun MisEventos(
                 ) {
 
                 items(misEventos) { evento ->
-                    eventoItemMisEventos(evento, eventoVM, contexto, navController, estandarVM)
+                    eventoItemMisEventos(evento, eventoVM, contexto, navController, estandarVM, emailLogeado)
                 }
             }
 
@@ -91,8 +94,19 @@ fun eventoItemMisEventos(
 
     contexto: Context,
     navController: NavHostController,
-    estandarVM: EstandarViewModel
+    estandarVM: EstandarViewModel,
+    emailLogeado: String
 ) {
+    // para saber si el usuario asistió al evento
+    var asistio by remember { mutableStateOf(false) }
+
+    // llama a la función `asistio` que comprueba si el usuario asistió a este evento
+    eventoVM.asistio(evento.id!!, emailLogeado!!) { asistente ->
+        asistio = asistente // Actualizamos el estado local con el resultado
+    }
+
+
+
     var mostrarDialogo by remember { mutableStateOf(false) }
     Card(
         modifier = Modifier
@@ -112,6 +126,7 @@ fun eventoItemMisEventos(
             Text(text = "Ubicación: ${direccion}", fontSize = 15.sp)
             Text(text = "Plazo inscripción: ${evento.plazoInscripcion}", fontSize = 15.sp)
             Text(text = "Inscritos: ${evento.inscritos.size}", fontSize = 15.sp)
+            Row (modifier = Modifier.fillMaxWidth(),horizontalArrangement = Arrangement.SpaceEvenly){
             Icon(
                 imageVector = Icons.Filled.AddLocationAlt,
                 contentDescription = "He llegado",
@@ -119,8 +134,40 @@ fun eventoItemMisEventos(
                     .size(24.dp) // Tamaño del icono
                     .clickable (){
                         mostrarDialogo = true // muestra el dialogo de confirmacion
-                    }, // Acción al hacer clic
+                    } // Acción al hacer clic
             )
+
+            Icon(
+                imageVector = Icons.Filled.AddAPhoto,
+                contentDescription = "Subir fotos",
+                modifier = Modifier
+                    .size(24.dp) // Tamaño del icono
+                    .clickable (enabled = asistio){
+                        eventoVM.setEventoId(evento.id!!)
+                        navController.navigate(Rutas.subirFotosEventos)
+//                        eventoVM.uploadImageAndSaveToEvent(contexto, evento.id!!)
+                    } // Acción al hacer clik
+                    .graphicsLayer(
+                        alpha = if (!asistio) 0.4f else 1f
+                    )
+            )
+
+            Icon(
+                imageVector = Icons.Filled.Image,
+                contentDescription = "Ver fotos",
+                modifier = Modifier
+                    .size(24.dp) // Tamaño del icono
+                    .clickable (enabled = asistio){
+                        eventoVM.setEventoId(evento.id!!)
+                        navController.navigate(Rutas.mostrarFotosEventos)
+//     llamar a la función para ver las fotos
+                    } // Acción al hacer clic
+                    .graphicsLayer(
+                        alpha = if (!asistio) 0.4f else 1f
+                    )
+            )}
+
+
         }
     }
     if(mostrarDialogo){
