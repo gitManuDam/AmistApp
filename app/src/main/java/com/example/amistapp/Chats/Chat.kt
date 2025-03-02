@@ -33,6 +33,9 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.example.amistapp.Login.LoginViewModel
 import com.example.amistapp.Modelos.MensajeChat
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 @Composable
 fun ChatScreen(
@@ -142,6 +145,14 @@ fun ChatMessageItem(mens: MensajeChat, loginViewModel: LoginViewModel) {
                 style = MaterialTheme.typography.bodyLarge,
 
                 )
+            val formattedTimestamp = remember(mens.timestamp) {
+                SimpleDateFormat("HH:mm", Locale.getDefault()).format(Date(mens.timestamp))
+            }
+
+            Text(
+                text = formattedTimestamp,
+                style = MaterialTheme.typography.labelSmall
+            )
         }
     }
 }

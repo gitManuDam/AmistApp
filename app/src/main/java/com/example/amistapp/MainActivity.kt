@@ -119,7 +119,7 @@ class MainActivity : ComponentActivity() {
                             chatVM,
                             email
                         )
-                    }// Aquí pasas el email al composable
+                    }
 
                     composable(Rutas.eventosDisponibles) {
                         EventosDisponiblesEstandar(navController, eventoVM, loginVM)

@@ -1,4 +1,10 @@
 package com.example.amistapp.Modelos
 
-class Peticion(var emisor:String, var receptor:String, var estado:Int) {
+data class Peticion(var id :String,var emisor:String, var receptor:String, ) {
+    constructor() : this(
+        id = "",
+        emisor = "",
+        receptor = ""
+
+        )
 }

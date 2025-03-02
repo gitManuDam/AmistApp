@@ -15,6 +15,7 @@ import com.example.amistapp.Modelos.Perfil
 
 import com.example.amistapp.Modelos.UsuarioCompatibilidad
 import com.example.amistapp.Modelos.Evento
+import com.example.amistapp.Modelos.Peticion
 import com.example.amistapp.Modelos.Usuario
 
 import com.google.firebase.Firebase
@@ -45,6 +46,9 @@ class EstandarViewModel:ViewModel() {
     private val _listadoCompatibles = mutableStateListOf<UsuarioCompatibilidad>()
     val listadoCompatibles: SnapshotStateList<UsuarioCompatibilidad> get() = _listadoCompatibles
 
+    private val _listadoPeticiones = mutableStateListOf<Peticion>()
+    val listadoPeticiones: SnapshotStateList<Peticion> get() = _listadoPeticiones
+
     private val _usuarioActual = mutableStateOf<Usuario?>(null)
     val usuarioActual: State<Usuario?> get() = _usuarioActual
 
@@ -62,6 +66,8 @@ class EstandarViewModel:ViewModel() {
 
     private val _emailLogeado = mutableStateOf("")
     val emailLogeado: State<String> get() = _emailLogeado
+
+
 
     private val _Error = MutableLiveData<String?>()
     val Error: LiveData<String?> = _Error
@@ -358,20 +364,55 @@ class EstandarViewModel:ViewModel() {
     fun enviarPeticion(emisor: String, receptor: String) {
         val peticion = hashMapOf(
             "emisor" to emisor,
-            "receptor" to receptor,
-            "estado" to 0
+            "receptor" to receptor
+
         )
 
         db.collection(Colecciones.Peticiones)
             .add(peticion)
             .addOnSuccessListener { documentReference ->
-                Log.d(TAG, "Petición enviada con ID: ${documentReference.id}")
+                val peticionId = documentReference.id // Obtén el ID generado por Firebase
+                Log.d(TAG, "Petición enviada con ID: $peticionId")
+
+                // Actualiza el campo "id" con el ID generado y lo guarda en Firebase
+                val peticionActualizada = hashMapOf(
+                    "id" to peticionId,
+                    "emisor" to emisor,
+                    "receptor" to receptor
+
+                )
+
+                // Ahora actualizamos el documento con el campo "id" actualizado
+                documentReference.update(peticionActualizada as Map<String, Any>)
+                    .addOnSuccessListener {
+                        Log.d(TAG, "ID de la petición guardado correctamente")
+                    }
+                    .addOnFailureListener { e ->
+                        Log.e(TAG, "Error al guardar el ID de la petición", e)
+                    }
             }
             .addOnFailureListener { e ->
                 Log.e(TAG, "Error al enviar la petición", e)
             }
     }
 
+    fun obtenerPeticionesRecibidas() {
+        Log.d(TAG, "Obteniendo peticiones recibidas...")
+        db.collection(Colecciones.Peticiones)
+            .whereEqualTo("receptor", auth.currentUser?.email)
+            .get()
+            .addOnSuccessListener { peticionesResult ->
+                val peticiones = peticionesResult.documents.mapNotNull { doc ->
+
+                    doc.toObject(Peticion::class.java)
+                }
+                _listadoPeticiones.clear()
+                _listadoPeticiones.addAll(peticiones)
+            }
+            .addOnFailureListener {
+                Log.e(TAG, "Error al obtener peticiones recibidas", it)
+            }
+    }
 
     fun obtenerMisEventos(emailUsuario: String){
         database.get().addOnSuccessListener { me ->
@@ -417,6 +458,65 @@ class EstandarViewModel:ViewModel() {
         return distancia <= 20 //
     }
 
+    fun aceptarPeticion(peticion: Peticion) {
+        db.collection(Colecciones.Peticiones)
+            .document(peticion.id)
+            .delete()
+            .addOnSuccessListener {
+                Log.d(TAG, "Petición aceptada correctamente")
+                actualizarListasAmigos(peticion.emisor, peticion.receptor)
+            }
+            .addOnFailureListener {
+                Log.e(TAG, "Error al aceptar la petición", it)
+            }
+    }
+    fun rechazarPeticion(peticion: Peticion) {
+        db.collection(Colecciones.Peticiones)
+            .document(peticion.id)
+            .delete()
+            .addOnSuccessListener {
+                Log.d(TAG, "Petición rechazada correctamente")
+
+            }
+            .addOnFailureListener {
+                Log.e(TAG, "Error al aceptar la petición", it)
+            }
+    }
+    fun actualizarListasAmigos(emisor: String, receptor: String) {
+        Log.d(TAG, "Actualizando listas de amigos...")
+        val emisorRef = db.collection(Colecciones.Usuarios).document(emisor)
+        val receptorRef = db.collection(Colecciones.Usuarios).document(receptor)
+
+        db.runTransaction { transaction ->
+            val emisorSnapshot = transaction.get(emisorRef)
+            val receptorSnapshot = transaction.get(receptorRef)
+
+
+            if (emisorSnapshot.exists() && receptorSnapshot.exists()) {
+
+                val listaAmigosEmisor = emisorSnapshot.get("perfil.amigos") as? MutableList<String> ?: mutableListOf()
+                val listaAmigosReceptor = receptorSnapshot.get("perfil.amigos") as? MutableList<String> ?: mutableListOf()
+
+
+                listaAmigosEmisor.add(receptor)
+                listaAmigosReceptor.add(emisor)
+
+
+                transaction.update(emisorRef, "perfil.amigos", listaAmigosEmisor)
+                transaction.update(receptorRef, "perfil.amigos", listaAmigosReceptor)
+
+                Log.d(TAG, "Listas de amigos actualizadas correctamente")
+            } else {
+                throw Exception("Uno de los usuarios no existe")
+            }
+        }
+            .addOnSuccessListener {
+                Log.d(TAG, "Transacción completada correctamente")
+            }
+            .addOnFailureListener { e ->
+                Log.e(TAG, "Error al actualizar las listas de amigos", e)
+            }
+    }
 
 
 }

@@ -105,7 +105,9 @@ fun VentanaEstandar(navController: NavHostController, chatVM: ChatViewModel, log
                     titleContentColor = colorResource(id = R.color.textoBotones)
                 ),
                 actions = {
-                    MenuPuntosEstandar(navController, loginVM)
+                    MenuPuntosEstandar(navController, loginVM){
+                        currentRoute = it
+                    }
                 }
             )
         },
@@ -122,6 +124,7 @@ fun VentanaEstandar(navController: NavHostController, chatVM: ChatViewModel, log
         ) {
             if (currentRoute == "Amigos") BodyVentanaAmigos(navController, estandarVM)
             else if (currentRoute == "Compatibles")BodyVentanaCompatibles(navController, estandarVM)
+            else if (currentRoute == "Peticiones") BodyPeticiones(navController, estandarVM)
             else if (currentRoute == "Chats") BodyChats(navController, estandarVM , chatVM)
             else BodyVentanaEventosEstandar(navController)
 
@@ -131,7 +134,7 @@ fun VentanaEstandar(navController: NavHostController, chatVM: ChatViewModel, log
 }
 
 @Composable
-fun MenuPuntosEstandar(navController: NavHostController, loginVM: LoginViewModel) {
+fun MenuPuntosEstandar(navController: NavHostController, loginVM: LoginViewModel, onNuevaRuta: (String) -> Unit) {
     val context = LocalContext.current
     var expanded by remember { mutableStateOf(false) }
 
@@ -146,7 +149,13 @@ fun MenuPuntosEstandar(navController: NavHostController, loginVM: LoginViewModel
             DropdownMenuItem(
                 text = { Text("Perfil") },
                 onClick = {
-                    Toast.makeText(context, "Perfil", Toast.LENGTH_SHORT).show()
+                    onNuevaRuta("Amigos")
+                    expanded = false
+                })
+            DropdownMenuItem(
+                text = { Text("Bandeja de entrada") },
+                onClick = {
+                    onNuevaRuta("Peticiones")
                     expanded = false
                 })
 
