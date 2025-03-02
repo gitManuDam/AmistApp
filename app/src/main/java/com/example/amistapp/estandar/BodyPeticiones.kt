@@ -28,6 +28,7 @@ fun BodyPeticiones(navController: NavHostController, estandarVM: EstandarViewMod
                         estandarVM.obtenerPeticionesRecibidas()
                     },
                     onRechazar = {
+                        estandarVM.rechazarPeticion(peticion)
                         Log.d("Peticion", "Solicitud rechazada: ${peticion.emisor} -> ${peticion.receptor}")
                     }
                 )

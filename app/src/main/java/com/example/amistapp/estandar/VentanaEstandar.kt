@@ -64,7 +64,8 @@ import com.example.amistapp.Parametros.Rutas
 // Autora: Izaskun
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun VentanaEstandar(navController: NavHostController, chatVM: ChatViewModel, loginVM: LoginViewModel, estandarVM: EstandarViewModel){
+fun VentanaEstandar(navController: NavHostController, chatVM: ChatViewModel, loginVM: LoginViewModel, estandarVM: EstandarViewModel,
+                    datosPerfilVM: DatosPerfilViewModel){
     val context = LocalContext.current
     var currentRoute by remember { mutableStateOf("Amigos") }
 
@@ -125,6 +126,7 @@ fun VentanaEstandar(navController: NavHostController, chatVM: ChatViewModel, log
             if (currentRoute == "Amigos") BodyVentanaAmigos(navController, estandarVM)
             else if (currentRoute == "Compatibles")BodyVentanaCompatibles(navController, estandarVM)
             else if (currentRoute == "Peticiones") BodyPeticiones(navController, estandarVM)
+            else if (currentRoute == "Perfil") BodyPerfil(navController, estandarVM, datosPerfilVM , context)
             else if (currentRoute == "Chats") BodyChats(navController, estandarVM , chatVM)
             else BodyVentanaEventosEstandar(navController)
 
@@ -149,7 +151,7 @@ fun MenuPuntosEstandar(navController: NavHostController, loginVM: LoginViewModel
             DropdownMenuItem(
                 text = { Text("Perfil") },
                 onClick = {
-                    onNuevaRuta("Amigos")
+                    onNuevaRuta("Perfil")
                     expanded = false
                 })
             DropdownMenuItem(

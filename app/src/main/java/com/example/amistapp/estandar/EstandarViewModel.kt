@@ -459,12 +459,32 @@ class EstandarViewModel:ViewModel() {
     }
 
     fun aceptarPeticion(peticion: Peticion) {
+        // Elimina la petición original de la colección Peticiones
         db.collection(Colecciones.Peticiones)
             .document(peticion.id)
             .delete()
             .addOnSuccessListener {
                 Log.d(TAG, "Petición aceptada correctamente")
+                // Actualiza las listas de amigos después de aceptar la petición
                 actualizarListasAmigos(peticion.emisor, peticion.receptor)
+
+                // Busca la petición inversa (de receptor a emisor) y la elimina
+                db.collection(Colecciones.Peticiones)
+                    .whereEqualTo("emisor", peticion.receptor)
+                    .whereEqualTo("receptor", peticion.emisor)
+                    .get()
+                    .addOnSuccessListener { querySnapshot ->
+                        // Si existe, elimina el documento de la colección Peticiones
+                        val documentoPeticion = querySnapshot.documents.firstOrNull()
+                        documentoPeticion?.reference?.delete()?.addOnSuccessListener {
+                            Log.d(TAG, "Petición inversa eliminada correctamente")
+                        }?.addOnFailureListener {
+                            Log.e(TAG, "Error al eliminar la petición inversa", it)
+                        }
+                    }
+                    .addOnFailureListener {
+                        Log.e(TAG, "Error al buscar la petición inversa", it)
+                    }
             }
             .addOnFailureListener {
                 Log.e(TAG, "Error al aceptar la petición", it)

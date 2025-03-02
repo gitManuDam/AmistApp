@@ -72,7 +72,7 @@ class MainActivity : ComponentActivity() {
                         LoginScreen(navController, loginVM, datosPerfilVM)
                     }
                     composable(Rutas.estandar) {
-                        VentanaEstandar(navController, chatVM, loginVM, estandarVM)
+                        VentanaEstandar(navController, chatVM, loginVM, estandarVM, datosPerfilVM)
                     }
                     composable(Rutas.administrador) {
                         VentanaAdministrador(navController, datosPerfilVM, eventoVM, loginVM)

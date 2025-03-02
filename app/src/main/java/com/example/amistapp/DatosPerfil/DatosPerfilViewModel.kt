@@ -87,9 +87,11 @@ class DatosPerfilViewModel : ViewModel() {
     }
 
     fun setFotoPerfil(nuevaFotoPerfil: String){
+        Log.e("Manuel","Estoy en setFotoPerfil ${nuevaFotoPerfil}")
         if (nuevaFotoPerfil.isEmpty()){
             _Error.value= "El campo no puede estar vacio"
         }else{
+            Log.e("Manuel","Estoy ${nuevaFotoPerfil}")
             _fotoPerfil.value= nuevaFotoPerfil
             _Error.value = null
         }
@@ -217,6 +219,14 @@ class DatosPerfilViewModel : ViewModel() {
            .addOnFailureListener { e ->
                Log.e("Izaskun", "Error al actualizar el perfil: $e")
            }
+    }
+    fun actualizarFotoPerfil(emailLogeado:String){
+        val usuariosRef = db.collection(Colecciones.Usuarios)
+        val perfilActualizado = mapOf(
+            "fotoPerfil" to fotoPerfil.value
+        )
+        usuariosRef.document(emailLogeado)
+            .set(mapOf("perfil" to perfilActualizado), SetOptions.merge())
     }
 
     fun limpiarValores(){
