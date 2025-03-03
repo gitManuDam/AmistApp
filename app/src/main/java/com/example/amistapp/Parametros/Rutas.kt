@@ -29,5 +29,7 @@ object Rutas {
 
     var subirFotosEventos = "subirFotosEventos"
     var mostrarFotosEventos = "mostrarFotosEventos"
+    var subirFotosPerfil = "subirFotosPerfil"
+    var mostrarFotosPerfil = "mostrarFotosPerfil"
 
 }

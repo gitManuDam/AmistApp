@@ -1,5 +1,5 @@
 package com.example.amistapp.Modelos
-
+//Manuel
 data class Chat(
     val id: String? = null,
     val usuarios: List<String>,

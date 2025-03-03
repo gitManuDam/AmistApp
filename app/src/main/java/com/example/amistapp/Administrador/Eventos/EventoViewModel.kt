@@ -16,12 +16,15 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.amistapp.Modelos.AsistenteEvento
 import com.example.amistapp.Modelos.Evento
+import com.example.amistapp.Modelos.Usuario
+import com.example.amistapp.Parametros.Colecciones
 import com.example.amistapp.R
 import com.google.firebase.Firebase
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
+import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.storage
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -245,7 +248,54 @@ class EventoViewModel: ViewModel() {
             }
     }
 
+    fun uploadImageAndSaveToPerfil(context: Context, usuario: Usuario?) {
+        val file = _imageFile.value ?: return
+        val fileUri = Uri.fromFile(file)
+        val ref = storageRef.child("profile_images/${fileUri.lastPathSegment}")
 
+        _isUploading.value = true
+
+        usuario?.let { user ->
+            ref.putFile(fileUri)
+                .addOnSuccessListener { taskSnapshot ->
+                    ref.downloadUrl.addOnSuccessListener { uri ->
+                        val imageUrl = uri.toString()  // URL a guardar
+
+                        // Referencia al documento del usuario en Firestore
+                        val userRef = FirebaseFirestore.getInstance().collection(Colecciones.Usuarios).document(user.email)
+
+                        userRef.get().addOnSuccessListener { snapshot ->
+                            if (snapshot.exists()) {
+                                val perfil = snapshot.get("perfil") as? Map<String, Any> ?: emptyMap()
+                                val fotosExistentes = (perfil["fotos"] as? List<String>)?.toMutableList() ?: mutableListOf()
+
+                                // Agregar la nueva foto a la lista
+                                fotosExistentes.add(imageUrl)
+
+                                // Actualizar el campo "perfil.fotos"
+                                userRef.update("perfil.fotos", fotosExistentes)
+                                    .addOnCompleteListener { task ->
+                                        _isUploading.value = false
+                                        if (task.isSuccessful) {
+                                            _uploadSuccess.value = true
+                                            Toast.makeText(context, "Imagen subida y guardada en el perfil", Toast.LENGTH_SHORT).show()
+                                            Log.d(TAG, "Imagen subida y URL guardada correctamente en el perfil del usuario")
+                                        } else {
+                                            _uploadSuccess.value = false
+                                            Toast.makeText(context, "Error al guardar la foto en el perfil", Toast.LENGTH_SHORT).show()
+                                        }
+                                    }
+                            }
+                        }
+                    }
+                }
+                .addOnFailureListener { exception ->
+                    _isUploading.value = false
+                    _uploadSuccess.value = false
+                    Toast.makeText(context, "Error al subir la imagen: ${exception.message}", Toast.LENGTH_SHORT).show()
+                }
+        }
+    }
     //Carga la lista de archivos desde Firebase Storage.
     fun loadFileList() {
         storageRef.child("images").listAll()
@@ -635,5 +685,9 @@ class EventoViewModel: ViewModel() {
         }.addOnFailureListener { exception ->
             Log.e(TAG, "Error al obtener el evento", exception)
         }
+    }
+
+    fun obtenerFotosDelUsuario(usuario: Usuario?) {
+        _fotos.value = usuario?.perfil?.fotos ?: emptyList()
     }
 }

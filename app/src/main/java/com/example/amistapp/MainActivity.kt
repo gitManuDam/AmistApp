@@ -50,7 +50,9 @@ import com.example.amistapp.Administrador.Eventos.MostrarAsistentes
 import com.example.amistapp.Administrador.Eventos.MostrarFotosEventos
 import com.example.amistapp.Administrador.Eventos.MostrarInscritosAdmin
 import com.example.amistapp.Administrador.Eventos.SubirFotosEventos
+import com.example.amistapp.estandar.MostrarFotosPerfil
 import com.example.amistapp.estandar.MostrarInscritos
+import com.example.amistapp.estandar.SubirFotosPerfil
 import com.example.amistapp.estandar.VentanaEstandar
 
 
@@ -188,6 +190,13 @@ class MainActivity : ComponentActivity() {
                     composable(Rutas.mostrarFotosEventos){
                         MostrarFotosEventos(eventoVM,navController)
                     }
+                    composable(Rutas.subirFotosPerfil){
+                        SubirFotosPerfil(eventoVM,estandarVM, navController)
+                    }
+                    composable(Rutas.mostrarFotosPerfil){
+                        MostrarFotosPerfil(eventoVM,estandarVM,navController)
+                    }
+
                 }
             }
         }

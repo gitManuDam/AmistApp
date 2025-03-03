@@ -1,5 +1,5 @@
 package com.example.amistapp.Modelos
-
+//Manuel
 data class MensajeChat(
 
     val sender: String = "",

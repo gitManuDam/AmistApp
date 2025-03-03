@@ -151,7 +151,6 @@ class EstandarViewModel:ViewModel() {
             }
     }
 
-
     fun obtenerCompatibles() {
         Log.d(TAG, "Obteniendo compatibles...")
         val currentUser = auth.currentUser
@@ -200,7 +199,6 @@ class EstandarViewModel:ViewModel() {
                 isLoading.value = false
             }
     }
-
 
     fun obtenerAmigos(){
         Log.d(TAG, "Obteniendo amigos...")
@@ -371,6 +369,7 @@ class EstandarViewModel:ViewModel() {
                 callback(false) // Devolver falso en caso de error
             }
     }
+
     fun mensajesPendientes(email: String, callback: (Boolean) -> Unit) {
         val mensajesRef = FirebaseDatabase.getInstance().getReference("chats")
 
@@ -427,7 +426,6 @@ class EstandarViewModel:ViewModel() {
             .build()
         notificationManager.notify(_name.value.hashCode(), notification)
     }
-
 
     fun enviarPeticion(emisor: String, receptor: String) {
         val peticion = hashMapOf(

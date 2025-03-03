@@ -8,12 +8,14 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Button
@@ -113,12 +115,12 @@ fun BodyPerfil(navController: NavHostController, estandarVM: EstandarViewModel, 
         }
 
         // Botones para tomar foto o seleccionar de la galería
-        Column(modifier = Modifier.padding(top = 16.dp)) {
+        Row(modifier = Modifier.padding(top = 16.dp).fillMaxWidth()) {
             Button(
                 onClick = {
                     permissionLauncher.launch(android.Manifest.permission.CAMERA)
                 },
-                modifier = Modifier.fillMaxWidth().padding(bottom = 8.dp)
+                modifier = Modifier.weight(1f).padding(bottom = 8.dp)
             ) {
                 Text("Tomar foto")
             }
@@ -127,9 +129,9 @@ fun BodyPerfil(navController: NavHostController, estandarVM: EstandarViewModel, 
                 onClick = {
                     galleryLauncher.launch("image/*")
                 },
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier.weight(1f)
             ) {
-                Text("Seleccionar de la galería")
+                Text("Galería")
             }
             Button(
                 onClick = {
@@ -139,11 +141,30 @@ fun BodyPerfil(navController: NavHostController, estandarVM: EstandarViewModel, 
                     }
 
                 },
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier.weight(1f)
             ) {
                 Text("Actualizar perfil")
             }
+
         }
+        Spacer(modifier = Modifier.height(16.dp))
+        Column(){
+            Button(
+                onClick = {
+                    navController.navigate("mostrarFotosPerfil")
+                }
+            ){
+                Text(text = "Ver mis fotos")
+            }
+            Button(
+                onClick = {
+                    navController.navigate("subirFotosPerfil")
+                }
+            ){
+                Text(text = "Subir Fotos")
+            }
+        }
+
 
         // Mostrar otros datos del perfil si es necesario
         usuarioActual?.let {
