@@ -58,7 +58,9 @@ fun BodyVentanaAdminEventos(navController: NavController ){
             verticalAlignment = Alignment.CenterVertically
         ) {
             Button(
-                onClick = { /* Fotos eventos*/ }, colors = ButtonDefaults.buttonColors(
+                onClick = { navController.navigate(Rutas.listadoEventosFotos) },
+                    colors = ButtonDefaults.buttonColors
+                        (
                     containerColor = colorResource(R.color.botones), // Color de fondo del botón
                     contentColor = colorResource(R.color.textoBotones) // Color del texto
                 )

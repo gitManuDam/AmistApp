@@ -160,7 +160,6 @@ fun eventoItemMisEventos(
                     .clickable (enabled = asistio){
                         eventoVM.setEventoId(evento.id!!)
                         navController.navigate(Rutas.mostrarFotosEventos)
-//     llamar a la función para ver las fotos
                     } // Acción al hacer clic
                     .graphicsLayer(
                         alpha = if (!asistio) 0.4f else 1f

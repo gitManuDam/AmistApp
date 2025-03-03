@@ -316,6 +316,7 @@ class EventoViewModel: ViewModel() {
             }
     }
 
+    // Borra fichero (en este caso será foto) del storage
     fun deleteFile(fileUrl: String, context: Context) {
         val ref = storage.getReferenceFromUrl(fileUrl)
         ref.delete()
@@ -327,6 +328,42 @@ class EventoViewModel: ViewModel() {
                 Log.e(TAG, "Error al eliminar archivo: ${exception.message}")
                 Toast.makeText(context, "Error: ${exception.message}", Toast.LENGTH_SHORT).show()
             }
+    }
+
+    // Borra la foto de la lista de fotos del evento
+    fun deleteImageFromEvent(eventoId: String, fileUrl: String, context: Context) {
+        val eventoRef = database.child(eventoId)
+
+        // Obtener las fotos existentes
+        eventoRef.child("fotos").get().addOnSuccessListener { snapshot ->
+            if (snapshot.exists()) {
+                // Convertir el valor a lista mutable
+                val fotosExistentes = snapshot.value as? List<String> ?: emptyList()
+                val fotosActualizadas = fotosExistentes.toMutableList()
+
+                // Eliminar la URL de la foto
+                if (fotosActualizadas.remove(fileUrl)) {
+                    // Actualizar la lista de fotos en la base de datos
+                    eventoRef.child("fotos").setValue(fotosActualizadas)
+                        .addOnCompleteListener { task ->
+                            if (task.isSuccessful) {
+                                // Recarga la lista de fotos del evento
+                                obtenerFotosDelEvento(eventoId)
+                                Toast.makeText(context, "Imagen eliminada del evento", Toast.LENGTH_SHORT).show()
+                                Log.d("EliminarFoto", "Imagen eliminada correctamente de Realtime Database")
+                            } else {
+                                Toast.makeText(context, "Error al eliminar la foto del evento", Toast.LENGTH_SHORT).show()
+                            }
+                        }
+                } else {
+                    Toast.makeText(context, "La imagen no existe en el evento", Toast.LENGTH_SHORT).show()
+                }
+            } else {
+                Toast.makeText(context, "No se encontraron fotos en el evento", Toast.LENGTH_SHORT).show()
+            }
+        }.addOnFailureListener {
+            Toast.makeText(context, "Error al obtener datos del evento", Toast.LENGTH_SHORT).show()
+        }
     }
 
 

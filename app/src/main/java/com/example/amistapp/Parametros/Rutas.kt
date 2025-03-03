@@ -32,4 +32,7 @@ object Rutas {
     var subirFotosPerfil = "subirFotosPerfil"
     var mostrarFotosPerfil = "mostrarFotosPerfil"
 
+    var listadoEventosFotos = "listadoEventosFotos"
+    val mostrarEventosFotosAdmin = "mostrarEventosFotosAdmin"
+
 }

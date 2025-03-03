@@ -100,29 +100,30 @@ fun ProoximosEventos(navController: NavHostController, eventoVM: EventoViewModel
                 Text(text = "Ubicación: ${direccion}", fontSize = 15.sp)
                 Text(text = "Plazo inscripción: ${evento.plazoInscripcion}", fontSize = 15.sp)
                 Text(text = "Inscritos: ${evento.inscritos.size}", fontSize = 15.sp)
-
-
-                Icon(
-                    imageVector = Icons.Filled.Delete,
-                    contentDescription = "Eliminar Evento",
-                    modifier = Modifier
-                        .size(24.dp) // Tamaño del icono
-                        .clickable (){
-                            mostrarDialogo = true // muestra el dialogo de confirmacion
-                        }, // Acción al hacer clic
-                )
-                Icon(
-                    imageVector = Icons.Filled.Attribution,
-                    contentDescription = "Mostrar inscritos",
-                    modifier = Modifier
-                        .size(24.dp) // Tamaño del icono
-                        .clickable (){
-                            eventoVM.setEventoId(evento.id!!)
-                            Log.e("Izaskun", "en el icono de mostrar inscritos ${evento.id}")
-                            navController.navigate(Rutas.mostrarInscritosAdmin)
+                Row (modifier = Modifier.fillMaxWidth(),horizontalArrangement = Arrangement.SpaceEvenly) {
+                    Icon(
+                        imageVector = Icons.Filled.Attribution,
+                        contentDescription = "Mostrar inscritos",
+                        modifier = Modifier
+                            .size(24.dp) // Tamaño del icono
+                            .clickable() {
+                                eventoVM.setEventoId(evento.id!!)
+                                Log.e("Izaskun", "en el icono de mostrar inscritos ${evento.id}")
+                                navController.navigate(Rutas.mostrarInscritosAdmin)
 //                            mostrarDialogo = true // muestra el dialogo de confirmacion
-                        }, // Acción al hacer clic
-                )
+                            }, // Acción al hacer clic
+                    )
+
+                    Icon(
+                        imageVector = Icons.Filled.Delete,
+                        contentDescription = "Eliminar Evento",
+                        modifier = Modifier
+                            .size(24.dp) // Tamaño del icono
+                            .clickable() {
+                                mostrarDialogo = true // muestra el dialogo de confirmacion
+                            }, // Acción al hacer clic
+                    )
+                }
 
 
             }

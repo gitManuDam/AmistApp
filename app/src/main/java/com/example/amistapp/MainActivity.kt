@@ -6,7 +6,6 @@ import android.content.Context
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -29,6 +28,7 @@ import com.example.amistapp.Administrador.Eventos.CrearEvento
 import com.example.amistapp.Administrador.Eventos.EventoViewModel
 import com.example.amistapp.Administrador.Eventos.GoogleMaps.MapsVentana
 import com.example.amistapp.Administrador.Eventos.HistorialEventos
+import com.example.amistapp.Administrador.Eventos.ListadoEventosFotos
 import com.example.amistapp.Administrador.Eventos.ProoximosEventos
 import com.example.amistapp.Administrador.Usuarios.BodyVentanaAdminUsuarios
 import com.example.amistapp.Administrador.VentanaAdministrador
@@ -47,6 +47,7 @@ import com.example.amistapp.estandar.EventosDisponiblesEstandar
 import com.example.amistapp.estandar.MapsAsistirVentana
 import com.example.amistapp.estandar.MisEventos
 import com.example.amistapp.Administrador.Eventos.MostrarAsistentes
+import com.example.amistapp.Administrador.Eventos.MostrarEventosFotosAdmin
 import com.example.amistapp.Administrador.Eventos.MostrarFotosEventos
 import com.example.amistapp.Administrador.Eventos.MostrarInscritosAdmin
 import com.example.amistapp.Administrador.Eventos.SubirFotosEventos
@@ -195,6 +196,14 @@ class MainActivity : ComponentActivity() {
                     }
                     composable(Rutas.mostrarFotosPerfil){
                         MostrarFotosPerfil(eventoVM,estandarVM,navController)
+                    }
+
+                    composable (Rutas.listadoEventosFotos){
+                        ListadoEventosFotos(navController, eventoVM)
+                    }
+
+                    composable (Rutas.mostrarEventosFotosAdmin){
+                        MostrarEventosFotosAdmin(eventoVM, navController, contexto)
                     }
 
                 }
