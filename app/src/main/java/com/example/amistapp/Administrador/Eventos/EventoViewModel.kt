@@ -37,6 +37,7 @@ import java.time.LocalTime
 import java.time.format.DateTimeFormatter
 import java.util.Locale
 // Autora: Izaskun
+
 class EventoViewModel: ViewModel() {
     private val coleccion = "eventos"
     val TAG = "Izaskun"
@@ -193,6 +194,11 @@ class EventoViewModel: ViewModel() {
             }
     }
 
+
+    //  Se encarga de realizar dos tareas principales:
+    //Subir una imagen a Firebase Storage.
+    //Guardar la URL de la imagen subida en la base de datos de Firebase Realtime Database dentro de un
+    // evento dado, en su lista de fotos.
     fun uploadImageAndSaveToEvent(context: Context, eventoId: String) {
         val file = _imageFile.value ?: return
         val fileUri = Uri.fromFile(file)
@@ -248,6 +254,8 @@ class EventoViewModel: ViewModel() {
             }
     }
 
+    //sube una imagen a Firebase Storage, obtiene la URL de la imagen subida y
+    // luego guarda esa URL en el perfil de un usuario en Firestore.
     fun uploadImageAndSaveToPerfil(context: Context, usuario: Usuario?) {
         val file = _imageFile.value ?: return
         val fileUri = Uri.fromFile(file)
@@ -334,14 +342,14 @@ class EventoViewModel: ViewModel() {
     fun deleteImageFromEvent(eventoId: String, fileUrl: String, context: Context) {
         val eventoRef = database.child(eventoId)
 
-        // Obtener las fotos existentes
+        // Obtiene las fotos existentes
         eventoRef.child("fotos").get().addOnSuccessListener { snapshot ->
             if (snapshot.exists()) {
-                // Convertir el valor a lista mutable
+
                 val fotosExistentes = snapshot.value as? List<String> ?: emptyList()
                 val fotosActualizadas = fotosExistentes.toMutableList()
 
-                // Eliminar la URL de la foto
+                // Elimina la URL de la foto de la lista
                 if (fotosActualizadas.remove(fileUrl)) {
                     // Actualizar la lista de fotos en la base de datos
                     eventoRef.child("fotos").setValue(fotosActualizadas)
@@ -373,6 +381,9 @@ class EventoViewModel: ViewModel() {
     }
 
 
+    // observa cambios en los datos de Firebase Realtime Database y filtra los eventos
+    // según su fecha de inscripción, guardándolos en dos listas: una para todos los eventos y
+    // otra solo para los próximos eventos cuya fecha de inscripción sea igual o mayor a la fecha actual.
     private fun observeEventos() {
         database.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
@@ -382,12 +393,6 @@ class EventoViewModel: ViewModel() {
                 // se guardan todos los eventos
                 _eventos.value = nuevosEvent.toList()
 
-//                // se guardan solo los que la fecha de inscripcion es igual o mayor a la actual
-//                _proximosEventos.value = nuevosEvent.filter { evento ->
-//                    val fechaInscripcion =
-//                        LocalDate.parse(evento.plazoInscripcion) // Asegúrate de que la fecha está en formato YYYY-MM-DD
-//                    fechaInscripcion >= fechaActual
-//                }
 
                 // Se guardan solo los que la fecha de inscripción es igual o mayor a la actual
                 _proximosEventos.value = nuevosEvent.filter { evento ->
@@ -411,6 +416,8 @@ class EventoViewModel: ViewModel() {
 
     }
 
+    //Recupera las URLs de las fotos asociadas a un evento desde la base de datos de Firebase
+    // Realtime Database y luego actualiza un StateFlow con la lista de fotos obtenidas.
     fun obtenerFotosDelEvento(eventoId: String) {
         val eventoRef = database.child(eventoId)
 
@@ -451,7 +458,8 @@ class EventoViewModel: ViewModel() {
         val nuevoAsistente = AsistenteEvento(email, LocalTime.now().toString())
     }
 
-    // Devuelve una direccion para mostrar con la latitud y la longitud
+    // Devuelve una dirección para mostrar con la latitud y la longitud elegidas, es decir,
+    // convierte en una dirección legible la latitud y la longitud
     @SuppressLint("StateFlowValueCalledInComposition")
     @Composable
     fun getDireccion(latitud: Double, longitud: Double): String {
@@ -470,6 +478,7 @@ class EventoViewModel: ViewModel() {
         }
     }
 
+    //Agrega un nuevo evento a la base de datos de Firebase Realtime Database.
     fun addEvento() {
         val nuevoEvento = Evento(
             id = null,
@@ -511,6 +520,7 @@ class EventoViewModel: ViewModel() {
         _asistentes.value = mutableListOf()
     }
 
+    // Elimina de la base de datos un evento pasado por parámetro
     fun eliminarEvento(evento: Evento) {
 
         val eventoRef = database.child(evento.id!!)
@@ -525,6 +535,7 @@ class EventoViewModel: ViewModel() {
             }
     }
 
+    // Permite a un usuario inscribirse en un evento concreto
     fun incribirseEnEvento(eventoId: String, emailUsuario: String, context: Context) {
         val eventoRef = database.child(eventoId)
 
@@ -562,6 +573,7 @@ class EventoViewModel: ViewModel() {
         }
     }
 
+    // Obtiene la lista de las personas inscritas a un evento determinado
     fun obtenerInscritos(eventoId: String){
         val eventoRef = database.child(eventoId).child("inscritos")
 
@@ -577,6 +589,7 @@ class EventoViewModel: ViewModel() {
         })
     }
 
+    // Obtiene la lista de asistente a un evento determinado
     fun obtenerAsistentes(eventoId: String) {
         val eventoRef = database.child(eventoId).child("asistentes")
 
@@ -594,6 +607,10 @@ class EventoViewModel: ViewModel() {
         })
     }
 
+
+    // Permite a un usuario unirse a un evento como asistente.
+    // Esto implica agregar al usuario a la lista de asistentes del evento y
+    // almacenar esta información en Firebase.
     fun asistirAlEvento(eventoId: String, emailLogeado:String,  context:Context){
         val eventoRef = database.child(eventoId).child("asistentes")
 
@@ -631,6 +648,7 @@ class EventoViewModel: ViewModel() {
         }
     }
 
+    // Comprueba si el plazo de inscripción está abierot
     fun plazoInscripcionAbierto():Boolean{
         val eventoId = eventoId.value
         val evento = database.child(eventoId).get().result?.getValue(Evento::class.java)
@@ -646,6 +664,7 @@ class EventoViewModel: ViewModel() {
         }
     }
 
+    // Comprueba si un usuario determinado está inscrito a un evento determinado
     fun estaInscrito(eventoId: String, emailUsuario: String, onResultado: (Boolean) -> Unit) {
 
         val eventoRef = database.child(eventoId).child("inscritos")
@@ -664,6 +683,7 @@ class EventoViewModel: ViewModel() {
 
     }
 
+    // Comprueba si un usuario determinado asistió o no a un evento determinado
     fun asistio(eventoId: String, emailUsuario: String, onResultado: (Boolean) -> Unit) {
 
         val eventoRef = database.child(eventoId).child("asistentes")
@@ -682,6 +702,7 @@ class EventoViewModel: ViewModel() {
 
     }
 
+    // Elimina de la lista de inscritos a un usuario determinado
     fun eliminarInscrito(emailInscrito: String) {
 
         Log.e(TAG, "Intentando eliminar al asistente con email: $emailInscrito")

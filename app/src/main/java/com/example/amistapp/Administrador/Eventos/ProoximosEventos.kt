@@ -48,6 +48,7 @@ import com.example.amistapp.R
 
 
 // Autora: Izaskun
+// Muestra el listado de los próximos eventos
 @Composable
 fun ProoximosEventos(navController: NavHostController, eventoVM: EventoViewModel) {
 

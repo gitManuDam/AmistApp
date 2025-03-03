@@ -22,18 +22,23 @@ import com.example.amistapp.R
 import com.example.amistapp.Parametros.Rutas
 
 // Autora: Izaskun
+// BodyVentanaAdminEventos crea una pantalla con una serie de botones dispuestos verticalmente.
+// Cada botón navega a una ruta diferente cuando se hace clic en él.
+// La pantalla está diseñada para administrar los eventos:
+// el manejo de eventos, visualización de fotos, próximos eventos, y historial de eventos.
+
 
 @Composable
 fun BodyVentanaAdminEventos(navController: NavController ){
     Column(
         modifier = Modifier.fillMaxSize().padding(16.dp),
-        verticalArrangement = Arrangement.spacedBy(16.dp) // Espaciado entre los elementos
+        verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
         Spacer(modifier = Modifier.height(80.dp))
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.Center,
-//        horizontalArrangement = Arrangement.spacedBy(32.dp), // Aumenta el espaciado entre los botones
+
             verticalAlignment = Alignment.CenterVertically
         ) {
             Button(
@@ -54,7 +59,7 @@ fun BodyVentanaAdminEventos(navController: NavController ){
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.Center,
-//        horizontalArrangement = Arrangement.spacedBy(32.dp), // Aumenta el espaciado entre los botones
+
             verticalAlignment = Alignment.CenterVertically
         ) {
             Button(
@@ -76,7 +81,7 @@ fun BodyVentanaAdminEventos(navController: NavController ){
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.Center,
-//        horizontalArrangement = Arrangement.spacedBy(32.dp), // Aumenta el espaciado entre los botones
+
             verticalAlignment = Alignment.CenterVertically
         ) {
             Button(
@@ -101,7 +106,7 @@ fun BodyVentanaAdminEventos(navController: NavController ){
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.Center,
-//        horizontalArrangement = Arrangement.spacedBy(32.dp), // Aumenta el espaciado entre los botones
+
             verticalAlignment = Alignment.CenterVertically
         ) {
             Button(

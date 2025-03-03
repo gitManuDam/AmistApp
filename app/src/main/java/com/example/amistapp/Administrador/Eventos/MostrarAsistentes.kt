@@ -29,6 +29,8 @@ import com.example.amistapp.Modelos.AsistenteEvento
 import com.example.amistapp.R
 import com.example.amistapp.Parametros.Rutas
 
+// Autora: Izaskun
+// Muestra un listado de los asistentes a un evento determinado
 @Composable
 fun MostrarAsistentes(navController: NavHostController,
                       eventoVM: EventoViewModel
@@ -85,9 +87,9 @@ fun eventoItemAsistentes(asistente: AsistenteEvento, eventoVM: EventoViewModel) 
 fun botonVolverMostrarAsistentes(navController: NavHostController){
     Button(
         onClick = {
-//        eventoVM.limpiarDatos()
+
             navController.popBackStack()
-//            navController.navigate(Rutas.historialEventos)
+
         },
         colors = ButtonDefaults.buttonColors(
             containerColor = colorResource(R.color.botones), // Color de fondo del botón

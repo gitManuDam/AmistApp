@@ -44,7 +44,12 @@ import com.example.amistapp.Parametros.Rutas
 
 import java.time.LocalDate
 import java.time.LocalTime
+
 // Autora: Izaskun
+// CrearEvento permite al administrador crear un evento proporcionando diferentes tipos de información.
+// Cada sección de la pantalla está diseñada para capturar distintos datos del evento:
+// la descripción, ubicación, fecha, hora y plazo de inscripción.
+// Al final, el usuario puede aceptar o cancelar la creación del evento.
 @Composable
 fun CrearEvento(navController: NavHostController, eventoVM: EventoViewModel){
     Column(modifier = Modifier
@@ -57,9 +62,9 @@ fun CrearEvento(navController: NavHostController, eventoVM: EventoViewModel){
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(16.dp), // Espaciado alrededor de la fila
-            horizontalArrangement = Arrangement.spacedBy(8.dp), // Espaciado entre los elementos en la fila
-            verticalAlignment = Alignment.CenterVertically // Alineación vertical de los elementos
+                .padding(16.dp),
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
+            verticalAlignment = Alignment.CenterVertically
         ) {
             botonAddUbicacion(navController)
             mostrarUbicacion(eventoVM)
@@ -114,7 +119,6 @@ fun botonAddUbicacion(navController: NavHostController) {
     ) {
         Text(
             text = "Añadir ubicación",
-
             color = colorResource(R.color.texto),
             fontSize = 15.sp,
             modifier = Modifier.padding(10.dp)
@@ -147,15 +151,15 @@ fun seleccionarFechaEvento(eventoVM: EventoViewModel){
     val ventanaFecha = android.app.DatePickerDialog(
         contexto,
         { _, año, mes, dia ->
-            // Seleccionar la fecha y actualizar el estado
+            // Selecciona la fecha y actualizar el estado
             val fechaSeleccionada = LocalDate.of(año, mes + 1, dia)  // Ajustar el mes (0-11)
             fechaEvento = fechaSeleccionada
 
-            // Actualizar el ViewModel con la fecha seleccionada
+            // Actualiza el ViewModel con la fecha seleccionada
             eventoVM.setFecha(fechaSeleccionada)
         },
         fechaActual.year,
-        fechaActual.monthValue - 1,  // Ajustar el mes (0-11)
+        fechaActual.monthValue - 1,  // Ajusta el mes (0-11)
         fechaActual.dayOfMonth
     )
 
@@ -196,15 +200,15 @@ fun seleccionarHoraEvento(eventoVM: EventoViewModel) {
     val contexto = LocalContext.current
     val horaActual = LocalTime.now()
 
-    // Crear un TimePickerDialog
+    // Crea un TimePickerDialog
     val ventanaHora = android.app.TimePickerDialog(
         contexto,
         { _, hora, minuto ->
-            // Seleccionar la hora y actualizar el estado
+            // Selecciona la hora y actualizar el estado
             val horaSeleccionada = LocalTime.of(hora, minuto)
             horaEvento = horaSeleccionada
 
-            // Actualizar el ViewModel con la hora seleccionada
+            // Actualiza el ViewModel con la hora seleccionada
             eventoVM.setHora(horaSeleccionada)
         },
         horaActual.hour,
@@ -252,7 +256,7 @@ fun seleccionarPlazoInscripcion(eventoVM: EventoViewModel){
     val ventanaFecha = android.app.DatePickerDialog(
         contexto,
         { _, año, mes, dia ->
-            // Seleccionar la fecha y actualizar el estado
+            // Seleccionar la fecha y actualiza el estado
             val fechaSeleccionada = LocalDate.of(año, mes + 1, dia)  // Ajustar el mes (0-11)
             fechaEvento = fechaSeleccionada
 
@@ -260,12 +264,12 @@ fun seleccionarPlazoInscripcion(eventoVM: EventoViewModel){
                 Toast.makeText(contexto, "El plazo de inscripcion tiene que ser antes que el evento", Toast.LENGTH_SHORT).show()
 
             } else{
-                // Actualizar el ViewModel con la fecha seleccionada
+                // Actualiza el ViewModel con la fecha seleccionada
                 eventoVM.setPlazoInscripcion(fechaSeleccionada)
             }
         },
         fechaActual.year,
-        fechaActual.monthValue - 1,  // Ajustar el mes (0-11)
+        fechaActual.monthValue - 1,  // Ajusta el mes (0-11)
         fechaActual.dayOfMonth
     )
 

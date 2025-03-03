@@ -222,11 +222,7 @@ fun mapScreen(
             //En la ubicación actual
             location.value?.let {
 
-//                Polyline(
-//                    points = listOf(viewModel.cameraPosition.value.target, viewModel.home),
-//                    color = Color.Blue,
-//                    width = 9f
-//                )
+
 
                 //Dibuja un círculo alrededor del punto azul de la ubicación.
                 Circle(
@@ -264,21 +260,6 @@ fun mapScreen(
                     }
                 )
             }
-
-            //Usando Marker.
-//            markers.forEach { marker ->
-//                Marker(
-//                    state = MarkerState(position = marker.position),
-//                    title = marker.title,
-//                    snippet = marker.snippet,
-//                    onClick = {
-//                        viewModel.removeMarker(marker)
-//                        Toast.makeText(context, "Marcador eliminado", Toast.LENGTH_SHORT).show()
-//                        true //Retorna true para consumir el evento y evitar abrir la info window.
-//                    }
-//                )
-//            }
-
         }
 
         Spacer(modifier = Modifier.height(16.dp))

@@ -29,6 +29,8 @@ import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
 import com.example.amistapp.R
 
+// Autora: Izaskun
+// Muestra las fotos de un evento y permite eliminar imágenes .
 @Composable
 fun MostrarEventosFotosAdmin (
     eventoVM: EventoViewModel,
@@ -59,7 +61,7 @@ fun MostrarEventosFotosAdmin (
                         model = fotoUrl, // URL de la foto de Firebase Storage
                         contentDescription = "Foto del evento",
                         modifier = Modifier
-                            .size(100.dp) // Puedes ajustar el tamaño según prefieras
+                            .size(100.dp)
                             .padding(8.dp)
                     )
 
@@ -71,11 +73,8 @@ fun MostrarEventosFotosAdmin (
                             .clickable {
                                     eventoVM.deleteFile(fotoUrl, contexto)
                                     eventoVM.deleteImageFromEvent(eventoId, fotoUrl, contexto)
-//                                eliminarFoto(fotoUrl) // Función para eliminar la foto
                             },
-
                     )
-
                 }
             }
         }
@@ -87,9 +86,9 @@ fun MostrarEventosFotosAdmin (
 fun botonVolverFotosEventosAdmin(navController: NavHostController){
     Button(
         onClick = {
-//        eventoVM.limpiarDatos()
+
             navController.popBackStack()
-//            navController.navigate(Rutas.historialEventos)
+
         },
         colors = ButtonDefaults.buttonColors(
             containerColor = colorResource(R.color.botones), // Color de fondo del botón

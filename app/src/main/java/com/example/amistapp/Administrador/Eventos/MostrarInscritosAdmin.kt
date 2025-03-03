@@ -44,6 +44,8 @@ import androidx.navigation.NavHostController
 import com.example.amistapp.Modelos.Evento
 import com.example.amistapp.Parametros.Rutas
 import com.example.amistapp.R
+//Autora: Izaskun
+// Muestra los inscritos a un evento
 
 @Composable
 fun MostrarInscritosAdmin(navController: NavHostController,

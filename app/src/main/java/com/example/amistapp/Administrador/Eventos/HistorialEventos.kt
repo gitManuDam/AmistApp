@@ -40,6 +40,7 @@ import com.example.amistapp.R
 
 
 // Autora: Izaskun
+// Esta función se encarga de mostrar la lista de eventos históricos (es decir, eventos pasados)
 @Composable
 fun HistorialEventos(navController: NavHostController, eventoVM: EventoViewModel){
     // Recoge los  eventos desde ViewModel
@@ -52,9 +53,6 @@ fun HistorialEventos(navController: NavHostController, eventoVM: EventoViewModel
             .padding(vertical = 20.dp)
             .systemBarsPadding()
     ) {
-//        Spacer(modifier = Modifier.height(50.dp))
-        //botonSoyBarman()
-
 
         // LazyColumn para mostrar las comandas, con el estado de desplazamiento
         LazyColumn(state = listState,
@@ -102,7 +100,7 @@ fun eventoItemHistorial(evento: Evento, eventoVM: EventoViewModel, navController
                         .clickable (){
                             eventoVM.setEventoId(evento.id!!)
                             navController.navigate(Rutas.mostrarAsistentes)
-                            // mostrar los asistentes
+
                         }, // Acción al hacer clic
                 )
 
@@ -131,11 +129,9 @@ fun eventoItemHistorial(evento: Evento, eventoVM: EventoViewModel, navController
 fun botonVolverHistorial(navController: NavHostController)
 {
     Button(onClick = {
-//        eventoVM.limpiarDatos()
 
-//       navController.popBackStack(Rutas.mostrarAsistentes, inclusive = true)},
         navController.popBackStack()},
-//        navController.navigate(Rutas.administrador)},
+
         colors = ButtonDefaults.buttonColors(
             containerColor = colorResource(R.color.botones), // Color de fondo del botón
             contentColor = colorResource(R.color.textoBotones) // Color del texto

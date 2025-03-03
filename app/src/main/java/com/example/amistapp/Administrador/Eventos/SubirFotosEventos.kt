@@ -35,6 +35,10 @@ import com.example.amistapp.BuildConfig
 import com.example.amistapp.R
 import java.io.File
 
+// Autora: Izaskun
+// Sube fotos a un evento
+// Permite al usuario seleccionar una imagen de la galería, tomar una foto con la cámara
+// y luego subirla al storage y también a la lista del evento
 @Composable
 fun SubirFotosEventos(eventoVM: EventoViewModel, navController: NavHostController){
 

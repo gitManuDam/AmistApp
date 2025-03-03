@@ -26,6 +26,7 @@ import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
 import com.example.amistapp.R
 
+// Muestra una lista de fotos asociados a un evento
 @Composable
 fun MostrarFotosEventos(eventoVM: EventoViewModel, navController: NavHostController){
 
@@ -66,9 +67,9 @@ Column () {
 fun botonVolverMostrarFotos(navController: NavHostController){
     Button(
         onClick = {
-//        eventoVM.limpiarDatos()
+
             navController.popBackStack()
-//            navController.navigate(Rutas.historialEventos)
+
         },
         colors = ButtonDefaults.buttonColors(
             containerColor = colorResource(R.color.botones), // Color de fondo del botón

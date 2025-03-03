@@ -38,6 +38,7 @@ import com.example.amistapp.R
 
 
 // Autora: Izaskun
+// Muestra un listado de eventos, junto con opciones para agregar o ver fotos relacionadas con cada evento.
 @Composable
 fun ListadoEventosFotos(
     navController: NavHostController,
