@@ -33,6 +33,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -77,6 +78,19 @@ fun VentanaEstandar(navController: NavHostController, chatVM: ChatViewModel, log
         Log.e("VentanaEstandar", "El email del usuario está vacío o null después de cerrar sesión")
         // Puedes poner un valor por defecto o manejar el caso aquí.
     }
+    LaunchedEffect(emailUsuarioLogeado) {
+        emailUsuarioLogeado?.let { email ->
+            estandarVM.mensajesPendientes(email) { hayMensajes ->
+                if (hayMensajes) {
+                    estandarVM.sendNotificationBasic(context)
+                    Log.d("VentanaEstandar", "¡Tienes mensajes no leídos!")
+                } else {
+                    Log.d("VentanaEstandar", "No tienes mensajes pendientes.")
+                }
+            }
+        }
+    }
+
 
     Scaffold(
         topBar = {

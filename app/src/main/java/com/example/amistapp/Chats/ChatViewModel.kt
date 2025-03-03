@@ -29,8 +29,8 @@ class ChatViewModel : ViewModel() {
     private val _mensajes = MutableStateFlow<List<MensajeChat>>(emptyList())
     val mensajes: StateFlow<List<MensajeChat>> get() = _mensajes
 
-    private val _listadoChat = mutableListOf<Pair<String, String>>()
-    val listadoChat: List<Pair<String, String>> get() = _listadoChat
+    private val _listadoChat = mutableListOf<Pair<String, MensajeChat>>()
+    val listadoChat: List<Pair<String, MensajeChat>> get() = _listadoChat
 
 
 
@@ -115,6 +115,16 @@ class ChatViewModel : ViewModel() {
                 }
             })
     }
+    fun marcarMensajesComoLeidos(chatId: String, usuario: String) {
+        dbRef.child(chatId).child("mensajes").get().addOnSuccessListener { snapshot ->
+            snapshot.children.forEach { mensajeSnapshot ->
+                val mensaje = mensajeSnapshot.getValue(MensajeChat::class.java)
+                if (mensaje != null && mensaje.sender != usuario && !mensaje.leido) {
+                    mensajeSnapshot.ref.child("leido").setValue(true)
+                }
+            }
+        }
+    }
 
     fun obtenerEmailsChat() {
         val currentUser = auth.currentUser
@@ -129,7 +139,7 @@ class ChatViewModel : ViewModel() {
         isLoading.value = true
         dbRef.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
-               var listaChat = mutableListOf<Pair<String, String>>()
+               var listaChat = mutableListOf<Pair<String, MensajeChat>>()
 
                 for (chatSnapshot in snapshot.children) {
                     val chat = chatSnapshot.getValue(Chat::class.java)
@@ -139,7 +149,7 @@ class ChatViewModel : ViewModel() {
 
                         // Obtener el último mensaje ordenado por timestamp
                         val mensajes = chat.mensajes
-                        val ultimoMensaje =mensajes.last().text
+                        val ultimoMensaje =mensajes.last()
 
                         if (otroUsuario != null) {
                             listaChat.add(Pair(otroUsuario, ultimoMensaje))
@@ -179,7 +189,12 @@ class ChatViewModel : ViewModel() {
                         Log.d(TAG, "Usuario obtenido: $usuario")
                         if (usuario != null && usuario.email in listadoChat.map { it.first } && usuario.email != email) {
                             val ultimoMensaje = listadoChat.find { it.first == usuario.email }?.second ?: "Sin mensajes"
-                            UsuarioChat(usuario, ultimoMensaje)
+                            if(ultimoMensaje is MensajeChat){
+                                UsuarioChat(usuario, ultimoMensaje)
+                            } else {
+                                null
+                            }
+
 
                         } else {
                             null

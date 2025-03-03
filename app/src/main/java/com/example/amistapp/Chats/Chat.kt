@@ -53,6 +53,7 @@ fun ChatScreen(
          chatId= it
     }
     viewModel.observeMessages(chatId)
+    viewModel.marcarMensajesComoLeidos(chatId, loginViewModel.getCurrentUser()!!.email.toString())
 
     val listState =
         rememberLazyListState() //Estado del scroll para desplazar los mensajes y que el último esté siempre abajo.

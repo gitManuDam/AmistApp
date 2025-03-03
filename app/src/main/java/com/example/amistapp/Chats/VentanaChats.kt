@@ -1,6 +1,8 @@
 package com.example.amistapp.Chats
 
+import android.widget.Toast
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -17,9 +19,17 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
@@ -45,6 +55,7 @@ import coil.compose.rememberImagePainter
 import com.example.amistapp.Login.LoginViewModel
 import com.example.amistapp.R
 import com.example.amistapp.Modelos.UsuarioChat
+import com.example.amistapp.Parametros.Rutas
 import com.example.amistapp.estandar.EstandarViewModel
 import com.example.amistapp.estandar.MenuPuntosEstandar
 
@@ -56,7 +67,10 @@ fun VentanaChats (navController: NavHostController, loginVM: LoginViewModel,
                   amigo: String?
 ){
     val context = LocalContext.current
-    var emailAmigo by remember { mutableStateOf(amigo) }
+    var emailAmigo by remember { mutableStateOf(amigo)  }
+    if (emailAmigo == null) {
+        emailAmigo=""
+    }
 
     val emailUsuarioLogeado = loginVM.getCurrentUser()?.email
     estandarVM.obtenerFotoPerfil(emailUsuarioLogeado!!)
@@ -88,10 +102,20 @@ fun VentanaChats (navController: NavHostController, loginVM: LoginViewModel,
             colors = TopAppBarDefaults.topAppBarColors(containerColor = colorResource(id = R.color.botones),
                 titleContentColor = colorResource(id = R.color.textoBotones)
             ),
-            actions = {
-                MenuPuntosEstandar(navController, loginVM){
-                    //usar otro menu de puntos
+            navigationIcon = {
+                IconButton(onClick = {
+                    navController.popBackStack() // Esto navega hacia atrás
+                }) {
+                    Icon(
+                        imageVector = Icons.Default.ArrowBack,
+                        contentDescription = "Volver"
+                    )
                 }
+            },
+            actions = {
+                MenuPuntosChat (navController, loginVM)
+
+
             }
         )
     },
@@ -110,16 +134,55 @@ fun VentanaChats (navController: NavHostController, loginVM: LoginViewModel,
         }
     }
 }
+@Composable
+fun MenuPuntosChat(navController: NavHostController, loginVM: LoginViewModel) {
+    val context = LocalContext.current
+    var expanded by remember { mutableStateOf(false) }
+
+    Box {
+        IconButton(onClick = { expanded = true }) {
+            Icon(imageVector = Icons.Default.MoreVert, contentDescription = "Menú de opciones")
+        }
+
+        DropdownMenu(expanded = expanded,
+            onDismissRequest = { expanded = false },
+            modifier = Modifier.background(color = colorResource(id = R.color.fondoMenuPuntos))) {
+
+
+            DropdownMenuItem(
+                text = { Text("Cerrar sesión") },
+                onClick = {
+                    loginVM.signOut(context)
+                    expanded = false
+                    Toast.makeText(context, "Cerrando sesión...", Toast.LENGTH_SHORT).show()
+                    navController.navigate(Rutas.login) {
+                        popUpTo(Rutas.login) { inclusive = true }
+                    }
+                })
+        }
+    }
+}
 
 @Composable
 fun BodyChats(navController: NavHostController, estandarVM:EstandarViewModel, chatVM: ChatViewModel ){
     chatVM.obtenerUsuariosChat()
     Column(modifier = Modifier.fillMaxSize().padding(16.dp)) {
-
-        LazyColumn(modifier = Modifier.fillMaxSize()) {
-            items(chatVM.listadoUsuariosChat) { usuario ->
-                ChatItem ( usuario) {
-                    navController.navigate("chats/${it}")
+        // Verificar si la lista está vacía
+        if (chatVM.listadoUsuariosChat.isEmpty()) {
+            // Si la lista está vacía, mostrar un mensaje
+            Text(
+                text = "No tienes chats disponibles.",
+                style = MaterialTheme.typography.bodyMedium,
+                color = Color.Gray,
+                modifier = Modifier.align(Alignment.CenterHorizontally)
+            )
+        } else {
+            // Si la lista no está vacía, mostrar los chats
+            LazyColumn(modifier = Modifier.fillMaxSize()) {
+                items(chatVM.listadoUsuariosChat) { usuario ->
+                    ChatItem(usuario) {
+                        navController.navigate("chats/${it}")
+                    }
                 }
             }
         }
@@ -166,7 +229,7 @@ fun ChatItem(usuario: UsuarioChat, onClick: (String) -> Unit) {
 
                 // Último mensaje con estilo más ligero
                 Text(
-                    text = usuario.ultimoMensaje,
+                    text = usuario.ultimoMensaje.text,
                     fontSize = 14.sp,
                     fontWeight = FontWeight.Light,
                     color = Color.Gray,
@@ -177,13 +240,15 @@ fun ChatItem(usuario: UsuarioChat, onClick: (String) -> Unit) {
 
             Spacer(modifier = Modifier.width(8.dp))
 
-            // Punto de estado en línea
-            Box(
-                modifier = Modifier
-                    .size(12.dp)
-                    .clip(CircleShape)
+            if(!usuario.ultimoMensaje.leido){
+                Box(
+                    modifier = Modifier
+                        .size(12.dp)
+                        .clip(CircleShape)
+                        .border(1.dp, Color.Red, CircleShape)
+                )
+            }
 
-            )
         }
     }
 }

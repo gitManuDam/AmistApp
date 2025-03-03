@@ -11,6 +11,8 @@
     <!-- Para usar las fotos -->
     <uses-permission android:name="android.permission.CAMERA"/>
     <uses-feature android:name="android.hardware.camera.any"/>
+
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"
         android:maxSdkVersion="32" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"
@@ -55,6 +57,10 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <!-- Registro del BroadcastReceiver -->
+        <receiver
+            android:name="com.example.amistapp.estandar.SomeReceiver"
+            android:exported="true" />
     </application>
 
 </manifest>

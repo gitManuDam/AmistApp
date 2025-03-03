@@ -69,9 +69,24 @@ class LoginViewModel: ViewModel() {
                 isLoading.value = false
                 if (task.isSuccessful) {
                     loginSuccess.value = true
+                    updateUserStatus(email, true)
                 } else {
                     errorMessage.value = task.exception?.message ?: "Error desconocido"
                 }
+            }
+    }
+
+    private fun updateUserStatus(email: String, isOnline: Boolean) {
+        val usuariosRef = db.collection(Colecciones.Usuarios)
+
+        // Actualiza el campo 'enLinea' del usuario
+        usuariosRef.document(email)
+            .update("enLinea", isOnline)
+            .addOnSuccessListener {
+                Log.d(TAG, "Estado en línea actualizado a $isOnline para $email")
+            }
+            .addOnFailureListener {
+                Log.e(TAG, "Error al actualizar el estado en línea para $email")
             }
     }
 
@@ -111,6 +126,7 @@ class LoginViewModel: ViewModel() {
                 if (task.isSuccessful) {
                     loginSuccess.value = true
                     loginGoogleSuccess.value = true
+                    updateUserStatus(auth.currentUser?.email ?: "", true)
                 } else {
                     errorMessage.value = task.exception?.message ?: "Error desconocido"
                 }
@@ -133,7 +149,9 @@ class LoginViewModel: ViewModel() {
             googleSignInClient.revokeAccess().addOnCompleteListener { revokeTask ->
                 if (revokeTask.isSuccessful) {
                     Log.d(TAG, "Acceso revocado correctamente")
+                    updateUserStatus(auth.currentUser?.email ?: "", false)
                     auth.signOut()
+
                     resetLoginState()
                     Log.d(TAG, "Sesión cerrada correctamente")
                 } else {
@@ -142,6 +160,7 @@ class LoginViewModel: ViewModel() {
             }
         } else {
             //El usuario no inició sesión con Google (email/contraseña u otro proveedor)
+            updateUserStatus(auth.currentUser?.email ?: "", false)
             auth.signOut()
             Log.d(TAG, "Sesión cerrada para usuario no Google")
         }

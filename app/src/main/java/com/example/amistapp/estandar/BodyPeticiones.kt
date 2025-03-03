@@ -6,6 +6,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
@@ -18,23 +19,36 @@ import com.example.amistapp.Modelos.Peticion
 fun BodyPeticiones(navController: NavHostController, estandarVM: EstandarViewModel) {
     estandarVM.obtenerPeticionesRecibidas()
     Column(modifier = Modifier.fillMaxSize().padding(16.dp)) {
-        LazyColumn(modifier = Modifier.fillMaxSize()) {
-            items(estandarVM.listadoPeticiones) { peticion ->
-                PeticionCard(
-                    peticion,
-                    onAceptar = {
-                        Log.d("Peticion", "Solicitud aceptada: ${peticion.emisor} -> ${peticion.receptor}")
-                        estandarVM.aceptarPeticion(peticion)
-                        estandarVM.obtenerPeticionesRecibidas()
-                    },
-                    onRechazar = {
-                        estandarVM.rechazarPeticion(peticion)
-                        Log.d("Peticion", "Solicitud rechazada: ${peticion.emisor} -> ${peticion.receptor}")
-                    }
-                )
+        // Verificar si la lista de peticiones está vacía
+        if (estandarVM.listadoPeticiones.isEmpty()) {
+            // Si la lista está vacía, mostrar un mensaje
+            Text(
+                text = "No tienes peticiones disponibles.",
+                style = MaterialTheme.typography.bodyMedium,
+                color = Color.Gray,
+                modifier = Modifier.align(Alignment.CenterHorizontally)
+            )
+        } else {
+            // Si la lista no está vacía, mostrar las peticiones
+            LazyColumn(modifier = Modifier.fillMaxSize()) {
+                items(estandarVM.listadoPeticiones) { peticion ->
+                    PeticionCard(
+                        peticion,
+                        onAceptar = {
+                            Log.d("Peticion", "Solicitud aceptada: ${peticion.emisor} -> ${peticion.receptor}")
+                            estandarVM.aceptarPeticion(peticion)
+                            estandarVM.obtenerPeticionesRecibidas()
+                        },
+                        onRechazar = {
+                            estandarVM.rechazarPeticion(peticion)
+                            Log.d("Peticion", "Solicitud rechazada: ${peticion.emisor} -> ${peticion.receptor}")
+                        }
+                    )
+                }
             }
         }
     }
+
 }
 
 @Composable

@@ -1,10 +1,18 @@
 package com.example.amistapp
 
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.content.Context
+import android.content.pm.PackageManager
+import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.ui.platform.LocalContext
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.navigation.compose.rememberNavController
 import com.example.amistapp.Login.LoginViewModel
 import com.example.amistapp.ui.theme.AmistAppTheme
@@ -56,14 +64,32 @@ class MainActivity : ComponentActivity() {
     val eventoId = ""
     val evento = Evento()
     val emailLogeado = ""
+    companion object {
+        const val CHANNEL_ID = "mi_canal_id"
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        createNotificationChannel()
+
         enableEdgeToEdge()
         setContent {
             val contexto = LocalContext.current
 
             AmistAppTheme {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                    if (ContextCompat.checkSelfPermission(
+                            this,
+                            android.Manifest.permission.POST_NOTIFICATIONS
+                        ) != PackageManager.PERMISSION_GRANTED
+                    ) {
+                        ActivityCompat.requestPermissions(
+                            this,
+                            arrayOf(android.Manifest.permission.POST_NOTIFICATIONS),
+                            1
+                        )
+                    }
+                }
                 val navController = rememberNavController()
                 //Durante la creacion de la ventana proximos evento
 //                NavHost(navController = navController, startDestination = Rutas.historialEventos){
@@ -164,6 +190,21 @@ class MainActivity : ComponentActivity() {
                     }
                 }
             }
+        }
+    }
+    private fun createNotificationChannel() {
+        val CHANNEL_ID = "mi_canal"
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            val name = "Notificaciones"
+            val descriptionText = "Canal para notificaciones de la app"
+            val importance = NotificationManager.IMPORTANCE_DEFAULT
+            val channel = NotificationChannel(MainActivity.CHANNEL_ID, name, importance).apply {
+                description = descriptionText
+            }
+            // Registrar el canal en el sistema
+            val notificationManager: NotificationManager =
+                getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+            notificationManager.createNotificationChannel(channel)
         }
     }
 }

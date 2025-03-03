@@ -20,6 +20,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
@@ -31,14 +32,27 @@ fun BodyVentanaCompatibles(navController: NavHostController, estandarVM: Estanda
     estandarVM.obtenerCompatibles()
 
     Column(modifier = Modifier.fillMaxSize().padding(16.dp)) {
-        LazyColumn(modifier = Modifier.fillMaxSize()) {
-            items(estandarVM.listadoCompatibles) { usuarioCompatibilidad ->
-                UsuarioItem(usuarioCompatibilidad ,estandarVM) {
-
+        // Verificar si la lista de usuarios compatibles está vacía
+        if (estandarVM.listadoCompatibles.isEmpty()) {
+            // Si la lista está vacía, mostrar un mensaje
+            Text(
+                text = "No hay usuarios compatibles disponibles.",
+                style = MaterialTheme.typography.bodyMedium,
+                color = Color.Gray,
+                modifier = Modifier.align(Alignment.CenterHorizontally)
+            )
+        } else {
+            // Si la lista no está vacía, mostrar los usuarios compatibles
+            LazyColumn(modifier = Modifier.fillMaxSize()) {
+                items(estandarVM.listadoCompatibles) { usuarioCompatibilidad ->
+                    UsuarioItem(usuarioCompatibilidad, estandarVM) {
+                        // Acción que se realiza cuando se selecciona el usuario
+                    }
                 }
             }
         }
     }
+
 }
 
 

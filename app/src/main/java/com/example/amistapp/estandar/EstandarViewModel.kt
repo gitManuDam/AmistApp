@@ -1,14 +1,18 @@
 package com.example.amistapp.estandar
 
+import android.app.NotificationManager
+import android.content.Context
 import android.location.Location
 import android.util.Log
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.snapshots.SnapshotStateList
+import androidx.core.app.NotificationCompat
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.example.amistapp.MainActivity
 import com.example.amistapp.Parametros.Colecciones
 
 import com.example.amistapp.Modelos.Perfil
@@ -17,13 +21,18 @@ import com.example.amistapp.Modelos.UsuarioCompatibilidad
 import com.example.amistapp.Modelos.Evento
 import com.example.amistapp.Modelos.Peticion
 import com.example.amistapp.Modelos.Usuario
+import com.example.amistapp.R
 
 import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ValueEventListener
 import com.google.firebase.firestore.firestore
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
@@ -97,6 +106,8 @@ class EstandarViewModel:ViewModel() {
         _Error.value = null
 
     }
+    private val _name = MutableStateFlow("")
+    val name = _name.asStateFlow()
 
     fun obtenerUsuarios(){
 
@@ -360,6 +371,63 @@ class EstandarViewModel:ViewModel() {
                 callback(false) // Devolver falso en caso de error
             }
     }
+    fun mensajesPendientes(email: String, callback: (Boolean) -> Unit) {
+        val mensajesRef = FirebaseDatabase.getInstance().getReference("chats")
+
+        mensajesRef.addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                var hayMensajesNoLeidos = false
+
+                // Recorre todos los chats en la base de datos
+                for (chatSnapshot in snapshot.children) {
+                    // Obtiene los usuarios del chat
+                    val usuarios = chatSnapshot.child("usuarios").children.map { it.value as String }
+
+                    // Filtra los chats por el email proporcionado
+                    if (usuarios.contains(email)) {
+                        // Recorre todos los mensajes del chat
+                        val mensajes = chatSnapshot.child("mensajes").children
+
+                        for (mensajeSnapshot in mensajes) {
+                            if (mensajeSnapshot.child("sender").value != email){
+                                val leido = mensajeSnapshot.child("leido").getValue(Boolean::class.java) ?: true
+                                if (!leido) {
+                                    hayMensajesNoLeidos = true
+                                    break
+                                }
+                            }
+
+                        }
+                    }
+
+                    // Si se encuentra un mensaje no leído, no es necesario seguir buscando
+                    if (hayMensajesNoLeidos) {
+                        break
+                    }
+                }
+
+                // Llama al callback con el resultado
+                callback(hayMensajesNoLeidos)
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                Log.e("Firebase", "Error al obtener mensajes pendientes: ${error.message}")
+                callback(false)
+            }
+        })
+    }
+
+    fun sendNotificationBasic(context: Context){
+        val notificationManager = context.getSystemService(NotificationManager::class.java)
+        var notification = NotificationCompat.Builder(context, MainActivity.CHANNEL_ID)
+            .setSmallIcon(R.drawable.ic_no_leidos)
+            .setContentTitle("Mensajes")
+            .setContentText("Tienes mensajes sin leer")
+            .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+            .build()
+        notificationManager.notify(_name.value.hashCode(), notification)
+    }
+
 
     fun enviarPeticion(emisor: String, receptor: String) {
         val peticion = hashMapOf(
