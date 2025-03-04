@@ -49,6 +49,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import coil.compose.rememberAsyncImagePainter
+import coil.request.Parameters
 
 import com.example.amistapp.Administrador.BottomNavigationBar
 import com.example.amistapp.Administrador.Eventos.BodyVentanaAdminEventos
@@ -62,6 +63,7 @@ import com.example.amistapp.DatosPerfil.DatosPerfilViewModel
 import com.example.amistapp.Login.LoginViewModel
 import com.example.amistapp.R
 import com.example.amistapp.Parametros.Rutas
+import com.example.amistapp.Parametros.NotificationHelper
 // Autora: Izaskun
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -69,6 +71,9 @@ fun VentanaEstandar(navController: NavHostController, chatVM: ChatViewModel, log
                     datosPerfilVM: DatosPerfilViewModel){
     val context = LocalContext.current
     var currentRoute by remember { mutableStateOf("Amigos") }
+    LaunchedEffect(Unit) {
+        estandarVM.obtenerUsuarioActual()
+    }
 
     val emailUsuarioLogeado = loginVM.getCurrentUser()?.email
 //    estandarVM.obtenerFotoPerfil(emailUsuarioLogeado!!)
@@ -82,7 +87,7 @@ fun VentanaEstandar(navController: NavHostController, chatVM: ChatViewModel, log
         emailUsuarioLogeado?.let { email ->
             estandarVM.mensajesPendientes(email) { hayMensajes ->
                 if (hayMensajes) {
-                    estandarVM.sendNotificationBasic(context)
+                    NotificationHelper.sendNotificationBasic(context)
                     Log.d("VentanaEstandar", "¡Tienes mensajes no leídos!")
                 } else {
                     Log.d("VentanaEstandar", "No tienes mensajes pendientes.")

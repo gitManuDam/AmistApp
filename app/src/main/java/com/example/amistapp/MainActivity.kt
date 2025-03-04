@@ -51,6 +51,7 @@ import com.example.amistapp.Administrador.Eventos.MostrarEventosFotosAdmin
 import com.example.amistapp.Administrador.Eventos.MostrarFotosEventos
 import com.example.amistapp.Administrador.Eventos.MostrarInscritosAdmin
 import com.example.amistapp.Administrador.Eventos.SubirFotosEventos
+import com.example.amistapp.Parametros.NotificationHelper.createNotificationChannel
 import com.example.amistapp.estandar.MostrarFotosPerfil
 import com.example.amistapp.estandar.MostrarInscritos
 import com.example.amistapp.estandar.SubirFotosPerfil
@@ -67,13 +68,11 @@ class MainActivity : ComponentActivity() {
     val eventoId = ""
     val evento = Evento()
     val emailLogeado = ""
-    companion object {
-        const val CHANNEL_ID = "mi_canal_id"
-    }
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        createNotificationChannel()
+        createNotificationChannel(this)
 
         enableEdgeToEdge()
         setContent {
@@ -139,7 +138,7 @@ class MainActivity : ComponentActivity() {
                     }
 
 
-                    composable("chats/{email}") { backStackEntry ->
+                    composable(Rutas.chats+"/{email}") { backStackEntry ->
                         val email = backStackEntry.arguments?.getString("email")
                         VentanaChats(
                             navController,
@@ -210,20 +209,6 @@ class MainActivity : ComponentActivity() {
             }
         }
     }
-    private fun createNotificationChannel() {
-        val CHANNEL_ID = "mi_canal"
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val name = "Notificaciones"
-            val descriptionText = "Canal para notificaciones de la app"
-            val importance = NotificationManager.IMPORTANCE_DEFAULT
-            val channel = NotificationChannel(MainActivity.CHANNEL_ID, name, importance).apply {
-                description = descriptionText
-            }
-            // Registrar el canal en el sistema
-            val notificationManager: NotificationManager =
-                getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-            notificationManager.createNotificationChannel(channel)
-        }
-    }
+
 }
 

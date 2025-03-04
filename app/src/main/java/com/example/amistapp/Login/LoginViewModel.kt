@@ -354,4 +354,5 @@ class LoginViewModel: ViewModel() {
             .addOnFailureListener {  Log.e("Izaskun", "Error al consultar al usuario") }
     }
 
+
 }

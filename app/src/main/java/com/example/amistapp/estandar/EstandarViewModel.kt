@@ -421,16 +421,7 @@ class EstandarViewModel:ViewModel() {
         })
     }
 
-    fun sendNotificationBasic(context: Context){
-        val notificationManager = context.getSystemService(NotificationManager::class.java)
-        var notification = NotificationCompat.Builder(context, MainActivity.CHANNEL_ID)
-            .setSmallIcon(R.drawable.ic_no_leidos)
-            .setContentTitle("Mensajes")
-            .setContentText("Tienes mensajes sin leer")
-            .setPriority(NotificationCompat.PRIORITY_DEFAULT)
-            .build()
-        notificationManager.notify(_name.value.hashCode(), notification)
-    }
+
 
     fun enviarPeticion(emisor: String, receptor: String) {
         val peticion = hashMapOf(
@@ -576,6 +567,7 @@ class EstandarViewModel:ViewModel() {
                 Log.e(TAG, "Error al aceptar la petición", it)
             }
     }
+
     fun actualizarListasAmigos(emisor: String, receptor: String) {
         Log.d(TAG, "Actualizando listas de amigos...")
         val emisorRef = db.collection(Colecciones.Usuarios).document(emisor)
@@ -606,6 +598,42 @@ class EstandarViewModel:ViewModel() {
         }
             .addOnSuccessListener {
                 Log.d(TAG, "Transacción completada correctamente")
+            }
+            .addOnFailureListener { e ->
+                Log.e(TAG, "Error al actualizar las listas de amigos", e)
+            }
+    }
+
+    fun eliminarAmigos(emisor: String, receptor: String) {
+        val emisorRef = db.collection(Colecciones.Usuarios).document(emisor)
+        val receptorRef = db.collection(Colecciones.Usuarios).document(receptor)
+
+        db.runTransaction { transaction ->
+            val emisorSnapshot = transaction.get(emisorRef)
+            val receptorSnapshot = transaction.get(receptorRef)
+
+
+            if (emisorSnapshot.exists() && receptorSnapshot.exists()) {
+
+                val listaAmigosEmisor = emisorSnapshot.get("perfil.amigos") as? MutableList<String> ?: mutableListOf()
+                val listaAmigosReceptor = receptorSnapshot.get("perfil.amigos") as? MutableList<String> ?: mutableListOf()
+
+
+                listaAmigosEmisor.remove(receptor)
+                listaAmigosReceptor.remove(emisor)
+
+
+                transaction.update(emisorRef, "perfil.amigos", listaAmigosEmisor)
+                transaction.update(receptorRef, "perfil.amigos", listaAmigosReceptor)
+
+                Log.d(TAG, "Listas de amigos actualizadas correctamente")
+            } else {
+                throw Exception("Uno de los usuarios no existe")
+            }
+        }
+            .addOnSuccessListener {
+                Log.d(TAG, "Transacción completada correctamente")
+                obtenerAmigos()
             }
             .addOnFailureListener { e ->
                 Log.e(TAG, "Error al actualizar las listas de amigos", e)
