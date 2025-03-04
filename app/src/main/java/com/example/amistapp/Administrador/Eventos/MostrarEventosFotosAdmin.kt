@@ -44,7 +44,7 @@ fun MostrarEventosFotosAdmin (
     eventoVM.obtenerFotosDelEvento(eventoId)
     Column () {
         // Mostrar las fotos en una LazyColumn
-        Spacer(modifier = Modifier.height(20.dp))
+        Spacer(modifier = Modifier.height(70.dp))
         LazyVerticalGrid(
             columns = GridCells.Fixed(2), // 2 columnas
             modifier = Modifier.fillMaxWidth()

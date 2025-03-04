@@ -48,6 +48,11 @@ import com.example.amistapp.Login.LoginViewModel
 import com.example.amistapp.R
 import com.example.amistapp.Parametros.Rutas
 // Autora: Izaskun
+// Muestra los eventos a los que el usuario está inscrito
+// Para cada evento puede:
+// He llegado: para indicar que ha llegado al evento (según su ubicación)
+// subir foto: subir una foto de ese evento
+// Ver fotos: ver las fotos de ese evento
 @Composable
 fun MisEventos(
     navController: NavHostController,
@@ -102,7 +107,7 @@ fun eventoItemMisEventos(
 
     // llama a la función `asistio` que comprueba si el usuario asistió a este evento
     eventoVM.asistio(evento.id!!, emailLogeado!!) { asistente ->
-        asistio = asistente // Actualizamos el estado local con el resultado
+        asistio = asistente
     }
 
 
@@ -145,7 +150,6 @@ fun eventoItemMisEventos(
                     .clickable (enabled = asistio){
                         eventoVM.setEventoId(evento.id!!)
                         navController.navigate(Rutas.subirFotosEventos)
-//                        eventoVM.uploadImageAndSaveToEvent(contexto, evento.id!!)
                     } // Acción al hacer clik
                     .graphicsLayer(
                         alpha = if (!asistio) 0.4f else 1f

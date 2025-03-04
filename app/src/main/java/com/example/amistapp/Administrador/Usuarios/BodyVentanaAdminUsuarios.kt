@@ -22,6 +22,12 @@ import androidx.compose.ui.text.style.TextAlign
 import com.example.amistapp.Parametros.Rutas
 
 // Autora: Izaskun
+// Crea una interfaz de usuario que permite al administrador realizar las siguientes operaciones
+// alta usuarios
+// baja de usuarios
+// activar/desactivar
+// añadir/quitar roles
+// cada una de estas opciones le llevará a la ventana adecuada
 @Composable
 fun BodyVentanaAdminUsuarios(navController: NavController){
     Column(

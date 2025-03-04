@@ -48,6 +48,7 @@ import com.example.amistapp.Modelos.Usuario
 
 import com.example.amistapp.Parametros.Rutas
 // Autora: Izaskun
+// Permite al administrador cambiar el role a otros usuarios
 @Composable
 fun CambiarRoleAdministrador(
     administradorVM: AdministradorViewModel,
@@ -133,7 +134,7 @@ fun UsItem(usuario: Usuario, administradorVM: AdministradorViewModel, emailLogea
                         contentColor = colorResource(R.color.textoBotones) // Color del texto
                     ),
                     modifier = Modifier.fillMaxWidth(),
-                    enabled = !esElMismoUsuario // Desactiva el botón si es el mismo usuario
+                    enabled = !esElMismoUsuario // Desactiva el botón a él
                 ) {
                     Text(text = if (esAdministrador) "Quitar role administrador" else "Añadir role administrador")
                 }

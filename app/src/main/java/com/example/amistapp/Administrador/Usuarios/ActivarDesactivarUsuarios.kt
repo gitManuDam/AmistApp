@@ -49,7 +49,7 @@ import com.example.amistapp.Modelos.Usuario
 import com.example.amistapp.Parametros.Rutas
 
 // Autora: Izaskun
-
+// Permite al administrador activar o desactivar a otros usuarios
 @Composable
 fun ActivarDesactivarUsuarios(
     administradorVM: AdministradorViewModel,
@@ -133,7 +133,8 @@ fun UserItem(usuario: Usuario, administradorVM: AdministradorViewModel, emailLog
                         containerColor = colorResource(R.color.botones), // Color de fondo del botón
                         contentColor = colorResource(R.color.textoBotones) // Color del texto
                     ),
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier.fillMaxWidth(),
+                    enabled = !esElMismoUsuario // Desactiva el botón si es el mismo usuario
                 ) {
                     Text(text = if (usuario.activado) "Desactivar" else "Activar")
                 }

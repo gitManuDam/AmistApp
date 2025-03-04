@@ -32,6 +32,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
@@ -52,7 +53,7 @@ import com.example.amistapp.Modelos.Usuario
 import com.example.amistapp.Parametros.Rutas
 
 // Autora: Izaskun
-
+// Permite al administrador dar de baja a otros usuarios
 @Composable
 fun BajaUsuarios(
     administradorVM: AdministradorViewModel,
@@ -133,8 +134,8 @@ fun UsuarioItem(usuario: Usuario, administradorVM: AdministradorViewModel, email
                 contentDescription = "Eliminar usuario",
                 modifier = Modifier
                     .size(24.dp) // Tamaño del icono
-//                    .alpha(if (esElMismoUsuario) 0.3f else 1f)
-                    .clickable (){
+                    .alpha(if (esElMismoUsuario) 0.3f else 1f)
+                    .clickable (enabled = !esElMismoUsuario){
                         mostrarDialogo = true // muestra el dialogo de confirmacion
                                }, // Acción al hacer clic
 

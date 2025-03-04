@@ -18,6 +18,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Attribution
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
@@ -50,9 +51,9 @@ import com.example.amistapp.Parametros.Rutas
 @Composable
 
 // Eventos disponibles muestra aquellos eventos a los que todavia se puede inscribir
-// plazo inscripcion <= la fecha de hoy
-// por lo tanto no hace falta volver a controlar la fecha para mostrar los inscritos
-// porque siempre será antes del evento
+// Si ya está inscrito, también puede borrarse del evento
+// También puede ver quienes están inscritos al evento
+
 fun EventosDisponiblesEstandar(
     navController: NavHostController,
     eventoVM: EventoViewModel,
@@ -103,6 +104,7 @@ fun eventoItemDisponible(
         estaInscrito = inscrito // Actualizamos el estado local con el resultado
     }
     var mostrarDialogo by remember { mutableStateOf(false) }
+    var mostrarDialogoBorrarse by remember { mutableStateOf(false) }
     val context = LocalContext.current
 
     Card(
@@ -123,7 +125,7 @@ fun eventoItemDisponible(
             Text(text = "Plazo inscripción: ${evento.plazoInscripcion}", fontSize = 15.sp)
             Text(text = "Inscritos: ${evento.inscritos.size}", fontSize = 15.sp)
 
-            Row() {
+            Row (modifier = Modifier.fillMaxWidth(),horizontalArrangement = Arrangement.SpaceEvenly){
                 Icon(
                     imageVector = Icons.Filled.Add,
                     contentDescription = "Inscribirse al evento",
@@ -140,21 +142,29 @@ fun eventoItemDisponible(
                 )
 
                 Icon(
+                    imageVector = Icons.Filled.Delete,
+                    contentDescription = "Borrarse del evento",
+                    modifier = Modifier
+                        .size(24.dp) // Tamaño del icono
+                        // si está inscrito habilita el icono
+                        .clickable(enabled = estaInscrito) {
+                            mostrarDialogoBorrarse = true // muestra el dialogo de confirmacion
+                        } // Acción al hacer clic
+                        .graphicsLayer(
+                            alpha = if (!estaInscrito) 0.4f else 1f
+                        )
+
+                )
+
+                Icon(
                     imageVector = Icons.Filled.Attribution,
                     contentDescription = "Inscritos al eventos",
                     modifier = Modifier
                         .size(24.dp) // Tamaño del icono
                         .clickable() {
                             eventoVM.setEventoId(evento.id!!)
-//                            if (eventoVM.plazoInscripcionAbierto()){
-                                navController.navigate(Rutas.mostrarInscritos)
-//                            }
-//                            else{
-//                                navController.navigate(Rutas.mostrarAsistentes)
-//                            }
-
-                            // muestra una rv con los inscritos al evento
-                        }, // Acción al hacer clic
+                            navController.navigate(Rutas.mostrarInscritos)
+                        }
                 )
             }
         }
@@ -165,6 +175,13 @@ fun eventoItemDisponible(
         }
 
     }
+    if(mostrarDialogoBorrarse){
+        confirmacionBorrarseEvento(eventoVM, evento, emailLogeado, context) {
+            mostrarDialogoBorrarse = false
+        }
+
+    }
+
 }
 @Composable
 fun confirmacionInscribirseEvento(eventoVM: EventoViewModel, evento: Evento, emailLogeado: String?, context: Context, onDismiss:() -> Unit) {
@@ -196,6 +213,66 @@ fun confirmacionInscribirseEvento(eventoVM: EventoViewModel, evento: Evento, ema
                         onClick = {
                             mostrar = false
                             eventoVM.incribirseEnEvento(evento.id!! ,emailLogeado!! , context)
+                        },
+                        modifier = Modifier.weight(1f),
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = colorResource(R.color.botones), // Color de fondo del botón
+                            contentColor = colorResource(R.color.textoBotones) // Color del texto
+                        )
+                    ) {
+                        Text("Aceptar")
+                    }
+
+                    Button(
+                        onClick = {
+                            mostrar = false
+                            onDismiss()
+                        },
+                        modifier = Modifier.weight(1f),
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = colorResource(R.color.botones), // Color de fondo del botón
+                            contentColor = colorResource(R.color.textoBotones) // Color del texto
+                        )
+                    ) {
+                        Text("Cancelar")
+                    }
+                }
+            }
+        }
+    }
+}
+
+
+@Composable
+fun confirmacionBorrarseEvento(eventoVM: EventoViewModel, evento: Evento, emailLogeado: String?, context: Context, onDismiss:() -> Unit) {
+
+    var mostrar by remember { mutableStateOf(true) }
+    if (mostrar) {
+        Dialog(
+            onDismissRequest = { mostrar = false },
+            properties = DialogProperties(dismissOnBackPress = false, dismissOnClickOutside = true)
+        ) {
+            Column(
+                modifier = Modifier
+                    .width(350.dp)
+                    .padding(20.dp)
+                    .background(Color.White, shape = RoundedCornerShape(8.dp))
+            ) {
+                Text(
+                    text = "Vas a borrarte de  ${evento.descripcion}",
+                    color = colorResource(R.color.texto),
+                    fontSize = 15.sp,
+                    modifier = Modifier.padding(bottom = 16.dp)
+                )
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                )
+                {
+                    Button(
+                        onClick = {
+                            mostrar = false
+                            eventoVM.borrarseEnEvento(evento.id!! ,emailLogeado!! , context)
                         },
                         modifier = Modifier.weight(1f),
                         colors = ButtonDefaults.buttonColors(

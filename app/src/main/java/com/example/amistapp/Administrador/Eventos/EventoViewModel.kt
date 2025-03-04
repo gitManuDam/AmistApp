@@ -589,6 +589,45 @@ class EventoViewModel: ViewModel() {
         })
     }
 
+    // Borra a un usuario inscrito en un evento de ese evento
+    fun borrarseEnEvento(eventoId: String ,emailLogeado: String , context: Context){
+        val eventoRef = database.child(eventoId)
+
+        eventoRef.get().addOnSuccessListener { snapshot ->
+            if (snapshot.exists()) {
+                val evento = snapshot.getValue(Evento::class.java)
+                evento?.let {
+                    val listaActualizada = it.inscritos?.toMutableList() ?: mutableListOf()
+
+                    if (listaActualizada.contains(emailLogeado)) { // Verifica que el usuario está inscrito
+                        listaActualizada.remove(emailLogeado)
+
+                        // Sube la lista actualizada a Firebase
+                        eventoRef.child("inscritos").setValue(listaActualizada)
+                            .addOnCompleteListener { task ->
+                                if (task.isSuccessful) {
+                                    Log.d("Evento", "Usuario eliminado con éxito")
+                                    Toast.makeText(context, "Te has dado de baja del evento", Toast.LENGTH_SHORT).show()
+
+                                    _inscritos.value = listaActualizada
+                                    obtenerInscritos(eventoId)
+                                } else {
+                                    Log.e("Evento", "Error al eliminar usuario", task.exception)
+                                }
+                            }
+                    } else {
+                        Log.d("Evento", "El usuario no estaba inscrito en el evento")
+                        Toast.makeText(context, "No estabas inscrito en este evento", Toast.LENGTH_SHORT).show()
+                    }
+                }
+            } else {
+                Log.e("Evento", "El evento no existe")
+            }
+        }.addOnFailureListener { exception ->
+            Log.e("Evento", "Error al obtener el evento", exception)
+        }
+    }
+
     // Obtiene la lista de asistente a un evento determinado
     fun obtenerAsistentes(eventoId: String) {
         val eventoRef = database.child(eventoId).child("asistentes")

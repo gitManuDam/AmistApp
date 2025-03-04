@@ -45,6 +45,7 @@ class AdministradorViewModel : ViewModel(){
             }
     }
 
+    // Obtiene los usuarios de la base de datos
     fun obtenerUsuarios(){
 
         isLoading.value = true

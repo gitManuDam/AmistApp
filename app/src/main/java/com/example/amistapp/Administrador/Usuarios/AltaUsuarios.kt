@@ -41,7 +41,7 @@ import com.example.amistapp.Parametros.Rutas
 
 
 // Autora: Izaskun
-
+// Permite al administrador dar de alta a un nuevo usuario con correo electrónico y contraseña
 @Composable
  fun AltaUsuarios(navController: NavController, administradorVM: AdministradorViewModel, loginVM: LoginViewModel){
     val context = LocalContext.current
@@ -119,22 +119,7 @@ import com.example.amistapp.Parametros.Rutas
                 )
             }
         }
-//        Button(
-//            onClick = {
-//                    administradorVM.registerNewUserWithEmail(email.text, password.text)
-//            },
-//            enabled = !isLoading,
-//            colors = ButtonDefaults.buttonColors(
-//                containerColor = colorResource(R.color.botones), // Color de fondo del botón
-//                contentColor = colorResource(R.color.textoBotones) // Color del texto
-//            )
-//        ) {
-//            Text(
-//                "Registrar",
-//                color = colorResource(R.color.texto),
-//                fontSize = 15.sp,
-//            )
-//        }
+
         Spacer(modifier = Modifier.height(8.dp))
 
 

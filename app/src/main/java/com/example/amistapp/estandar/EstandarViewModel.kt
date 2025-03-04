@@ -36,6 +36,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
+// Autores: Ambos
 class EstandarViewModel:ViewModel() {
     private val auth: FirebaseAuth = FirebaseAuth.getInstance()
     val TAG = "Manuel"
@@ -484,6 +485,7 @@ class EstandarViewModel:ViewModel() {
             }
     }
 
+    // Obtiene aquellos eventos en los que el usuario está inscrito
     fun obtenerMisEventos(emailUsuario: String){
         database.get().addOnSuccessListener { me ->
             if (me.exists()) {
@@ -512,6 +514,8 @@ class EstandarViewModel:ViewModel() {
         return fechaActual.isBefore(fechaEventoFormateada)
     }
 
+    // Devuelve verdadero si el usuario está a 20 metros o menos del lugar del evento,
+    // falso en caso contrario
     fun suficienteCerca(latitudEvento: Double, longitudEvento:Double, latitudUsuario: Double, longitudUsuario:Double):Boolean{
         val eventoLocation = Location("Evento").apply {
             latitude = latitudEvento

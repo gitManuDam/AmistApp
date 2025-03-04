@@ -49,6 +49,7 @@ import com.example.amistapp.R
 
 // Autora: Izaskun
 // Muestra el listado de los próximos eventos
+// Aquellos cuyo plazo de inscripción aún está abierto
 @Composable
 fun ProoximosEventos(navController: NavHostController, eventoVM: EventoViewModel) {
 
