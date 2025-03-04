@@ -35,6 +35,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -58,7 +59,7 @@ import com.example.amistapp.Modelos.UsuarioChat
 import com.example.amistapp.Parametros.Rutas
 import com.example.amistapp.estandar.EstandarViewModel
 import com.example.amistapp.estandar.MenuPuntosEstandar
-
+//Manuel
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun VentanaChats (navController: NavHostController, loginVM: LoginViewModel,
@@ -165,7 +166,11 @@ fun MenuPuntosChat(navController: NavHostController, loginVM: LoginViewModel) {
 
 @Composable
 fun BodyChats(navController: NavHostController, estandarVM:EstandarViewModel, chatVM: ChatViewModel ){
-    chatVM.obtenerUsuariosChat()
+    LaunchedEffect(Unit) {
+        chatVM.obtenerUsuariosChat()
+        estandarVM.obtenerUsuarioActual()
+    }
+
     Column(modifier = Modifier.fillMaxSize().padding(16.dp)) {
         // Verificar si la lista está vacía
         if (chatVM.listadoUsuariosChat.isEmpty()) {
@@ -180,7 +185,7 @@ fun BodyChats(navController: NavHostController, estandarVM:EstandarViewModel, ch
             // Si la lista no está vacía, mostrar los chats
             LazyColumn(modifier = Modifier.fillMaxSize()) {
                 items(chatVM.listadoUsuariosChat) { usuario ->
-                    ChatItem(usuario) {
+                    ChatItem(usuario, estandarVM) {
                         navController.navigate("chats/${it}")
                     }
                 }
@@ -189,7 +194,7 @@ fun BodyChats(navController: NavHostController, estandarVM:EstandarViewModel, ch
     }
 }
 @Composable
-fun ChatItem(usuario: UsuarioChat, onClick: (String) -> Unit) {
+fun ChatItem(usuario: UsuarioChat,estandarVM: EstandarViewModel, onClick: (String) -> Unit) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -240,7 +245,7 @@ fun ChatItem(usuario: UsuarioChat, onClick: (String) -> Unit) {
 
             Spacer(modifier = Modifier.width(8.dp))
 
-            if(!usuario.ultimoMensaje.leido){
+            if(!usuario.ultimoMensaje.leido && estandarVM.usuarioActual.value!!.email != usuario.ultimoMensaje.sender){
                 Box(
                     modifier = Modifier
                         .size(12.dp)

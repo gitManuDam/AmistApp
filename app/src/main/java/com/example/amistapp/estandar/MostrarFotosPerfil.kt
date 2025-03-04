@@ -29,7 +29,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
 import com.example.amistapp.R
-
+//Manuel
 @Composable
 fun MostrarFotosPerfil(eventoVM: EventoViewModel,estandarVM: EstandarViewModel, navController: NavHostController){
 

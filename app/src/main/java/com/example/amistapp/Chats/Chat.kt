@@ -36,7 +36,7 @@ import com.example.amistapp.Modelos.MensajeChat
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
-
+//Manuel
 @Composable
 fun ChatScreen(
     viewModel: ChatViewModel,

@@ -43,7 +43,7 @@ import com.example.amistapp.BuildConfig
 import com.example.amistapp.DatosPerfil.DatosPerfilViewModel
 import com.example.amistapp.R
 import java.io.File
-
+//Manuel
 @Composable
 fun BodyPerfil(navController: NavHostController, estandarVM: EstandarViewModel, datosPerfilVM: DatosPerfilViewModel, contexto: Context) {
     // Obtén el perfil del usuario

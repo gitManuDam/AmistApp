@@ -149,9 +149,9 @@ class ChatViewModel : ViewModel() {
 
                         // Obtener el último mensaje ordenado por timestamp
                         val mensajes = chat.mensajes
-                        val ultimoMensaje =mensajes.last()
+                        val ultimoMensaje =mensajes.lastOrNull()
 
-                        if (otroUsuario != null) {
+                        if (otroUsuario != null && ultimoMensaje != null) {
                             listaChat.add(Pair(otroUsuario, ultimoMensaje))
                         }
                     }

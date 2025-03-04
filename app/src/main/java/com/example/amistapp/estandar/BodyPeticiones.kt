@@ -6,6 +6,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -14,10 +15,13 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.example.amistapp.Modelos.Peticion
-
+//Manuel
 @Composable
 fun BodyPeticiones(navController: NavHostController, estandarVM: EstandarViewModel) {
-    estandarVM.obtenerPeticionesRecibidas()
+    LaunchedEffect(Unit) {
+        estandarVM.obtenerPeticionesRecibidas()
+    }
+
     Column(modifier = Modifier.fillMaxSize().padding(16.dp)) {
         // Verificar si la lista de peticiones está vacía
         if (estandarVM.listadoPeticiones.isEmpty()) {

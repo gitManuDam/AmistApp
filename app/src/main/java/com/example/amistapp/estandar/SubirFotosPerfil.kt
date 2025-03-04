@@ -36,14 +36,16 @@ import com.example.amistapp.BuildConfig
 import com.example.amistapp.Modelos.Usuario
 import com.example.amistapp.R
 import java.io.File
-
+//Manuel
 @Composable
 fun SubirFotosPerfil(eventoVM: EventoViewModel , estandarVM: EstandarViewModel, navController: NavHostController){
 
     val contexto = LocalContext.current
     val usuario = estandarVM.usuarioActual.value
+    LaunchedEffect(Unit) {
+        estandarVM.obtenerUsuarioActual()
+    }
 
-    estandarVM.obtenerUsuarioActual()
 
     Column (modifier = Modifier.padding(vertical = 50.dp)) {
         CargarImagen(contexto, eventoVM, navController,usuario)

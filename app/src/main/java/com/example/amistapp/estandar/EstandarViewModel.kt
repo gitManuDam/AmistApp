@@ -284,10 +284,14 @@ class EstandarViewModel:ViewModel() {
 
         var compatibles = mutableListOf<UsuarioCompatibilidad>()
 
-        for (usuario in usuarios) {
-            var compatibilidad= getCompatibilidad(usuarioActual.value!!.perfil!!, usuario.perfil!!)
-            if (compatibilidad > 10) {
-                compatibles.add(UsuarioCompatibilidad(usuario, compatibilidad))
+        usuarioActual.value?.perfil?.let { perfilActual ->
+            for (usuario in usuarios) {
+                usuario.perfil?.let { perfilUsuario ->
+                    val compatibilidad = getCompatibilidad(perfilActual, perfilUsuario)
+                    if (compatibilidad > 10) {
+                        compatibles.add(UsuarioCompatibilidad(usuario, compatibilidad))
+                    }
+                }
             }
         }
 
